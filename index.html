@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INKBYHAND - Home</title>
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="images/logo.jpg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
@@ -222,7 +222,7 @@
             display: none;
         }
         
-        /* 🛠️ NEW STYLE: Scroll Buttons */
+        /* Scroll Buttons (Existing) */
         .scroll-btns {
             position: fixed;
             bottom: 30px;
@@ -258,6 +258,30 @@
         #scrollUpBtn.show {
             opacity: 1;
             pointer-events: auto;
+        }
+        
+        /* ================================== */
+        /* === 🛠️ NEW STYLE: IMAGE HOVER ZOOM === */
+        /* ================================== */
+
+        .product .image {
+            /* This is the container for the image. Crucial for clipping the zoom. */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product .image img {
+            /* Apply smooth transition to the image itself */
+            transition: transform 0.4s ease-in-out;
+            /* Ensure image fills the container */
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product:hover .image img {
+            /* Zoom the image on hovering over the whole product card */
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -1098,14 +1122,12 @@
             showView('loginView');
         });
         // ===========================================
-        // === UPDATED ADD TO CART & LOCALSTORAGE LOGIC ===
+        // === UPDATED ADD TO CART & LOCALSTORAGE LOGIC (Existing) ===
         // ===========================================
 
         const cartNotificationOverlay = document.getElementById('cartNotificationOverlay');
         const cartNotificationBox = cartNotificationOverlay ? cartNotificationOverlay.querySelector('.cart-notification-box') : null;
         const cartCountElement = document.getElementById('cart-count');
-
-        // 🛠️ NEW: Get scroll button elements
         const scrollUpBtn = document.getElementById('scrollUpBtn');
         const scrollDownBtn = document.getElementById('scrollDownBtn');
 
@@ -1196,7 +1218,7 @@
         }
         
         // ===========================================
-        // === 🛠️ NEW: PAGE SCROLLING LOGIC ===
+        // === PAGE SCROLLING LOGIC (Existing) ===
         // ===========================================
         
         // Function to scroll to the top
@@ -1229,15 +1251,15 @@
 
         // Attach event listeners to all components after the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            // Target buttons with the class 'add-to-cart-btn' (Existing)
+            // Target buttons with the class 'add-to-cart-btn'
             const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', addToCart);
             });
-            // Load the current cart count when the page loads (Existing)
+            // Load the current cart count when the page loads
             updateCartCount();
             
-            // 🛠️ Scroll button listeners
+            // Scroll button listeners
             if (scrollUpBtn && scrollDownBtn) {
                 scrollUpBtn.addEventListener('click', scrollToTop);
                 scrollDownBtn.addEventListener('click', scrollToNextSection);

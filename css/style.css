@@ -740,3 +740,6 @@ RESPONSIVENESS (Media Queries)
     .inner header{
       margin: 0 10px;
     }
+    .product .image img{
+        height: 100%;
+    }
