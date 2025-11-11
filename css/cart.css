@@ -486,3 +486,6 @@ header ul {
 input[type="number"]{
         width: 44px;
 }
+.shop-button a{
+    color: blue !important;
+}

@@ -161,8 +161,8 @@
 
         .btn {
             padding: 20px 0;
-            text-align: right;
-            margin: 0 197px;
+            text-align: left;
+            
         }
 
         .btn button {
@@ -192,7 +192,7 @@
                 position: absolute;
     z-index: 40;
     right: 68px;
-    top: 204px;
+    top: 240px;
             color: #fff;
         }
 
@@ -242,7 +242,7 @@
 
         .social-icons {
             display: flex;
-            gap: 15px;
+            justify-content: space-between;
             margin-top: 15px;
         }
 
@@ -273,8 +273,34 @@
                 margin-top: 20px;
             }
         }
+         @media (max-width: 1190px) {
+        .blocks{
+                display: none;
+            }
+             .input-box{
+            width: 100%;
+        }
+        .container{
+            width: 99%;
+            margin: 0 auto;
+        }
+     .contact .container .flexbox{
+            justify-content: center;
+        }
+            input,textarea{
+                width: 100% !important;
+                ;
+            }
+            form .flex{
+                gap: 20px !important;
+                
+            }
 
+        }
         @media (max-width: 600px) {
+            .blocks{
+                display: none;
+            }
             .headings h1 {
                 font-size: 30px;
             }
@@ -289,3 +315,8 @@
             background: none !important;
             background-color: none !important;
         }
+        :placeholder-shown {
+            font-size: 13px;
+            font-family: light;
+        }
+       
