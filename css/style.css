@@ -431,7 +431,7 @@ img {
 
 .inner header ul,
 .inner header {
-   
+       margin: 0 10px;
 }
 
 /* Site feature additions: search, sidebar layout, hero animation, image hover, back-to-top, textarea wordcount */
