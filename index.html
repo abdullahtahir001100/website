@@ -4,16 +4,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>INKBYHAND - Home</title>
     <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/user.css">
+
     <style>
+        /* ================================== */
+        /* === CAPTCHA AND FORM VALIDATION STYLES === */
+        /* ================================== */
+        .input-error {
+            border-color: #dc3545 !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            text-align: left;
+            text-transform: none;
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        /* Captcha Checkbox Styles */
+        .captcha-container {
+            margin-bottom: 15px;
+            text-align: left;
+            text-transform: none;
+        }
+
+        .captcha-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-family: regular;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .captcha-checkbox-display {
+            /* Renamed for clarity */
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            background-color: white;
+        }
+
+        .captcha-checkbox-display.checked {
+            background-color: #f7c5c1;
+            border-color: #f7c5c1;
+            color: white;
+        }
+
+        .captcha-checkbox-display i {
+            font-size: 14px;
+            display: none;
+        }
+
+        .captcha-checkbox-display.checked i {
+            display: block;
+        }
 
 
+        /* ================================== */
+        /* === NEW CAPTCHA MODAL STYLES === */
+        /* ================================== */
+        #captchaModalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .captcha-modal-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .captcha-prompt {
+            font-family: regular;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 0 auto 10px;
+        }
+
+        .captcha-image-item {
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid transparent;
+            border-radius: 3px;
+            transition: border-color 0.2s;
+        }
+
+        .captcha-image-item img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+        }
+
+        .captcha-image-item:hover {
+            border-color: #f9b4af;
+        }
+
+        .captcha-image-item.selected {
+            border-color: #2ee05d;
+            box-shadow: 0 0 5px rgba(46, 224, 93, 0.5);
+        }
     </style>
 </head>
 
@@ -22,14 +154,17 @@
         <header class="inner">
             <div class="navbar">
                 <div class="logo">
-                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo">
+                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
+                        alt="Logo">
                 </div>
                 <div class="menu-icon">
-                    <div class="naver"><a href="cart.html"><img src="images/trolley.png" alt="Cart" class="top"></a></div>
+                    <div class="naver"><a href="cart.html"><img src="images/trolley.png" alt="Cart" class="top"></a>
+                    </div>
                     <div class="naver" id="form1"><img src="images/user.png" alt="User"></div>
                     <div class="naver" onclick="toggleNav()">
                         <img src="images/ui.png" alt="Menu" id="menu-icon">
-                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;" class="close-icon">
+                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
+                            class="close-icon">
                     </div>
                 </div>
 
@@ -45,6 +180,7 @@
             </div>
         </header>
     </section>
+
     <div class="modal-overlay">
         <div class="modal-box">
 
@@ -52,36 +188,33 @@
 
             <div class="view-container" id="loginView">
                 <h2 class="modal-title">Welcome to INKBYHAND</h2>
-
                 <button class="facebook-btn">
                     <i class="fab fa-facebook-f"></i> Log in With Facebook
                 </button>
-
                 <div class="separator">OR</div>
-
                 <form class="login-form">
                     <input type="email" name="email" placeholder="Email Address" required>
                     <div class="password-group">
                         <input type="password" name="password" id="loginPasswordInput" placeholder="Password" required>
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button" aria-label="Toggle password visibility"></i>
+                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
+                            aria-label="Toggle password visibility"></i>
                     </div>
-                    <a href="#" class="forgot-password terms-link" onclick="showView('forgotPasswordView')">FORGOT PASSWORD</a>
+                    <a href="#" class="forgot-password terms-link"
+                        onclick="showView('forgotPasswordView')">FORGOT PASSWORD</a>
                     <button type="submit" class="log-in-btn">LOG IN</button>
                 </form>
-
                 <p class="terms-text">
                     This site is protected by reCAPTCHA and the Google
                     <a href="#">Privacy Policy</a> and
                     <a href="#">Terms of Service</a> apply.
                 </p>
-
                 <p class="register-text">
                     Don't have an account? <a class="register-link" onclick="showView('registerView')">REGISTER</a>
                 </p>
             </div>
 
 
-            <div class="view-container" id="registerView">
+            <div class="view-container" id="registerView" style="display:none;">
                 <h2 class="modal-title">Create Your Account</h2>
 
                 <button class="facebook-btn">
@@ -90,17 +223,40 @@
 
                 <div class="separator">OR</div>
 
-                <form class="register-form">
-                    <input type="text" name="full_name" placeholder="Full Name" required>
-                    <input type="email" name="email" placeholder="Email Address" required>
+                <form class="register-form" id="registerForm">
+                    <input type="text" name="full_name" id="registerNameInput" placeholder="Full Name" required>
+                    <div id="nameError" class="error-message"></div>
+
+                    <input type="email" name="email" placeholder="Email Address" required autocomplete="off">
+
                     <div class="password-group">
-                        <input type="password" name="password" placeholder="Password" required>
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button" aria-label="Toggle password visibility"></i>
-                    </div>
+                        <input type="password" name="password" id="registerPasswordInput" placeholder="Password"
+                            required>
+                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
+                            aria-label="Toggle password visibility"></i>
+                        </div>
+
                     <div class="password-group">
-                        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button" aria-label="Toggle password visibility"></i>
+                        <input type="password" name="confirm_password" id="registerConfirmPasswordInput"
+                            placeholder="Confirm Password" required>
+                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
+                            aria-label="Toggle password visibility"></i>
+                        <div id="passwordMatchError" class="error-message"></div>
                     </div>
+
+                    <div class="captcha-container">
+                        <label class="captcha-label" id="captchaLabel">
+                            <span id="captchaCheckDisplay" class="captcha-checkbox-display" role="checkbox"
+                                aria-checked="false">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            I'm not a robot
+                        </label>
+                        <input type="hidden" id="captchaVerified" value="false">
+                        <div id="captchaError" class="error-message" style="display:none;">Please verify that you are
+                            not a robot.</div>
+                    </div>
+
                     <button type="submit" class="register-submit-btn">REGISTER</button>
                 </form>
 
@@ -115,31 +271,21 @@
                 </p>
             </div>
 
-
-            <div class="view-container" id="forgotPasswordView">
+            <div class="view-container" id="forgotPasswordView" style="display:none;">
                 <h2 class="modal-title">Forgot Your Password?</h2>
 
                 <p class="terms-text" style="text-align: center; margin-bottom: 25px;">
-                    Enter the email address associated with your account and we'll send you a link to reset your password.
+                    Enter the email address associated with your account and we'll send you a link to reset your
+                    password.
                 </p>
 
                 <form class="forgot-form">
                     <input type="email" name="email" placeholder="Email Address" required>
-
                     <button type="submit" class="reset-btn">RESET PASSWORD</button>
                 </form>
 
                 <div id="resetPasswordView" style="display:none;margin-top:18px">
-                    <h3>Set a new password</h3>
-                    <form id="resetForm" class="reset-form">
-                        <input type="hidden" name="token" value="">
-                        <label>New password</label>
-                        <div class="pw-wrap"><input name="password" type="password" required><button type="button" data-pw-toggle aria-label="Toggle password">👁️</button></div>
-                        <label>Confirm new password</label>
-                        <input name="confirm_password" type="password" required>
-                        <div style="margin-top:8px"><button type="submit">Set new password</button></div>
-                    </form>
-                </div>
+                    </div>
 
                 <button class="back-to-login" onclick="showView('loginView')">
                     <i class="fas fa-arrow-left"></i> Back to Log In
@@ -148,6 +294,17 @@
 
         </div>
     </div>
+
+    <div id="captchaModalOverlay">
+        <div class="captcha-modal-box">
+            <p class="captcha-prompt">Please select the image of the **Surah Kausar**.</p>
+            <div class="captcha-grid" id="captchaGrid">
+                </div>
+            <div id="captchaFailure" class="error-message" style="display:none; text-align:center;">Incorrect selection.
+                Please try again.</div>
+        </div>
+    </div>
+
 
     <section class="inner">
         <section class="">
@@ -158,11 +315,7 @@
                 </div>
                 <div class="flex">
                     <div class="video">
-                        <video src="images/vid-1.mp4" 
-                        controls
-                        autoplay
-                        loop
-                          >
+                        <video src="images/vid-1.mp4" controls autoplay loop>
                         </video>
                     </div>
                     <div class="pera">
@@ -181,7 +334,8 @@
                     <h3>Grace Flows With Every Stroke</h3>
                     <p>
                         Every letter carries a rythm , every stroke a meaning .... <br> Calligraphy transform ordinary
-                        writing into extraordinary art. We bring grace and artistry into every curve <br> and line , turning
+                        writing into extraordinary art. We bring grace and artistry into every curve <br> and line ,
+                        turning
                         simple letters into timeless beauty.
                     </p>
                 </div>
@@ -396,7 +550,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    We use high-quality, archival-grade canvases, premium acrylic and oil paints, and traditional calligraphy inks to ensure longevity and vibrant detail in every piece.
+                    We use high-quality, archival-grade canvases, premium acrylic and oil paints, and traditional
+                    calligraphy inks to ensure longevity and vibrant detail in every piece.
                 </div>
             </div>
             <div class="bloker">
@@ -410,7 +565,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    Completion time varies depending on the complexity and size of the artwork, typically ranging from 2 to 4 weeks. Custom orders may take slightly longer.
+                    Completion time varies depending on the complexity and size of the artwork, typically ranging from 2
+                    to 4 weeks. Custom orders may take slightly longer.
                 </div>
             </div>
             <div class="bloker">
@@ -424,7 +580,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    Yes, we offer insured worldwide shipping. Shipping costs and delivery times will be calculated at checkout based on your location.
+                    Yes, we offer insured worldwide shipping. Shipping costs and delivery times will be calculated at
+                    checkout based on your location.
                 </div>
             </div>
             <div class="bloker">
@@ -438,7 +595,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    You can place an order directly through our "Shop" page for existing pieces, or contact us via the "Contact" page to discuss a custom commission.
+                    You can place an order directly through our "Shop" page for existing pieces, or contact us via the
+                    "Contact" page to discuss a custom commission.
                 </div>
             </div>
 
@@ -449,7 +607,8 @@
             <div class="align">
                 <div class="sec-1">
                     <div class="logo">
-                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png" class="logos" alt="">
+                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
+                            class="logos" alt="">
                     </div>
                     <div class="pera">
                         InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
@@ -484,7 +643,8 @@
                         <li>Get In Touch</li>
                         <li><a href=""><img src="https://www.javehandmade.store/instagram.png" class="m">
                                 instagram.com/ink_by_hand_12</a></li>
-                        <li><a href=""><img src="https://www.javehandmade.store/whatsapp.png" class="n">+92-310-7581250</a>
+                        <li><a href=""><img src="https://www.javehandmade.store/whatsapp.png"
+                                    class="n">+92-310-7581250</a>
                         </li>
 
                     </ul>
@@ -497,17 +657,129 @@
     </section>
 
     <script>
-        // Existing script for FAQ toggle
+        // --- CAPTCHA Data ---
+        const CAPTCHA_IMAGES = [
+            { src: 'images/1.jpg', label: 'Modern Calligraphy' },
+            { src: 'images/9.jpg', label: 'Surah Rehman' },
+            { src: 'images/2.jpg', label: 'Surah Kausar', isTarget: true }, // The target image
+            { src: 'images/3.jpg', label: '99 Names of Allah' },
+            { src: 'images/4.jpg', label: 'Surah Ad-Duha' },
+            { src: 'images/5.jpg', label: 'Four Kul' },
+            { src: 'images/6.jpg', label: 'Surah Rehman' },
+            { src: 'images/7.jpg', label: 'Ocean Paintaing' },
+            { src: 'images/11.jpg', label: 'Darood e Ibrhimi' }
+        ];
+
+        const CAPTCHA_MODAL_OVERLAY = document.getElementById('captchaModalOverlay');
+        const CAPTCHA_GRID = document.getElementById('captchaGrid');
+        const CAPTCHA_CHECK_DISPLAY = document.getElementById('captchaCheckDisplay');
+        const CAPTCHA_VERIFIED_INPUT = document.getElementById('captchaVerified');
+        const CAPTCHA_LABEL = document.getElementById('captchaLabel');
+        const CAPTCHA_ERROR = document.getElementById('captchaError');
+        const CAPTCHA_FAILURE_MESSAGE = document.getElementById('captchaFailure');
+
+
+        // Function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 1. Generate and display the CAPTCHA grid
+        function generateCaptchaGrid() {
+            CAPTCHA_GRID.innerHTML = '';
+            CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
+
+            // Randomly select 9 images (including the target)
+            const targetImage = CAPTCHA_IMAGES.find(img => img.isTarget);
+            let nonTargetImages = CAPTCHA_IMAGES.filter(img => !img.isTarget);
+
+            // Use 8 non-targets and the 1 target image
+            const imagesForGrid = shuffleArray(nonTargetImages).slice(0, 8);
+            imagesForGrid.push(targetImage); // Add the target image
+
+            const shuffledGridImages = shuffleArray(imagesForGrid);
+
+            shuffledGridImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'captcha-image-item';
+                item.setAttribute('data-index', index);
+                item.setAttribute('data-target', img.isTarget ? 'true' : 'false');
+
+                const imageTag = document.createElement('img');
+                imageTag.src = img.src;
+                imageTag.alt = img.label;
+
+                item.appendChild(imageTag);
+                CAPTCHA_GRID.appendChild(item);
+
+                item.addEventListener('click', () => {
+                    handleImageSelection(item);
+                });
+            });
+        }
+
+        // 2. Handle image selection validation
+        function handleImageSelection(selectedItem) {
+            // Deselect all others
+            document.querySelectorAll('.captcha-image-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            selectedItem.classList.add('selected');
+
+            if (selectedItem.getAttribute('data-target') === 'true') {
+                // SUCCESS: Target image (images/2.jpg) selected
+                CAPTCHA_VERIFIED_INPUT.value = 'true';
+                CAPTCHA_CHECK_DISPLAY.classList.add('checked');
+                CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'true');
+                CAPTCHA_ERROR.style.display = 'none';
+                // Delay closing the modal briefly for visual feedback
+                setTimeout(() => {
+                    CAPTCHA_MODAL_OVERLAY.style.display = 'none';
+                }, 300);
+
+                CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
+            } else {
+                // FAILURE
+                CAPTCHA_VERIFIED_INPUT.value = 'false';
+                CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
+                CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
+                CAPTCHA_FAILURE_MESSAGE.textContent = 'Incorrect selection. Please try again.';
+                CAPTCHA_FAILURE_MESSAGE.style.display = 'block';
+            }
+        }
+
+        // 3. CAPTCHA Checkbox/Label click handler
+        CAPTCHA_LABEL.addEventListener('click', () => {
+            // Only show modal if CAPTCHA is not already verified
+            if (CAPTCHA_VERIFIED_INPUT.value === 'false') {
+                generateCaptchaGrid(); // Generate a new challenge
+                CAPTCHA_MODAL_OVERLAY.style.display = 'flex';
+                CAPTCHA_ERROR.style.display = 'none'; // Clear form validation error
+            }
+        });
+
+        // Close CAPTCHA modal if clicking outside
+        CAPTCHA_MODAL_OVERLAY.addEventListener('click', (e) => {
+            if (e.target === CAPTCHA_MODAL_OVERLAY) {
+                CAPTCHA_MODAL_OVERLAY.style.display = 'none';
+            }
+        });
+
+
+        // --- Core Modal/Navigation Logic (Kept and Cleaned) ---
         let blocks = document.getElementsByClassName('block');
         let answer = document.getElementsByClassName('jsconst');
         for (let i = 0; i < blocks.length; i++) {
-            blocks[i].onclick = function() {
+            blocks[i].onclick = function () {
                 answer[i].classList.toggle('blocker');
-
             };
         }
 
-        // JavaScript from script.js
         const userBtn = document.getElementById('form1');
         const modalOverlay = document.querySelector('.modal-overlay');
         const closeBtn = document.querySelector('.modal-box .close-btn');
@@ -521,7 +793,7 @@
             modalOverlay.style.display = 'none';
         }
 
-        window.showView = function(viewId) {
+        window.showView = function (viewId) {
             views.forEach(view => {
                 view.style.display = 'none';
             });
@@ -529,7 +801,7 @@
             if (viewToShow) {
                 viewToShow.style.display = 'block';
             }
-        }
+        };
 
         function showModal(e) {
             e.preventDefault();
@@ -539,20 +811,18 @@
 
         function togglePassword(e) {
             const icon = e.currentTarget;
-            // Target the input which is the previous sibling of the icon
             const input = icon.previousElementSibling;
             input.type = input.type === 'password' ? 'text' : 'password';
             icon.classList.toggle('fa-eye');
             icon.classList.toggle('fa-eye-slash');
         }
 
-        window.toggleNav = function() {
+        window.toggleNav = function () {
             navLinks.classList.toggle('active');
             openMenuIcon.style.display = navLinks.classList.contains('active') ? 'none' : 'block';
             closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
         };
 
-        // Check if userBtn exists before adding listener, as it's the element that was conditionally rendered by html
         if (userBtn) {
             userBtn.addEventListener('click', showModal);
         }
@@ -571,10 +841,150 @@
             icon.addEventListener('click', togglePassword);
         });
         modalOverlay.style.display = 'none';
+
+
+        // --- VALIDATION LOGIC FOR REGISTRATION FORM ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('registerForm');
+            const nameInput = document.getElementById('registerNameInput');
+            const passwordInput = document.getElementById('registerPasswordInput');
+            const confirmPasswordInput = document.getElementById('registerConfirmPasswordInput');
+            const passwordMatchError = document.getElementById('passwordMatchError');
+            const nameError = document.getElementById('nameError');
+
+            // **NEW: Element to display password length error**
+            const passwordLengthError = document.createElement('div');
+            passwordLengthError.id = 'passwordLengthError';
+            passwordLengthError.className = 'error-message';
+            // Insert the new error message element right after the password input (within the password-group div)
+            // Note: The structure inside .password-group is: <input>, <icon>, [passwordLengthError]. 
+            // We insert it after the icon (nextSibling)
+            passwordInput.parentNode.insertBefore(passwordLengthError, passwordInput.nextSibling.nextSibling);
+
+            // 1. Password Matching and Validation (UPDATED for Length Check)
+            const validatePasswordMatch = () => {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                let isValid = true;
+
+                // Check 1: Password Length (Min 8 characters)
+                if (password.length > 0 && password.length < 8) {
+                    passwordLengthError.textContent = "Password must be at least 8 characters long.";
+                    passwordInput.classList.add('input-error');
+                    isValid = false;
+                } else {
+                    passwordLengthError.textContent = "";
+                    passwordInput.classList.remove('input-error');
+                }
+
+                // Check 2: Password Match
+                if (confirmPassword.length > 0 && password !== confirmPassword) {
+                    passwordMatchError.textContent = "Passwords do not match.";
+                    confirmPasswordInput.classList.add('input-error');
+                    // Only set isValid to false if it wasn't already false from the length check
+                    if (isValid) isValid = false;
+                } else if (confirmPassword.length > 0) {
+                    // Clear match error only if there's text and it matches
+                    passwordMatchError.textContent = "";
+                    confirmPasswordInput.classList.remove('input-error');
+                } else if (confirmPassword.length === 0) {
+                    // Clear match error if confirm is empty
+                    passwordMatchError.textContent = "";
+                    confirmPasswordInput.classList.remove('input-error');
+                }
+
+                // If the main password fails the length check, the match error should also be visually cleared
+                // as the user should fix the main password first.
+                if (passwordLengthError.textContent) {
+                    passwordMatchError.textContent = "";
+                    confirmPasswordInput.classList.remove('input-error');
+                }
+
+                return isValid;
+            };
+
+            // Add listeners to validate instantly
+            passwordInput.addEventListener('input', validatePasswordMatch);
+            confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+
+
+            // 2. Real-time Username/Full Name Validation (Prevent "admin")
+            const validateName = () => {
+                const name = nameInput.value.trim();
+                const forbiddenName = "admin";
+                let isValid = true;
+
+                if (name.toLowerCase() === forbiddenName) {
+                    nameError.textContent = `The name "${name}" is reserved and cannot be used.`;
+                    nameInput.classList.add('input-error');
+                    isValid = false;
+                } else {
+                    nameError.textContent = "";
+                    nameInput.classList.remove('input-error');
+                }
+                return isValid;
+            };
+
+            nameInput.addEventListener('input', validateName);
+
+
+            // 3. Final Form Submission Handler
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Run all validations on submit
+                const isNameValid = validateName();
+                const isPasswordValid = validatePasswordMatch(); // Calls match and length checks
+                const isCaptchaCorrect = CAPTCHA_VERIFIED_INPUT.value === 'true';
+
+                if (!isCaptchaCorrect) {
+                    CAPTCHA_ERROR.style.display = 'block';
+                } else {
+                    CAPTCHA_ERROR.style.display = 'none';
+                }
+
+                // Check if all major validations passed
+                if (isNameValid && isPasswordValid && isCaptchaCorrect) {
+                    // All validations passed, simulate successful submission
+                    console.log("Registration form submission successful!");
+
+                    const modalBox = document.querySelector('.modal-box');
+                    const successMessage = document.createElement('div');
+                    successMessage.textContent = "Registration successful! (Data would now be sent to the server.)";
+                    successMessage.className = 'error-message temp-message';
+                    successMessage.style.cssText = 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 10px; padding: 10px; border-radius: 5px; text-align: center;';
+
+                    const existingMessage = modalBox.querySelector('.temp-message');
+                    if (existingMessage) {
+                        modalBox.removeChild(existingMessage);
+                    }
+                    modalBox.insertBefore(successMessage, modalBox.querySelector('.modal-title').nextSibling);
+
+                    setTimeout(() => {
+                        if (modalBox.contains(successMessage)) {
+                            modalBox.removeChild(successMessage);
+                        }
+                        registerForm.reset();
+                        // Reset CAPTCHA state after submission
+                        CAPTCHA_VERIFIED_INPUT.value = 'false';
+                        CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
+                        CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
+                        CAPTCHA_ERROR.style.display = 'none';
+
+                    }, 3000);
+
+                } else {
+                    console.log("Registration form validation failed.");
+                }
+            });
+
+            // Ensure initial view is set
+            showView('loginView');
+        });
     </script>
-<script src="https://unpkg.com/scrollreveal"></script>
-    
+    <script src="https://unpkg.com/scrollreveal"></script>
+
     <script src="js/animate.js"></script>
-    </body>
+</body>
 
 </html>
