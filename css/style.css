@@ -402,7 +402,7 @@ img {
 }
 
 .inner #nav-links.active {
-    right: 0;
+  
 }
 
 .inner .naver {
@@ -431,7 +431,7 @@ img {
 
 .inner header ul,
 .inner header {
-    margin: 0 32px;
+   
 }
 
 /* Site feature additions: search, sidebar layout, hero animation, image hover, back-to-top, textarea wordcount */
@@ -725,17 +725,7 @@ RESPONSIVENESS (Media Queries)
 }
 /* Default (hidden) for small screens */
 #nav-links {
-  display: none;
-  flex-direction: column;
-  background-color: #fff;
-  position: absolute;
-  top: 70px;
-  right: 0;
-  width: 200px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  padding: 15px;
-  transition: all 0.3s ease;
+ 
 }
 
 /* When menu is toggled open */
@@ -745,14 +735,7 @@ RESPONSIVENESS (Media Queries)
 
 /* Show normal nav for desktop */
 @media (min-width: 768px) {
-  #nav-links {
-    display: flex !important;
-    position: static;
-    flex-direction: row;
-    box-shadow: none;
-    background: transparent;
-    width: auto;
-  }
+ 
 }
     .inner header{
       margin: 0 10px;
