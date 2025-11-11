@@ -15,7 +15,7 @@
 
     <style>
         /* ================================== */
-        /* === CAPTCHA AND FORM VALIDATION STYLES === */
+        /* === CAPTCHA AND FORM VALIDATION STYLES (Existing) === */
         /* ================================== */
         .input-error {
             border-color: #dc3545 !important;
@@ -51,7 +51,6 @@
         }
 
         .captcha-checkbox-display {
-            /* Renamed for clarity */
             width: 20px;
             height: 20px;
             border: 2px solid #ccc;
@@ -80,10 +79,7 @@
             display: block;
         }
 
-
-        /* ================================== */
-        /* === NEW CAPTCHA MODAL STYLES === */
-        /* ================================== */
+        /* NEW CAPTCHA MODAL STYLES (Existing) */
         #captchaModalOverlay {
             position: fixed;
             top: 0;
@@ -92,7 +88,6 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             display: none;
-            /* Hidden by default */
             justify-content: center;
             align-items: center;
             z-index: 1001;
@@ -146,6 +141,124 @@
             border-color: #2ee05d;
             box-shadow: 0 0 5px rgba(46, 224, 93, 0.5);
         }
+
+        /* ADD TO CART POPUP STYLES (Existing) */
+        .cart-notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .cart-notification-box {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .cart-notification-box.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .cart-notification-box h4 {
+            color: #28a745;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-family: bold;
+        }
+
+        .cart-notification-box p {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .cart-notification-box a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f7c5c1;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: bold;
+            transition: background-color 0.2s;
+        }
+
+        .cart-notification-box a:hover {
+            background-color: #f5a9a4;
+        }
+
+        /* Cart Counter (Existing) */
+        .cart-icon-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        #cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #f7c5c1;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75em;
+            min-width: 10px;
+            text-align: center;
+            line-height: 1;
+            display: none;
+        }
+        
+        /* 🛠️ NEW STYLE: Scroll Buttons */
+        .scroll-btns {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9990;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .scroll-btn {
+            background-color: #f7c5c1; /* Theme Color */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .scroll-btn:hover {
+            background-color: #f5a9a4;
+        }
+        
+        #scrollUpBtn {
+            opacity: 0; /* Hidden by default */
+            pointer-events: none;
+        }
+        
+        #scrollUpBtn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 
@@ -158,9 +271,14 @@
                         alt="Logo">
                 </div>
                 <div class="menu-icon">
-                    <div class="naver"><a href="cart.html"><img src="images/trolley.png" alt="Cart" class="top"></a>
+                    <div class="naver">
+                        <a href="cart.html" class="cart-icon-container">
+                            <img src="images/trolley.png" alt="Cart" class="top">
+                            <span id="cart-count">0</span>
+                        </a>
                     </div>
                     <div class="naver" id="form1"><img src="images/user.png" alt="User"></div>
+    
                     <div class="naver" onclick="toggleNav()">
                         <img src="images/ui.png" alt="Menu" id="menu-icon">
                         <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
@@ -192,10 +310,12 @@
                     <i class="fab fa-facebook-f"></i> Log in With Facebook
                 </button>
                 <div class="separator">OR</div>
+    
                 <form class="login-form">
                     <input type="email" name="email" placeholder="Email Address" required>
                     <div class="password-group">
                         <input type="password" name="password" id="loginPasswordInput" placeholder="Password" required>
+            
                         <i class="far fa-eye password-toggle" data-pw-toggle role="button"
                             aria-label="Toggle password visibility"></i>
                     </div>
@@ -209,7 +329,8 @@
                     <a href="#">Terms of Service</a> apply.
                 </p>
                 <p class="register-text">
-                    Don't have an account? <a class="register-link" onclick="showView('registerView')">REGISTER</a>
+                    Don't have an account?
+                    <a class="register-link" onclick="showView('registerView')">REGISTER</a>
                 </p>
             </div>
 
@@ -227,7 +348,7 @@
                     <input type="text" name="full_name" id="registerNameInput" placeholder="Full Name" required>
                     <div id="nameError" class="error-message"></div>
 
-                    <input type="email" name="email" placeholder="Email Address" required autocomplete="off">
+                    <input type="email" name="email" placeholder="Email Address" required autocomplete="nope">
 
                     <div class="password-group">
                         <input type="password" name="password" id="registerPasswordInput" placeholder="Password"
@@ -236,6 +357,7 @@
                             aria-label="Toggle password visibility"></i>
                         </div>
 
+        
                     <div class="password-group">
                         <input type="password" name="confirm_password" id="registerConfirmPasswordInput"
                             placeholder="Confirm Password" required>
@@ -261,7 +383,8 @@
                 </form>
 
                 <p class="login-prompt">
-                    Already have an account? <a class="login-link" onclick="showView('loginView')">LOG IN</a>
+                    Already have an account?
+                    <a class="login-link" onclick="showView('loginView')">LOG IN</a>
                 </p>
 
                 <p class="terms-text">
@@ -319,8 +442,10 @@
                         </video>
                     </div>
                     <div class="pera">
-                        <p>Where every stroke of paint , beauty comes alive . Calligraphy is <br> not just writing It is
-                            harmony ,grace,and timeless expression <br> shaped into art. <br> InkByHand honors the sacred
+                        <p>Where every stroke of paint , beauty comes alive .
+                            Calligraphy is <br> not just writing It is
+                            harmony ,grace,and timeless expression <br> shaped into art.
+                            <br> InkByHand honors the sacred
                             art of Quranic calligraphy while <br> inspiring creativity in every hand that writes.</p>
                         <button>LEARN MORE</button>
                     </div>
@@ -334,7 +459,8 @@
                     <h3>Grace Flows With Every Stroke</h3>
                     <p>
                         Every letter carries a rythm , every stroke a meaning .... <br> Calligraphy transform ordinary
-                        writing into extraordinary art. We bring grace and artistry into every curve <br> and line ,
+                        writing into extraordinary art.
+                        We bring grace and artistry into every curve <br> and line ,
                         turning
                         simple letters into timeless beauty.
                     </p>
@@ -357,161 +483,161 @@
                 <h3>Purchase Artwork</h3>
             </div>
             <div class="flexbox">
-                <div class="product">
+                <div class="product" data-id="101">
                     <div class="image">
                         <img src="images/1.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Modern Calligraphy</h6>
-                        <h5>$2600.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="2600.00">$2600.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="102">
                     <div class="image">
                         <img src="images/9.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Surah Rehman</h6>
-                        <h5>$1200.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1200.00">$1200.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="103">
                     <div class="image">
                         <img src="images/2.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Surah Kausar</h6>
-                        <h5>$1600.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1600.00">$1600.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="104">
                     <div class="image">
                         <img src="images/3.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>99 Nams of Allah</h6>
-                        <h5>$2500.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="2500.00">$2500.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="105">
                     <div class="image">
                         <img src="images/4.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Surah Ad-Duha</h6>
-                        <h5>$1200</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1200.00">$1200.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="106">
                     <div class="image">
                         <img src="images/5.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Four Kul</h6>
-                        <h5>$2600.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="2600.00">$2600.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="107">
                     <div class="image">
                         <img src="images/6.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Surah Rehman</h6>
-                        <h5>$1700.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1700.00">$1700.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="108">
                     <div class="image">
                         <img src="images/7.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Ocean Paintaing</h6>
-                        <h5>$200.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="200.00">$200.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="109">
                     <div class="image">
                         <img src="images/1.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Beauty Of Quran</h6>
-                        <h5>$1400.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1400.00">$1400.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="110">
                     <div class="image">
                         <img src="images/9.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Ayat al Kursi</h6>
-                        <h5>$1400.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="1400.00">$1400.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="111">
                     <div class="image">
                         <img src="images/11.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Darood e Ibrhimi</h6>
-                        <h5>$2600.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="2600.00">$2600.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
-                <div class="product">
+                <div class="product" data-id="112">
                     <div class="image">
                         <img src="images/10.jpg" alt="">
                     </div>
                     <div class="info">
                         <h6>Kaswa Paintaing</h6>
-                        <h5>$3000.00</h5>
-                        <button>
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp; Add To Cart
+                        <h5 data-price="3000.00">$3000.00</h5>
+                        <button class="add-to-cart-btn">
+                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
+                            Add To Cart
                         </button>
                     </div>
-
                 </div>
             </div>
 
@@ -534,7 +660,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    Yes! We take custom orders for Quranic verses, names, wedding gifts, and special occasions. You can
+                    Yes! We take custom orders for Quranic verses, names, wedding gifts, and special occasions.
+                    You can
                     share
                     your idea, and we will turn it into a unique artwork.
                 </div>
@@ -566,7 +693,8 @@
                 </div>
                 <div class="jsconst" id="p1">
                     Completion time varies depending on the complexity and size of the artwork, typically ranging from 2
-                    to 4 weeks. Custom orders may take slightly longer.
+                    to 4 weeks.
+                    Custom orders may take slightly longer.
                 </div>
             </div>
             <div class="bloker">
@@ -580,7 +708,8 @@
                     </div>
                 </div>
                 <div class="jsconst" id="p1">
-                    Yes, we offer insured worldwide shipping. Shipping costs and delivery times will be calculated at
+                    Yes, we offer insured worldwide shipping.
+                    Shipping costs and delivery times will be calculated at
                     checkout based on your location.
                 </div>
             </div>
@@ -644,20 +773,38 @@
                         <li><a href=""><img src="https://www.javehandmade.store/instagram.png" class="m">
                                 instagram.com/ink_by_hand_12</a></li>
                         <li><a href=""><img src="https://www.javehandmade.store/whatsapp.png"
-                                    class="n">+92-310-7581250</a>
+                                class="n">+92-310-7581250</a>
                         </li>
 
                     </ul>
                 </div>
             </div>
             <div class="copy">
-                Copyright © 2025 inkbyhand.com | Powered by inkbyhand.com
+                Copyright © 2025 inkbyhand.com |
+                Powered by inkbyhand.com
             </div>
         </footer>
     </section>
 
+    <div class="cart-notification-overlay" id="cartNotificationOverlay">
+        <div class="cart-notification-box">
+            <h4><i class="fas fa-check-circle" style="margin-right: 8px;"></i> Item Added!</h4>
+            <p>The artwork has been successfully added to your shopping cart.</p>
+            <a href="cart.html">VIEW CART</a>
+        </div>
+    </div>
+    
+    <div class="scroll-btns">
+        <button id="scrollUpBtn" class="scroll-btn up" title="Scroll to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button id="scrollDownBtn" class="scroll-btn down" title="Scroll Down">
+            <i class="fas fa-arrow-down"></i>
+        </button>
+    </div>
+
     <script>
-        // --- CAPTCHA Data ---
+        // --- CAPTCHA Data and Logic (Existing) ---
         const CAPTCHA_IMAGES = [
             { src: 'images/1.jpg', label: 'Modern Calligraphy' },
             { src: 'images/9.jpg', label: 'Surah Rehman' },
@@ -693,13 +840,11 @@
             CAPTCHA_GRID.innerHTML = '';
             CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
 
-            // Randomly select 9 images (including the target)
             const targetImage = CAPTCHA_IMAGES.find(img => img.isTarget);
             let nonTargetImages = CAPTCHA_IMAGES.filter(img => !img.isTarget);
 
-            // Use 8 non-targets and the 1 target image
             const imagesForGrid = shuffleArray(nonTargetImages).slice(0, 8);
-            imagesForGrid.push(targetImage); // Add the target image
+            imagesForGrid.push(targetImage);
 
             const shuffledGridImages = shuffleArray(imagesForGrid);
 
@@ -724,27 +869,21 @@
 
         // 2. Handle image selection validation
         function handleImageSelection(selectedItem) {
-            // Deselect all others
             document.querySelectorAll('.captcha-image-item').forEach(item => {
                 item.classList.remove('selected');
             });
-
             selectedItem.classList.add('selected');
 
             if (selectedItem.getAttribute('data-target') === 'true') {
-                // SUCCESS: Target image (images/2.jpg) selected
                 CAPTCHA_VERIFIED_INPUT.value = 'true';
                 CAPTCHA_CHECK_DISPLAY.classList.add('checked');
                 CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'true');
                 CAPTCHA_ERROR.style.display = 'none';
-                // Delay closing the modal briefly for visual feedback
                 setTimeout(() => {
                     CAPTCHA_MODAL_OVERLAY.style.display = 'none';
                 }, 300);
-
                 CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
             } else {
-                // FAILURE
                 CAPTCHA_VERIFIED_INPUT.value = 'false';
                 CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
                 CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
@@ -753,25 +892,20 @@
             }
         }
 
-        // 3. CAPTCHA Checkbox/Label click handler
         CAPTCHA_LABEL.addEventListener('click', () => {
-            // Only show modal if CAPTCHA is not already verified
             if (CAPTCHA_VERIFIED_INPUT.value === 'false') {
-                generateCaptchaGrid(); // Generate a new challenge
+                generateCaptchaGrid();
                 CAPTCHA_MODAL_OVERLAY.style.display = 'flex';
-                CAPTCHA_ERROR.style.display = 'none'; // Clear form validation error
+                CAPTCHA_ERROR.style.display = 'none';
             }
         });
 
-        // Close CAPTCHA modal if clicking outside
         CAPTCHA_MODAL_OVERLAY.addEventListener('click', (e) => {
             if (e.target === CAPTCHA_MODAL_OVERLAY) {
                 CAPTCHA_MODAL_OVERLAY.style.display = 'none';
             }
         });
-
-
-        // --- Core Modal/Navigation Logic (Kept and Cleaned) ---
+        // --- Core Modal/Navigation Logic (Existing) ---
         let blocks = document.getElementsByClassName('block');
         let answer = document.getElementsByClassName('jsconst');
         for (let i = 0; i < blocks.length; i++) {
@@ -822,7 +956,6 @@
             openMenuIcon.style.display = navLinks.classList.contains('active') ? 'none' : 'block';
             closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
         };
-
         if (userBtn) {
             userBtn.addEventListener('click', showModal);
         }
@@ -830,20 +963,18 @@
             e.preventDefault();
             hideModal();
         });
-
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) {
                 hideModal();
             }
         });
-
         passwordToggles.forEach(icon => {
             icon.addEventListener('click', togglePassword);
         });
         modalOverlay.style.display = 'none';
 
 
-        // --- VALIDATION LOGIC FOR REGISTRATION FORM ---
+        // --- VALIDATION LOGIC FOR REGISTRATION FORM (Existing) ---
         document.addEventListener('DOMContentLoaded', () => {
             const registerForm = document.getElementById('registerForm');
             const nameInput = document.getElementById('registerNameInput');
@@ -852,22 +983,19 @@
             const passwordMatchError = document.getElementById('passwordMatchError');
             const nameError = document.getElementById('nameError');
 
-            // **NEW: Element to display password length error**
             const passwordLengthError = document.createElement('div');
             passwordLengthError.id = 'passwordLengthError';
             passwordLengthError.className = 'error-message';
-            // Insert the new error message element right after the password input (within the password-group div)
-            // Note: The structure inside .password-group is: <input>, <icon>, [passwordLengthError]. 
-            // We insert it after the icon (nextSibling)
-            passwordInput.parentNode.insertBefore(passwordLengthError, passwordInput.nextSibling.nextSibling);
 
-            // 1. Password Matching and Validation (UPDATED for Length Check)
+            if (passwordInput && passwordInput.parentNode) {
+                passwordInput.parentNode.insertBefore(passwordLengthError, passwordInput.nextSibling.nextSibling);
+            }
+
             const validatePasswordMatch = () => {
                 const password = passwordInput.value;
                 const confirmPassword = confirmPasswordInput.value;
                 let isValid = true;
 
-                // Check 1: Password Length (Min 8 characters)
                 if (password.length > 0 && password.length < 8) {
                     passwordLengthError.textContent = "Password must be at least 8 characters long.";
                     passwordInput.classList.add('input-error');
@@ -877,24 +1005,18 @@
                     passwordInput.classList.remove('input-error');
                 }
 
-                // Check 2: Password Match
                 if (confirmPassword.length > 0 && password !== confirmPassword) {
                     passwordMatchError.textContent = "Passwords do not match.";
                     confirmPasswordInput.classList.add('input-error');
-                    // Only set isValid to false if it wasn't already false from the length check
                     if (isValid) isValid = false;
                 } else if (confirmPassword.length > 0) {
-                    // Clear match error only if there's text and it matches
                     passwordMatchError.textContent = "";
                     confirmPasswordInput.classList.remove('input-error');
                 } else if (confirmPassword.length === 0) {
-                    // Clear match error if confirm is empty
                     passwordMatchError.textContent = "";
                     confirmPasswordInput.classList.remove('input-error');
                 }
 
-                // If the main password fails the length check, the match error should also be visually cleared
-                // as the user should fix the main password first.
                 if (passwordLengthError.textContent) {
                     passwordMatchError.textContent = "";
                     confirmPasswordInput.classList.remove('input-error');
@@ -902,13 +1024,12 @@
 
                 return isValid;
             };
+            if (passwordInput && confirmPasswordInput) {
+                passwordInput.addEventListener('input', validatePasswordMatch);
+                confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+            }
 
-            // Add listeners to validate instantly
-            passwordInput.addEventListener('input', validatePasswordMatch);
-            confirmPasswordInput.addEventListener('input', validatePasswordMatch);
 
-
-            // 2. Real-time Username/Full Name Validation (Prevent "admin")
             const validateName = () => {
                 const name = nameInput.value.trim();
                 const forbiddenName = "admin";
@@ -924,62 +1045,208 @@
                 }
                 return isValid;
             };
+            if (nameInput) {
+                nameInput.addEventListener('input', validateName);
+            }
 
-            nameInput.addEventListener('input', validateName);
 
+            if (registerForm) {
+                registerForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
 
-            // 3. Final Form Submission Handler
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+                    const isNameValid = validateName();
+                    const isPasswordValid = validatePasswordMatch();
+                    const isCaptchaCorrect = CAPTCHA_VERIFIED_INPUT.value === 'true';
 
-                // Run all validations on submit
-                const isNameValid = validateName();
-                const isPasswordValid = validatePasswordMatch(); // Calls match and length checks
-                const isCaptchaCorrect = CAPTCHA_VERIFIED_INPUT.value === 'true';
-
-                if (!isCaptchaCorrect) {
-                    CAPTCHA_ERROR.style.display = 'block';
-                } else {
-                    CAPTCHA_ERROR.style.display = 'none';
-                }
-
-                // Check if all major validations passed
-                if (isNameValid && isPasswordValid && isCaptchaCorrect) {
-                    // All validations passed, simulate successful submission
-                    console.log("Registration form submission successful!");
-
-                    const modalBox = document.querySelector('.modal-box');
-                    const successMessage = document.createElement('div');
-                    successMessage.textContent = "Registration successful! (Data would now be sent to the server.)";
-                    successMessage.className = 'error-message temp-message';
-                    successMessage.style.cssText = 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 10px; padding: 10px; border-radius: 5px; text-align: center;';
-
-                    const existingMessage = modalBox.querySelector('.temp-message');
-                    if (existingMessage) {
-                        modalBox.removeChild(existingMessage);
-                    }
-                    modalBox.insertBefore(successMessage, modalBox.querySelector('.modal-title').nextSibling);
-
-                    setTimeout(() => {
-                        if (modalBox.contains(successMessage)) {
-                            modalBox.removeChild(successMessage);
-                        }
-                        registerForm.reset();
-                        // Reset CAPTCHA state after submission
-                        CAPTCHA_VERIFIED_INPUT.value = 'false';
-                        CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
-                        CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
+                    if (!isCaptchaCorrect) {
+                        CAPTCHA_ERROR.style.display = 'block';
+                    } else {
                         CAPTCHA_ERROR.style.display = 'none';
+                    }
 
-                    }, 3000);
+                    if (isNameValid && isPasswordValid && isCaptchaCorrect) {
+                        console.log("Registration form submission successful!");
 
-                } else {
-                    console.log("Registration form validation failed.");
-                }
-            });
+                        const modalBox = document.querySelector('.modal-box');
+                        const successMessage = document.createElement('div');
+                        successMessage.textContent = "Registration successful! (Data would now be sent to the server.)";
+                        successMessage.className = 'error-message temp-message';
+                        successMessage.style.cssText = 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 10px; padding: 10px; border-radius: 5px; text-align: center;';
 
-            // Ensure initial view is set
+                        const existingMessage = modalBox.querySelector('.temp-message');
+                        if (existingMessage) {
+                            modalBox.removeChild(existingMessage);
+                        }
+                        modalBox.insertBefore(successMessage, modalBox.querySelector('.modal-title').nextSibling);
+                        setTimeout(() => {
+                            if (modalBox.contains(successMessage)) {
+                                modalBox.removeChild(successMessage);
+                            }
+                            registerForm.reset();
+                            CAPTCHA_VERIFIED_INPUT.value = 'false';
+                            CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
+                            CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
+                            CAPTCHA_ERROR.style.display = 'none';
+
+                        }, 3000);
+                    } else {
+                        console.log("Registration form validation failed.");
+                    }
+                });
+            }
+
             showView('loginView');
+        });
+        // ===========================================
+        // === UPDATED ADD TO CART & LOCALSTORAGE LOGIC ===
+        // ===========================================
+
+        const cartNotificationOverlay = document.getElementById('cartNotificationOverlay');
+        const cartNotificationBox = cartNotificationOverlay ? cartNotificationOverlay.querySelector('.cart-notification-box') : null;
+        const cartCountElement = document.getElementById('cart-count');
+
+        // 🛠️ NEW: Get scroll button elements
+        const scrollUpBtn = document.getElementById('scrollUpBtn');
+        const scrollDownBtn = document.getElementById('scrollDownBtn');
+
+        // Function to show the success popup
+        function showCartNotification() {
+            if (cartNotificationOverlay && cartNotificationBox) {
+                cartNotificationOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    cartNotificationBox.classList.add('show');
+                }, 10);
+                // Hide the popup automatically after 3 seconds
+                setTimeout(() => {
+                    cartNotificationBox.classList.remove('show');
+                    setTimeout(() => {
+                        cartNotificationOverlay.style.display = 'none';
+                    }, 300); // Wait for transition to finish
+                }, 3000);
+            }
+        }
+
+        // Function: Update the cart item count displayed in the header
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            // Calculate the total quantity by summing the 'qty' of all items
+            const totalItems = cart.reduce((total, item) => total + item.qty, 0);
+
+            if (cartCountElement) {
+                if (totalItems > 0) {
+                    // Display the count if there are items
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.style.display = 'block'; // Show the counter
+                } else {
+                    // Hide the counter if the cart is empty
+                    cartCountElement.style.display = 'none';
+                }
+            }
+        }
+
+        // Function to handle adding the item to the cart
+        function addToCart(e) {
+            e.preventDefault();
+            // Find the closest product container element
+            const productDiv = e.target.closest('.product');
+            if (!productDiv) return;
+
+            // Extract product details
+            const productId = productDiv.getAttribute('data-id');
+            const productTitle = productDiv.querySelector('.info h6').textContent.trim();
+            const priceElement = productDiv.querySelector('.info h5');
+            const productPrice = priceElement.getAttribute('data-price');
+            const productImage = productDiv.querySelector('.image img').getAttribute('src');
+            if (!productId || !productTitle || !productPrice || !productImage) {
+                console.error("Missing required product data attributes. Check product HTML structure.");
+                return;
+            }
+
+            // Create new item object
+            const newItem = {
+                id: productId,
+                title: productTitle,
+                price: productPrice,
+                image: productImage,
+                qty: 1,
+                selectVal: 'Original'
+            };
+            // 1. Load current cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // 2. Check if the item already exists in the cart (by ID)
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                // If it exists, just increase the quantity (optional: cap at max 5)
+                if (existingItem.qty < 5) {
+                    existingItem.qty++;
+                }
+            } else {
+                // If new, add it
+                cart.push(newItem);
+            }
+
+            // 3. Save updated cart back to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            // 4. Show confirmation popup
+            showCartNotification();
+            // 5. Update cart count after adding an item
+            updateCartCount();
+            console.log(`Product ID ${productId} added/updated in cart.`, cart);
+        }
+        
+        // ===========================================
+        // === 🛠️ NEW: PAGE SCROLLING LOGIC ===
+        // ===========================================
+        
+        // Function to scroll to the top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Function to scroll down by a calculated amount
+        function scrollToNextSection() {
+            // Scroll down by 80% of the viewport height for a noticeable jump
+            const scrollDistance = window.innerHeight * 0.8; 
+            window.scrollBy({
+                top: scrollDistance,
+                behavior: 'smooth'
+            });
+        }
+
+        // Function to show/hide the 'Scroll Up' button
+        function toggleScrollUpButton() {
+            // Show button if user has scrolled down more than 300px
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollUpBtn.classList.add('show');
+            } else {
+                scrollUpBtn.classList.remove('show');
+            }
+        }
+
+        // Attach event listeners to all components after the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Target buttons with the class 'add-to-cart-btn' (Existing)
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', addToCart);
+            });
+            // Load the current cart count when the page loads (Existing)
+            updateCartCount();
+            
+            // 🛠️ Scroll button listeners
+            if (scrollUpBtn && scrollDownBtn) {
+                scrollUpBtn.addEventListener('click', scrollToTop);
+                scrollDownBtn.addEventListener('click', scrollToNextSection);
+
+                // Attach the function to the window scroll event
+                window.addEventListener('scroll', toggleScrollUpButton);
+                // Run once on load to check initial position
+                toggleScrollUpButton(); 
+            }
         });
     </script>
     <script src="https://unpkg.com/scrollreveal"></script>
