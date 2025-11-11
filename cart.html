@@ -7,51 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="css/about.css">
+    <link rel="stylesheet" href="css/product.css">
+
+    <link rel="stylesheet" href="css/contect.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/cart.css">
-    <link rel="stylesheet" href="css/header.css">
     <title>cart</title>
+    <link rel="icon" href="/favicon.ico" />
 </head>
 
 <body>
-    <header class="inner">
-        <div class="navbar">
-            <div class="logo">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="">
-            </div>
-            <div class="menu-icon">
-                <div class="naver"><a href="cart.html"><img src="images/trolley.png" alt=""></a></div>
-                <div class="naver"><a href="form.html"><img src="images/user.png" alt=""></a></div>
-                <div class="naver" onclick="toggleNav()">
-                    <img src="images/ui.png" alt="" id="menu-icon">
-                    <img src="images/close.png" alt="" id="close-icon" style="display: none;" class="close-icon">
-                </div>
-            </div>
-
-
-            <nav id="nav-links">
-                <ul>
-                    <li><a href="cart.html">cart</a></li>
-                    <li><a href="detail.html">about</a></li>
-                    <li><a href="yiu.html">shop</a></li>
-                    <li><a href="">contact</a></li>
-                </ul>
-            </nav>
-    </header>
-     <script>
-        const navLinks = document.getElementById('nav-links');
-        function toggleNav() {
-            navLinks.classList.toggle('active');
-            const menuIcon = document.getElementById('menu-icon');
-            const closeIcon = document.getElementById('close-icon');
-            if (menuIcon.style.display === 'none') {
-                menuIcon.style.display = 'block';
-                closeIcon.style.display = 'none';
-            } else {
-                menuIcon.style.display = 'none';
-                closeIcon.style.display = 'block';
-            }
-        }
-    </script>
+   
     <section class="main-head" id="cardHead">
         <div class="container">
 
@@ -61,14 +30,13 @@
     </section>
 
     <section class="cart">
-        <div class="container" id="emptyCart" >
+        <div class="container" id="emptyCart">
             <div class="empty-cart">
                 <img src="images/shopping.png" alt="" class="empty-cart-section">
                 <h3>Your cart is currently empty.</h3>
-                <p>Before proceed to checkout you must add some products to your shopping cart. You will find a lot of
-                    interesting products on our "Shop" page.</p>
+                <p>Before proceed to checkout you must add some products to your shopping cart. You will find a lot of interesting products on our "Shop" page.</p>
                 <div class="shop-button">
-                    <a href="inkbyhand.html">return to shop</a>
+                    <a href="inkbyhand.php">return to shop</a>
                 </div>
             </div>
         </div>
@@ -81,22 +49,21 @@
                             <tr width="100%">
                                 <th width="16.66%">image</th>
                                 <th width="16.66%">products</th>
-                                <th width="16.66%">price</th>
+                                <th width="16.66%">selection </th>
                                 <th width="16.66%">quantity</th>
-                                <th width="16.66%">subtotal</th>
+                                <th width="16.66%">price</th>
                                 <th width="16.66%">remove</th>
                             </tr>
                         </thead>
-                        <tbody width="00%" id="cartBody">
-                            <tr class="cart-product-row" data-id="1">
+                        <tbody width="00%" id="cart-items">
+                            <!-- <tr class="cart-product-row" data-id="1">
                                 <td width="16.66%"><img src="images/1.jpg" alt="" class="product-image"></td>
                                 <td width="16.66%" class="product-name">product name</td>
                                 <td width="16.66%" class="product-price">500</td>
-                                <td width="16.66%"><input type="number" value="1" min="1" class="quantity-input"
-                                        max="5"></td>
+                                <td width="16.66%"><input type="number" value="1" min="1" class="quantity-input" max="5"></td>
                                 <td width="16.66%" class="sub-total">500 Rs</td>
                                 <td width="16.66%"><img src="images/close.png" class="removebtn"></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -127,28 +94,28 @@
                                         <p id="cartTotal">0 Rs</p>
                                     </th>
                                 </tr>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <p>shepping fee</p>
-                                    </td>
-                                    <td>
-                                        <p>0 Rs</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="total-row">
-                                        <h5>total</h5>
-                                    </td>
-                                    <td class="total-row">
-                                        <h5 id="totalAmount">Rs</h5>
-                                    </td>
-                                </tr>
-                            </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <p>shepping fee</p>
+                                        </td>
+                                        <td>
+                                            <p>0 Rs</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="total-row">
+                                            <h5>total</h5>
+                                        </td>
+                                        <td class="total-row">
+                                            <h5 id="totalAmount">Rs</h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </thead>
                         </table>
                         <div class="order-action">
-                            <button class="order-button">order now</button>
+                            <a href="paymant.php" class="order-button">order now</a>
                         </div>
                     </div>
 
@@ -156,44 +123,121 @@
             </div>
         </div>
     </section>
+    <div class="inner">
+        <footer>
+            <div class="align">
+                <div class="sec-1">
+                    <div class="logo">
+                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png" class="logos" alt="">
+                    </div>
+                    <div class="pera">
+                        InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and expression.
+                    </div>
+                </div>
+                <div class="sec-1">
+                    <ul>
+                        <li>
+                            Service
+                        </li>
+                        <li>
+                            <a href=""> Supply</a>
+                        </li>
+                        <li>
+                            <a href="">Communities</a>
+                        </li>
+                        <li>
+                            <a href="">Equipment</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sec-1">
+                    <ul>
+                        <li>Further Links</li>
+                        <li><a href="">Term & Condition</a></li>
+                        <li><a href="">News</a></li>
+                    </ul>
+                </div>
+                <div class="sec-1">
+                    <ul>
+                        <li>Get In Touch</li>
+                        <li>
+                            <a href=""><img src="https://www.javehandmade.store/instagram.png" class="m"> instagram.com / ink_by_hand_12
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""><img src="https://www.javehandmade.store/whatsapp.png" class="n">+92-310-7581250</a>
+                        </li>
 
+                    </ul>
+                </div>
+            </div>
+            <div class="copy">
+                Copyright © 2025 inkbyhand.com | Powered by inkbyhand.com
+            </div>
+        </footer>
+    </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const emptyCartSection = document.getElementById('emptyCart');
-            const cartBody = document.getElementById('cartBody');
-            const fullCartContent = document.getElementById('fullCartContent');
-            const cartSummarySection = document.getElementById('cartSummary');
-            const mainhead = document.getElementById('cardHead');
+        const emptyCartSection = document.getElementById('emptyCart');
+        const cartBody = document.getElementById('cartBody');
+        const fullCartContent = document.getElementById('fullCartContent');
+        const cartSummarySection = document.getElementById('cartSummary');
+        const mainhead = document.getElementById('cardHead');
+        const cartContainer = document.getElementById("cart-items");
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-            if (cartBody.children.length === 0) {
+        if (cart.length === 0) {
+            emptyCartSection.style.display = 'block';
 
-                emptyCartSection.style.display = 'block';
-
-                mainhead.style.display = 'none';
-
-
-                fullCartContent.style.display = 'none';
+            mainhead.style.display = 'none';
 
 
-                cartSummarySection.style.display = 'none';
-
-            } else {
-
-                emptyCartSection.style.display = 'none';
+            fullCartContent.style.display = 'none';
 
 
-                fullCartContent.style.display = 'block';
+            cartSummarySection.style.display = 'none';
+
+        } else {
+
+            emptyCartSection.style.display = 'none';
 
 
-                 mainhead.style.display = 'block';
+            fullCartContent.style.display = 'block';
 
-                cartSummarySection.style.display = 'block';
 
-            }
+            mainhead.style.display = 'block';
 
-        });
-      
+            cartSummarySection.style.display = 'block';
+           
+             
+           
+            cartContainer.innerHTML = cart.map(item => `
+   
+                            <tr class="cart-product-row" data-id="1" id="cartrow">
+                                <td width="16.66%"><img src="${item.image}" alt="${item.title}" class="product-image"></td>
+                                <td width="16.66%" class="product-name">${item.title}</td>
+                                 <td width="16.66%" class="sub-total">${item.selectVal}</td>
+                                <td width="16.66%"><input type="number" value="${item.qty}" min="1" class="quantity-input" max="5" id="inprice" readonly></td>
+                               <td width="16.66%" class="product-price">${item.price}</td>
+                                <td width="16.66%" id= "clear-cart"><img src="images/close.png" class="removebtn"></td>
+                            </tr> 
+  `).join("");
+        }
+         
+
+        let cartrow = document.getElementsByClassName("removebtn");
+
+        for (let index = 0; index < cart.length; index++) {
+            cartrow[index].addEventListener("click", () => {
+                cart.splice(index, 1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                location.reload();
+            });
+        }
     </script>
+
+    <script src="js/site-features.js"></script>
+
+
 </body>
 
 </html>

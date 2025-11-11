@@ -216,7 +216,7 @@ img {
 
 .inner .grid .images {
     width: 30%;
-    height: html3px;
+    height: 333px;
 }
 
 .inner .flexbox {
@@ -754,3 +754,6 @@ RESPONSIVENESS (Media Queries)
     width: auto;
   }
 }
+    .inner header{
+      margin: 0 10px;
+    }
