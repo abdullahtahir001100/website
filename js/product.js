@@ -17,7 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
             "orientation": "square",
             "palette": "monochromatic",
             "color": "black white",
-            "smallImages": [],
+           "smallImages": [
+                        "https://res.cloudinary.com/dwnnadeb0/image/upload/v1757088860/products/1757088860744-Gemini_Generated_Image_wps1hjwps1hjwps1.png.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/5d26c8/6409880809/il_1588xN.6409880809_kgs9.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/33c0a6/6361801646/il_1588xN.6361801646_kjsj.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/3e87a0/6409880785/il_1588xN.6409880785_jv12.jpg"
+                    ],
             "descriptionText": "A meticulous abstract drawing using sumi ink.",
             "artistBioText": "Tanaka is a Tokyo-based artist focused on line and space."
         },
@@ -38,7 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
             "orientation": "square",
             "palette": "cool",
             "color": "blue white grey",
-            "smallImages": [],
+            "smallImages": [
+                        "https://res.cloudinary.com/dwnnadeb0/image/upload/v1757088860/products/1757088860744-Gemini_Generated_Image_wps1hjwps1hjwps1.png.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/5d26c8/6409880809/il_1588xN.6409880809_kgs9.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/33c0a6/6361801646/il_1588xN.6361801646_kjsj.jpg",
+                        "https://i.etsystatic.com/42536102/r/il/3e87a0/6409880785/il_1588xN.6409880785_jv12.jpg"
+                    ],
             "descriptionText": "Al-Quran Calligraphy is a sacred form of Islamic art.",
             "artistBioText": "Areeba's work focuses on spiritual Arabic script."
         },
@@ -176,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ... (Card creation logic is unchanged)
         const cardLink = document.createElement('a');
         cardLink.classList.add('art-card');
-        cardLink.href = `detail.php?id=${product.id}`; 
+        cardLink.href = `detail.html?id=${product.id}`; 
         cardLink.setAttribute('aria-label', product.title || 'art item');
 
         cardLink.addEventListener('click', () => {

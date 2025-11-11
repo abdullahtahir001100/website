@@ -25,7 +25,7 @@
                     <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo">
                 </div>
                 <div class="menu-icon">
-                    <div class="naver"><a href="cart.php"><img src="images/trolley.png" alt="Cart" class="top"></a></div>
+                    <div class="naver"><a href="cart.html"><img src="images/trolley.png" alt="Cart" class="top"></a></div>
                     <div class="naver" id="form1"><img src="images/user.png" alt="User"></div>
                     <div class="naver" onclick="toggleNav()">
                         <img src="images/ui.png" alt="Menu" id="menu-icon">
@@ -36,10 +36,10 @@
                 <nav id="nav-links">
                     <ul>
                         <li><a href="/">home</a></li>
-                        <li><a href="about.php">about</a></li>
-                        <li><a href="product.php">shop</a></li>
-                        <li><a href="contect.php">contact</a></li>
-                        <li><a href="logout.php">Log Out</a></li>
+                        <li><a href="about.html">about</a></li>
+                        <li><a href="product.html">shop</a></li>
+                        <li><a href="contect.html">contact</a></li>
+                        <li><a href="logout.html">Log Out</a></li>
                     </ul>
                 </nav>
             </div>
@@ -552,7 +552,7 @@
             closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
         };
 
-        // Check if userBtn exists before adding listener, as it's the element that was conditionally rendered by PHP
+        // Check if userBtn exists before adding listener, as it's the element that was conditionally rendered by html
         if (userBtn) {
             userBtn.addEventListener('click', showModal);
         }
