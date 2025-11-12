@@ -7,20 +7,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
-    <link rel="stylesheet" href="css/about.css">
-    <link rel="stylesheet" href="css/product.css">
+    
 
-    <link rel="stylesheet" href="css/contect.css">
+    
     <link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/cart.css">
     <title>cart</title>
     <link rel="icon" href="images/logo.jpg" />
 </head>
 
 <body>
-   
+    <header class="inner">
+            <div class="navbar">
+                <div class="logo">
+                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
+                        alt="Logo">
+                </div>
+                <div class="menu-icon">
+                    <div class="naver">
+                        <a href="cart.html" class="cart-icon-container">
+                            <img src="images/trolley.png" alt="Cart" class="top">
+                            <span id="cart-count">0</span>
+                        </a>
+                    </div>
+                   
+    
+                    <div class="naver" onclick="toggleNav()">
+                        <img src="images/ui.png" alt="Menu" id="menu-icon">
+                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
+                            class="close-icon">
+                    </div>
+                </div>
+
+                <nav id="nav-links">
+                    <ul>
+                        <li><a href="/">home</a></li>
+                        <li><a href="about.html">about</a></li>
+                        <li><a href="product.html">shop</a></li>
+                        <li><a href="contect.html">contact</a></li>
+                        <li><a href="logout.html">Log Out</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
     <section class="main-head" id="cardHead">
         <div class="container">
 

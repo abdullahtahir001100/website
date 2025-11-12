@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - Professional (Urdu Enhanced)</title>
+    <!-- Roboto Font -->
+   <link rel="stylesheet" href="css/paymant.css">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Font Awesome for Search Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+  
+    <!-- Leaflet JS for Map -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+    <div class="checkout-container">
+        
+        <div class="checkout-form-area">
+            
+            <!-- Added validation handling on submit -->
+            <form id="checkoutForm" onsubmit="return validateAndSubmit(event);">
+            
+                <section class="section-card">
+                    <h2>1. Contact Information</h2>
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" placeholder="Muhammad Ali" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <!-- Updated HTML structure for prefix -->
+                            <div class="phone-input-group">
+                                <span class="phone-prefix">+92</span>
+                                <!-- Changed pattern validation to be handled by JS for more flexible error messages -->
+                                <input type="tel" id="phone" placeholder="e.g., 3XXXXXXXXX (10 digits)" required maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="example@domain.com" required>
+                    </div>
+                </section>
+                
+                <section class="section-card">
+                    <h2>2. Delivery & Location</h2>
+
+                    <div class="form-group">
+                        <label for="address-search-input">Search or Select Location on Map</label>
+                        <div class="address-search-group">
+                            <input type="text" id="address-search-input" placeholder="Start typing address or click map">
+                            <button type="button" class="search-icon-btn" id="search-location-btn" aria-label="Search Address">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div id="map-display"></div>
+                        <p style="font-size: 0.85rem; color: var(--color-light-text); margin-top: 5px;">
+                            The pin indicates the selected location. Click on the map to place the pin precisely.
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full-address">1. Street Address (House No., Block, Street)</label>
+                        <input type="text" id="full-address" placeholder="e.g., House 4, Street 7, Gulberg Area" required>
+                    </div>
+
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label for="city">2. City</label>
+                            <!-- UPDATED: Changed from select to input to allow map-selected cities -->
+                            <input type="text" id="city" placeholder="e.g., Lahore" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="province">3. Province/State</label>
+                            <input type="text" id="province" placeholder="e.g., Punjab" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Special Instructions (Optional)</label>
+                        <textarea id="notes" placeholder="Notes for delivery rider, e.g., 'Delivery after 5 PM only.'"></textarea>
+                    </div>
+                </section>
+
+                <section class="section-card">
+                    <h2>3. Select Payment Method</h2>
+                    
+                    <div class="payment-methods-list">
+                        
+                        <label class="payment-option is-checked">
+                            <input type="radio" name="payment_method" value="card" onchange="showPaymentDetails(this.value)" checked>
+                            <div class="option-content">
+                                <span class="icon">💳</span>
+                                <span>Credit/Debit Card (Visa, Mastercard)</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="easypaisa" onchange="showPaymentDetails(this.value)">
+                            <div class="option-content">
+                                <span class="icon">📱</span>
+                                <span>EasyPaisa / JazzCash (Mobile Wallet)</span>
+                            </div>
+                        </label>
+                        
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="cod" onchange="showPaymentDetails(this.value)">
+                            <div class="option-content">
+                                <span class="icon">💵</span>
+                                <span>Cash on Delivery (COD)</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="bank" onchange="showPaymentDetails(this.value)">
+                            <div class="option-content">
+                                <span class="icon">🏦</span>
+                                <span>Bank Transfer / IBAN</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="payment-details">
+                    </div>
+                </section>
+                
+            </form>
+            
+        </div>
+        
+        <div class="summary-wrapper">
+            <section class="summary-section">
+                <h2>Order Summary</h2>
+                
+                <div id="product-list-container">
+                    </div>
+                <div class="summary-item">
+                    <span>Product Subtotal (<span id="item-count">0</span> Items)</span>
+                    <strong id="subtotal-amount">PKR 0</strong>
+                </div>
+                
+                <div class="summary-item">
+                    <span>
+                        <a href="#" class="promo-code-link" onclick="togglePromoCode(event)">Discount (Promo Code)</a>
+                    </span>
+                    <strong id="discount-amount" style="color: blue;">-PKR 0</strong>
+                </div>
+
+                <div id="promo-code-area">
+                    <div>
+                        <input type="text" id="promo-code-input" placeholder="Enter Code">
+                        <button type="button" onclick="applyPromoCode()">Apply</button>
+                    </div>
+                    <p id="promo-message" class="promo-message-style promo-message-default"></p>
+                </div>
+                
+                <div class="summary-item">
+                    <span>Shipping Fee</span>
+                    <strong id="shipping-amount">PKR 250</strong>
+                </div>
+                
+                <div class="summary-item summary-total">
+                    <span>Total Payable Amount</span>
+                    <strong id="total-payable">PKR 0</strong> 
+                </div>
+                
+                <button type="submit" form="checkoutForm" class="btn-submit" id="final-pay-button">
+                    Complete Order & Pay PKR 0
+                </button>
+                
+                <p class="security-note">
+                    Your payment information is secured.
+                </p>
+            </section>
+        </div>
+        
+    </div>
+    
+    <script>
+        // ----------------------------------------------------------------------------------
+        // --- Custom Alert/Modal for non-iframe compatibility (replaces window.alert) ---
+        // ----------------------------------------------------------------------------------
+
+        function showMessageBox(message, type = 'default') {
+            const container = document.createElement('div');
+            container.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 1000;
+            `;
+            const box = document.createElement('div');
+            let color = '#333';
+            if (type === 'success') color = 'var(--color-success)';
+            if (type === 'error') color = 'var(--color-error)';
+            if (type === 'warning') color = 'var(--color-warning)';
+
+            box.style.cssText = `
+                background: white; padding: 25px; border-radius: 8px; max-width: 400px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center;
+                border-top: 5px solid ${color};
+            `;
+            box.innerHTML = `
+                <p style="font-size: 1.1rem; margin-bottom: 20px;">${message}</p>
+                <button onclick="this.parentNode.parentNode.remove()" style="
+                    background-color: ${color}; color: white; padding: 10px 20px; 
+                    border: none; border-radius: 4px; cursor: pointer; font-weight: 500;
+                ">OK</button>
+            `;
+            container.appendChild(box);
+            document.body.appendChild(container);
+        }
+
+        // ----------------------------------------------------------------------------------
+        // --- GLOBAL FORM VALIDATION ---
+        // ----------------------------------------------------------------------------------
+        function validateAndSubmit(event) {
+            // 1. Validate Phone Number (Contact Info)
+            const phoneInput = document.getElementById('phone');
+            const phoneValue = phoneInput.value.trim();
+            if (phoneValue.length !== 10 || !/^\d{10}$/.test(phoneValue)) {
+                showMessageBox("Please enter a valid 10-digit phone number (excluding the '+92' prefix).", 'error');
+                phoneInput.focus();
+                event.preventDefault();
+                return false;
+            }
+
+            // 2. Validate Payment Details if not COD/Bank
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            
+            if (selectedMethod === 'card') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const expiry = document.getElementById('expiry').value;
+                const cvv = document.getElementById('cvv').value;
+
+                if (cardNumber.length !== 16) {
+                    showMessageBox("Please enter a complete 16-digit Card Number.", 'error');
+                    document.getElementById('card-number').focus();
+                    event.preventDefault();
+                    return false;
+                }
+                if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+                    showMessageBox("Please enter a valid Expiry Date in MM/YY format.", 'error');
+                    document.getElementById('expiry').focus();
+                    event.preventDefault();
+                    return false;
+                }
+                if (cvv.length !== 3) {
+                    showMessageBox("Please enter a valid 3-digit CVV.", 'error');
+                    document.getElementById('cvv').focus();
+                    event.preventDefault();
+                    return false;
+                }
+            } else if (selectedMethod === 'easypaisa') {
+                const mobileNo = document.getElementById('mobile-no').value.trim();
+                if (mobileNo.length !== 11 || !/^\d{11}$/.test(mobileNo)) {
+                    showMessageBox("Please enter a valid 11-digit EasyPaisa/JazzCash Mobile Account Number (e.g., 03XX XXXXXXX).", 'error');
+                    document.getElementById('mobile-no').focus();
+                    event.preventDefault();
+                    return false;
+                }
+            }
+
+            // If all checks pass, show confirmation and prevent actual form submission
+            showMessageBox('Order Placed Successfully! (Simulated)', 'success');
+            event.preventDefault();
+            return false;
+        }
+
+        // ----------------------------------------------------------------------------------
+        // --- MAP INTEGRATION AND LOCATION LOGIC ---
+        // ----------------------------------------------------------------------------------
+        let map;
+        let marker;
+        const initialLat = 31.5497; // Default: Lahore, Pakistan
+        const initialLng = 74.3436;
+        let selectedLat = initialLat;
+        let selectedLng = initialLng;
+
+        function initializeMap() {
+            try {
+                map = L.map('map-display').setView([initialLat, initialLng], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+
+                map.on('click', (e) => updateLocation(e.latlng.lat, e.latlng.lng, true));
+                marker.on('dragend', (e) => {
+                    const latlng = marker.getLatLng();
+                    updateLocation(latlng.lat, latlng.lng, true);
+                });
+
+                document.getElementById('search-location-btn').addEventListener('click', searchAddress);
+                document.getElementById('address-search-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); 
+                        searchAddress();
+                    }
+                });
+
+                // Initial reverse geocode to populate fields
+                reverseGeocode(initialLat, initialLng);
+
+            } catch (error) {
+                document.getElementById('map-display').innerHTML = '<p style="text-align: center; color: var(--color-error); padding: 50px;">Map failed to load. Please check your network connection.</p>';
+                console.error("Map Initialization Error:", error);
+            }
+        }
+
+        function updateLocation(lat, lng, shouldReverseGeocode = false) {
+            selectedLat = lat;
+            selectedLng = lng;
+            
+            map.setView([lat, lng], map.getZoom() > 14 ? map.getZoom() : 14);
+            marker.setLatLng([lat, lng]);
+
+            if (shouldReverseGeocode) {
+                reverseGeocode(lat, lng);
+            }
+        }
+
+        // --- Nominatim Reverse Geocoding ---
+        async function reverseGeocode(lat, lng) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data && data.address) {
+                    const address = data.address;
+                    
+                    const streetAddress = `${address.building || address.house_number || ''} ${address.road || address.neighbourhood || ''}`.trim();
+
+                    // UPDATED: City field will accept any text from the map
+                    const city = address.city || address.town || address.village || address.county || '';
+                    
+                    const state = address.state || '';
+
+                    // Update Form Fields
+                    document.getElementById('address-search-input').value = data.display_name || 'Location Selected';
+                    document.getElementById('full-address').value = streetAddress; 
+                    document.getElementById('city').value = city; // Now an input, so it accepts any value
+                    document.getElementById('province').value = state; 
+
+                } else {
+                    console.log('No detailed address found for this location.');
+                }
+            } catch (error) {
+                console.error('Reverse Geocoding Error:', error);
+            }
+        }
+
+        // --- Nominatim Forward Geocoding (Search) ---
+        async function searchAddress() {
+            const query = document.getElementById('address-search-input').value.trim();
+            if (!query) {
+                showMessageBox('Please enter an address to search.', 'warning');
+                return;
+            }
+
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+            
+            try {
+                const response = await fetch(url);
+                const results = await response.json();
+
+                if (results.length > 0) {
+                    const result = results[0];
+                    const lat = parseFloat(result.lat);
+                    const lon = parseFloat(result.lon);
+                    
+                    updateLocation(lat, lon, true);
+                    showMessageBox(`Search successful. Location moved to: ${result.display_name}`, 'success');
+                } else {
+                    showMessageBox(`No results found for "${query}". Try a different search term.`, 'error');
+                }
+            } catch (error) {
+                console.error('Forward Geocoding Error:', error);
+                showMessageBox('Could not connect to search service.', 'error');
+            }
+        }
+        
+        // ----------------------------------------------------------------------------------
+        // --- INPUT FORMATTING AND VALIDATION HELPERS ---
+        // ----------------------------------------------------------------------------------
+
+        // Card Number Formatting
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            value = value.substring(0, 16); // Limit to 16 characters
+            
+            // Insert space every 4 digits
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || '';
+            input.value = formatted;
+        }
+
+        // Expiry Date Formatting
+        function formatExpiryDate(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            value = value.substring(0, 4); // MMYY
+            
+            if (value.length >= 3) {
+                // Insert slash after 2 digits
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            input.value = value;
+        }
+
+        // CVV Validation
+        function validateCVV(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            value = value.substring(0, 3); // Limit to 3 characters
+            input.value = value;
+        }
+
+        // Mobile Wallet Validation (11 digits)
+        function validateMobileWallet(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            value = value.substring(0, 11); // Limit to 11 characters
+            input.value = value;
+        }
+
+        // ----------------------------------------------------------------------------------
+        // --- BASE FUNCTIONS (PRODUCT, PROMO, PAYMENT) ---
+        // ----------------------------------------------------------------------------------
+        
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const PRODUCTS = cart;
+        let BASE_SUBTOTAL = PRODUCTS.reduce((sum, p) => sum + (p.price * p.qty), 0);
+        const BASE_SHIPPING = 250;
+        
+        if (PRODUCTS.length === 0) {
+            console.warn("Cart is empty. Checkout functionality is limited.");
+        }
+
+        function updatePromoMessage(messageText, type) {
+            const message = document.getElementById('promo-message');
+            message.textContent = messageText;
+            message.className = 'promo-message-style'; 
+            if (type === 'success') {
+                message.classList.add('promo-message-success');
+            } else if (type === 'error') {
+                message.classList.add('promo-message-error');
+            } else {
+                 message.classList.add('promo-message-default');
+            }
+        }
+
+        function togglePromoCode(event) {
+            event.preventDefault(); 
+            const area = document.getElementById('promo-code-area');
+            area.style.display = area.style.display === 'block' ? 'none' : 'block'; 
+            if (area.style.display === 'block') { 
+                document.getElementById('promo-code-input').focus();
+            }
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promo-code-input').value.trim().toUpperCase();
+            const discountAmountElement = document.getElementById('discount-amount');
+            const shippingAmountElement = document.getElementById('shipping-amount');
+            
+            let discount = 0;
+            let finalShipping = BASE_SHIPPING;
+
+            if (input === 'SAVE1000') {
+                discount = 1000;
+                updatePromoMessage('✅ Success! PKR 1,000 discount applied!', 'success');
+            } else if (input === 'FREESHIP') {
+                finalShipping = 0;
+                updatePromoMessage('✅ Success! Free Shipping applied!', 'success'); 
+            } else if (input !== '') {
+                discount = 0;
+                finalShipping = BASE_SHIPPING;
+                updatePromoMessage('❌ Invalid promo code. Please try again.', 'error');
+            } else {
+                discount = 0; 
+                finalShipping = BASE_SHIPPING;
+                updatePromoMessage('', 'default');
+            }
+
+            const totalDiscountForCalculation = discount; 
+            const finalTotal = BASE_SUBTOTAL + finalShipping - totalDiscountForCalculation; 
+            const totalDisplayDiscount = (input === 'FREESHIP') ? BASE_SHIPPING : discount;
+
+            shippingAmountElement.textContent = finalShipping === 0 ? 'FREE' : `PKR ${finalShipping.toLocaleString()}`;
+            shippingAmountElement.style.color = finalShipping === 0 ? 'var(--color-success)' : 'var(--color-text)';
+            
+            discountAmountElement.textContent = `-PKR ${totalDisplayDiscount.toLocaleString()}`;
+            discountAmountElement.style.color = totalDisplayDiscount > 0 ? 'var(--color-success)' : 'blue';
+            
+            document.getElementById('total-payable').textContent = `PKR ${finalTotal.toLocaleString()}`;
+            document.getElementById('final-pay-button').textContent = `Complete Order & Pay PKR ${finalTotal.toLocaleString()}`;
+            
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            showPaymentDetails(selectedMethod);
+        }
+
+        function renderProductList() {
+            const container = document.getElementById('product-list-container');
+            let content = '';
+            
+            PRODUCTS.forEach(product => {
+                const totalProductPrice = product.price * product.qty;
+                content += `
+                    <div class="product-item">
+                        <div class="product-item-details">
+                            <img src="${product.image || 'https://via.placeholder.com/40'}" alt="${product.title}" onerror="this.onerror=null; this.src='https://placehold.co/40x40/ccc/fff?text=No+Img';">
+                            <div>
+                                <span class="product-name">${product.title} (x${product.qty})</span>
+                                <span class="product-variant">${product.selectVal || 'N/A'}</span> 
+                            </div>
+                        </div>
+                        <span class="product-price">PKR ${totalProductPrice.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            if (PRODUCTS.length === 0) {
+                 content = '<p style="text-align: center; color: var(--color-light-text); padding: 10px;">Your cart is empty. Please add items to proceed.</p>';
+            }
+
+            container.innerHTML = content;
+            document.getElementById('item-count').textContent = PRODUCTS.reduce((sum, p) => sum + p.qty, 0);
+            document.getElementById('subtotal-amount').textContent = `PKR ${BASE_SUBTOTAL.toLocaleString()}`;
+        }
+
+        function showPaymentDetails(method) {
+            const detailsDiv = document.getElementById('payment-details');
+            let content = '';
+            
+            const currentTotal = document.getElementById('total-payable').textContent;
+
+            if (method === 'card') {
+                content = `
+                    <p class="payment-info-text">
+                        Please enter your card details below to complete the secure payment.
+                    </p>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required maxlength="19" oninput="formatCardNumber(this)">
+                    </div>
+                    <div class="flex-row-gap-10">
+                        <div class="form-group flex-2-col">
+                            <label for="expiry">Expiry (MM/YY)</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" required maxlength="5" oninput="formatExpiryDate(this)">
+                        </div>
+                        <div class="form-group flex-1-col">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="XXX" required maxlength="3" oninput="validateCVV(this)">
+                        </div>
+                    </div>
+                `;
+            } else if (method === 'easypaisa') {
+                content = `
+                    <p class="payment-highlight-text">
+                        Complete your payment through EasyPaisa or JazzCash Mobile App.
+                    </p>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="mobile-no">Mobile Account Number (11 digits)</label>
+                        <input type="tel" id="mobile-no" placeholder="03XXXXXXXXX" required maxlength="11" oninput="validateMobileWallet(this)">
+                    </div>
+                    <p class="payment-warning-text">
+                        You will receive a one-time password (OTP) on your mobile number to confirm the transaction.
+                    </p>
+                `;
+            } else if (method === 'cod') {
+                content = `
+                    <p class="cod-highlight">
+                        You have selected Cash on Delivery.
+                    </p>
+                    <p class="payment-info-text">
+                        Please ensure you have the exact amount ready (<span id="cod-amount" style="font-weight: 700;">${currentTotal}</span>) when the delivery rider arrives.
+                    </p>
+                `;
+            } else if (method === 'bank') {
+                content = `
+                    <p class="payment-highlight-text">
+                        Transfer the total amount to the account below (requires manual confirmation).
+                    </p>
+                    <div class="bank-details-box">
+                    
+                        Comming soon...
+                    </div>
+                `;
+            }
+            
+            detailsDiv.innerHTML = content;
+            
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('is-checked');
+            });
+            const radio = document.querySelector('input[name="payment_method"][value="' + method + '"]');
+            if (radio) {
+                radio.parentElement.classList.add('is-checked');
+            }
+        }
+        
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProductList();
+            initializeMap();
+            applyPromoCode(); 
+            const initialPaymentMethod = document.querySelector('input[name="payment_method"]:checked') 
+                                        ? document.querySelector('input[name="payment_method"]:checked').value 
+                                        : 'card';
+            showPaymentDetails(initialPaymentMethod);
+        });
+    </script>
+    
+</body>
+</html>
