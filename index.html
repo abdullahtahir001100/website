@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INKBYHAND - Home</title>
-    <link rel="icon" href="images/logo.jpg" />
+    <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
@@ -260,28 +260,104 @@
             pointer-events: auto;
         }
         
-        /* ================================== */
-        /* === 🛠️ NEW STYLE: IMAGE HOVER ZOOM === */
-        /* ================================== */
-
+        /* Image Hover Zoom (Existing) */
         .product .image {
-            /* This is the container for the image. Crucial for clipping the zoom. */
             overflow: hidden;
             position: relative;
         }
 
         .product .image img {
-            /* Apply smooth transition to the image itself */
             transition: transform 0.4s ease-in-out;
-            /* Ensure image fills the container */
             width: 100%;
             height: auto;
             display: block;
         }
 
         .product:hover .image img {
-            /* Zoom the image on hovering over the whole product card */
             transform: scale(1.1);
+        }
+        
+        /* ================================== */
+        /* === UPDATED: RIGHT ADVERTISEMENT POPUP === */
+        /* ================================== */
+        .ad-popup {
+            position: fixed;
+            bottom: 100px; 
+            right: 20px;
+            width: 200px; 
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            z-index: 9995; 
+            overflow: hidden;
+            display: none; 
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateX(100%); 
+            opacity: 0;
+        }
+
+        .ad-popup.show {
+            transform: translateX(0); 
+            opacity: 1;
+        }
+        
+        /* Wrapper to contain image and overlay text */
+        .ad-content-wrapper {
+            position: relative;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .ad-popup .ad-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px; 
+        }
+        
+        /* NEW: Text Overlay Style */
+        .ad-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff; /* White text color */
+            font-family: bold, sans-serif;
+            font-size: 1.2em;
+            text-align: center;
+            
+            background: rgba(247, 197, 193, 0.75); /* Semi-transparent background matching theme color */
+            border-radius: 5px;
+            max-width: 80%;
+            line-height: 1.2;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); /* Shadow for better readability */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+
+        .ad-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            text-align: center;
+            padding: 0;
+            z-index: 9996;
+            transition: background 0.2s;
+        }
+
+        .ad-close-btn:hover {
+            background: #f5a9a4; 
+            color: white;
         }
     </style>
 </head>
@@ -827,6 +903,20 @@
         </button>
     </div>
 
+    <div class="ad-popup" id="rightAdPopup">
+        <button class="ad-close-btn" id="adCloseBtn">&times;</button>
+        <a href="product.html" target="_blank" title="Check out our latest offer">
+            <div class="ad-content-wrapper">
+                <img src="images/3.jpg" alt="Special Offer Advertisement" class="ad-image">
+                <div class="ad-text">
+                    Limited Time Offer!
+                    <br>
+                    Save 20%
+                </div>
+            </div>
+        </a>
+    </div>
+
     <script>
         // --- CAPTCHA Data and Logic (Existing) ---
         const CAPTCHA_IMAGES = [
@@ -1130,6 +1220,11 @@
         const cartCountElement = document.getElementById('cart-count');
         const scrollUpBtn = document.getElementById('scrollUpBtn');
         const scrollDownBtn = document.getElementById('scrollDownBtn');
+        
+        // ADVERTISEMENT ELEMENTS
+        const rightAdPopup = document.getElementById('rightAdPopup');
+        const adCloseBtn = document.getElementById('adCloseBtn');
+
 
         // Function to show the success popup
         function showCartNotification() {
@@ -1249,7 +1344,50 @@
             }
         }
 
-        // Attach event listeners to all components after the DOM is ready
+        // ===========================================
+        // === UPDATED: ADVERTISEMENT POPUP LOGIC (Prevents Re-show if already visible) ===
+        // ===========================================
+        
+        function showAdPopup() {
+            if (!rightAdPopup) return; 
+
+            // Check if ad is already visible (display: block AND has 'show' class for transition)
+            if (rightAdPopup.classList.contains('show') && rightAdPopup.style.display !== 'none') {
+                console.log("Ad already visible. Skipping re-display.");
+                // Set the next timer to re-check after 5 seconds
+                setTimeout(showAdPopup, 5000);
+                return; 
+            }
+
+            // If not visible, show it
+            rightAdPopup.style.display = 'block';
+            setTimeout(() => {
+                rightAdPopup.classList.add('show');
+            }, 50);
+
+            // Set the next timer to re-check after 5 seconds
+            setTimeout(showAdPopup, 5000); 
+        }
+
+        function hideAdPopup() {
+            if (rightAdPopup) {
+                rightAdPopup.classList.remove('show');
+                // Wait for the transition to finish before hiding display
+                setTimeout(() => {
+                    rightAdPopup.style.display = 'none';
+                    // Immediately set a new timer so it reappears after 5 seconds
+                    // if the user closes it manually.
+                    setTimeout(showAdPopup, 5000); 
+                }, 300);
+            }
+        }
+        
+        // Attach close event listener
+        if (adCloseBtn) {
+            adCloseBtn.addEventListener('click', hideAdPopup);
+        }
+        
+        // --- Initialization on Load ---
         document.addEventListener('DOMContentLoaded', () => {
             // Target buttons with the class 'add-to-cart-btn'
             const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
@@ -1263,12 +1401,12 @@
             if (scrollUpBtn && scrollDownBtn) {
                 scrollUpBtn.addEventListener('click', scrollToTop);
                 scrollDownBtn.addEventListener('click', scrollToNextSection);
-
-                // Attach the function to the window scroll event
                 window.addEventListener('scroll', toggleScrollUpButton);
-                // Run once on load to check initial position
-                toggleScrollUpButton(); 
+                toggleScrollUpButton(); // Run once on load to check initial position
             }
+            
+            // Start the advertising loop 5 seconds after the page loads
+            setTimeout(showAdPopup, 3000); 
         });
     </script>
     <script src="https://unpkg.com/scrollreveal"></script>
