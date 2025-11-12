@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Analytics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Variables and Global Styles --- */
+        :root {
+            --color-primary: #3b82f6; /* Blue */
+            --color-secondary: #22c55e; /* Green */
+            --color-danger: #ef4444; /* Red */
+            --color-warning: #f59e0b; /* Amber/Orange */
+            --color-background: #f4f7f9;
+            --color-card-bg: #ffffff;
+            --color-text-dark: #1f2937;
+            --color-text-light: #6b7280;
+            --color-table-header: #f9fafb;
+            --color-progress-blue-bg: #bfdbfe;
+            --color-progress-red-bg: #fee2e2;
+            --color-progress-green-bg: #d1fae5;
+            --color-chart-gray: #d1d5db; /* Gray-300 */
+            --border-radius: 12px;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-background);
+            padding: 30px;
+            color: var(--color-text-dark);
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        /* --- General Utilities --- */
+        .text-blue { color: var(--color-primary); }
+        .text-green { color: var(--color-secondary); }
+        .text-light { color: var(--color-text-light); }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: 0.75rem; }
+        .text-base { font-size: 0.9rem; }
+        .text-lg { font-size: 1.2rem; }
+
+        /* Margin/Padding utilities */
+        .mb-5 { margin-bottom: 5px; }
+        .mb-10 { margin-bottom: 10px; }
+        .mb-15 { margin-bottom: 15px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mb-25 { margin-bottom: 25px; }
+        .mt-5 { margin-top: 5px; }
+        .mt-10 { margin-top: 10px; }
+        .pt-10 { padding-top: 10px; }
+        .pt-15 { padding-top: 15px; }
+        .px-10 { padding-left: 10px; padding-right: 10px; }
+        .mt-25 { margin-top: 25px; }
+
+        /* Width utilities for table/list columns */
+        .w-25 { width: 25%; }
+        .w-15 { width: 15%; }
+        .w-30 { width: 30%; }
+        .w-20 { width: 20%; }
+        .w-50 { width: 50%; }
+
+
+        /* --- Grid Layouts (Responsive) --- */
+
+        .grid-container {
+            display: grid;
+            gap: 25px;
+            /* Default: Single column for mobile */
+            grid-template-columns: 1fr;
+        }
+
+        /* Stats Row: 2 columns on medium screens, 4 on large */
+        .stats-grid {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            /* Layout classes for main content grid */
+            .main-content-grid {
+                grid-template-columns: repeat(12, 1fr);
+            }
+            .chart-main { grid-column: span 8 / span 8; }
+            .right-sidebar-group { grid-column: span 4 / span 4; }
+            .traffic-source { grid-column: span 4 / span 4; }
+            .sales-countries { grid-column: span 4 / span 4; }
+            .top-session { grid-column: span 4 / span 4; }
+            .campaign-table { grid-column: span 7 / span 7; }
+            .leads-pages-group { grid-column: span 5 / span 5; }
+        }
+
+        /* Nested grid for right sidebar/bottom right cards */
+        .right-sidebar-group, .leads-pages-group {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: 1fr; /* Default: stack vertically */
+        }
+
+        /* --- Card Styles --- */
+
+        .card {
+            background-color: var(--color-card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            padding: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        /* Card 2B specific adjustments */
+        .card-title.no-border {
+            border-bottom: none; 
+            padding-bottom: 0; 
+            margin-bottom: 0;
+        }
+
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text-dark);
+            margin-top: 5px;
+        }
+
+        .card-value-small {
+            font-size: 1.7rem;
+        }
+
+        .card-label {
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            margin-bottom: 5px;
+        }
+
+        /* --- Sparkline/Progress Styles (Visual Simulation) --- */
+
+        .stat-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        /* Stat card footer adjustments */
+        .stat-card-footer {
+            margin-top: 0; 
+            margin-bottom: 10px;
+        }
+
+        .growth-positive {
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+
+        .growth-negative {
+            color: var(--color-danger);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            background-color: #e5e7eb;
+            border-radius: 50px;
+            height: 8px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        .progress-blue { background-color: var(--color-primary); }
+        .progress-red { background-color: var(--color-danger); }
+        .progress-green { background-color: var(--color-secondary); }
+        .progress-orange { background-color: var(--color-warning); }
+
+        /* Sparkline container styles */
+        .sparkline-container {
+            width: 100%; 
+            height: 50px; 
+            margin: 10px 0;
+        }
+        .sparkline-blue-shadow { filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.4)); }
+        .sparkline-red-shadow { filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4)); }
+
+        /* --- Chart Simulation (Earning Reports Bar Chart) --- */
+
+        .chart-visual {
+            position: relative;
+            height: 300px;
+            padding-left: 50px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+
+        .chart-bars-wrapper {
+            display: flex;
+            height: 100%;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 15px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar-stack {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        .bar {
+            width: 10px;
+            border-radius: 4px 4px 0 0;
+            margin: 0 1px;
+            transition: height 0.5s;
+        }
+        
+        .bar-a { background-color: var(--color-chart-gray); }
+        .bar-b { background-color: var(--color-primary); }
+        
+        /* Bar Heights (used to replace inline style="height: X%;") */
+        .h-98 { height: 98%; } .h-95 { height: 95%; } .h-90 { height: 90%; }
+        .h-88 { height: 88%; } .h-85 { height: 85%; } .h-80 { height: 80%; }
+        .h-78 { height: 78%; } .h-75 { height: 75%; } .h-70 { height: 70%; }
+        .h-66 { height: 66%; } .h-65 { height: 65%; } .h-60 { height: 60%; }
+        .h-55 { height: 55%; } .h-50 { height: 50%; } .h-45 { height: 45%; }
+        .h-40 { height: 40%; } .h-30 { height: 30%; } .h-25 { height: 25%; }
+        /* Used for progress fill widths */
+        .w-78 { width: 78%; } .w-75 { width: 75%; } .w-70 { width: 70%; } .w-50 { width: 50%; }
+        .w-40 { width: 40%; } .w-30 { width: 30%; } .w-12 { width: 12%; } .w-10 { width: 10%; }
+
+
+        .x-axis-label {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-top: 5px;
+        }
+
+        .y-axis-labels {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .y-axis-labels > div {
+            height: 20%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding-right: 5px;
+            border-top: 1px dashed #e5e7eb;
+        }
+        .y-axis-labels > div:last-child {
+            border-top: none; /* Remove top line for the top label */
+        }
+
+        /* Chart Summary */
+        .chart-summary {
+            display: flex; 
+            justify-content: space-around; 
+            padding-top: 20px; 
+            border-top: 1px solid #e5e7eb; 
+            margin-top: 10px;
+        }
+        .chart-summary > div {
+            text-align: center;
+        }
+        
+        /* Average Daily Sales Chart Container */
+        .avg-sales-chart {
+            width: 100%; 
+            height: 60px;
+        }
+
+
+        /* --- Device Visit Simulation (Progress Bars) --- */
+
+        .device-progress-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .device-progress-item span {
+            width: 100px;
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+        }
+
+        .device-progress-item .bar-wrapper {
+            flex-grow: 1;
+        }
+
+        .device-progress-item .percentage {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: right;
+            margin-bottom: 4px;
+        }
+        
+        .device-progress-mobile-bg { background-color: var(--color-progress-blue-bg); }
+        .device-progress-tablet-bg { background-color: var(--color-progress-red-bg); }
+        .device-progress-web-bg { background-color: var(--color-progress-green-bg); }
+        
+        .device-footer {
+            border-top: 1px solid #e5e7eb;
+        }
+
+
+        /* --- Pie Chart Simulation (Top Session) --- */
+        .pie-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pie-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #9061f9 0% 30%, 	/* Purple */
+                var(--color-primary) 30% 55%, 	/* Blue */
+                var(--color-secondary) 55% 70%, 	/* Green */
+                var(--color-warning) 70% 85%, 	/* Amber/Orange */
+                var(--color-danger) 85% 100% 	/* Red */
+            );
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .pie-chart::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background-color: var(--color-card-bg);
+            border-radius: 50%;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        /* Legend color utility classes */
+        .color-purple { background-color: #9061f9; }
+        .color-blue { background-color: var(--color-primary); }
+        .color-green { background-color: var(--color-secondary); }
+        .color-orange { background-color: var(--color-warning); }
+        .color-red { background-color: var(--color-danger); }
+
+
+        /* --- Table and List Styles --- */
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* Allow horizontal scroll if table content is too wide on mobile */
+            max-width: 100%;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.85rem;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--color-text-light);
+            background-color: var(--color-table-header);
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            color: var(--color-text-dark);
+        }
+
+        /* Traffic Source List Styles */
+        .traffic-list {
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px;
+        }
+        .traffic-item {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+        .traffic-item .source-name {
+            font-size: 0.9rem; 
+            color: var(--color-text-light); 
+            width: 30%;
+        }
+        .traffic-item .click-count {
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            width: 20%; 
+            text-align: center;
+        }
+        .traffic-item .progress-container {
+            width: 50%;
+        }
+        /* Specific progress bar height for this section */
+        .traffic-progress-bar { height: 6px; }
+
+        /* Sales by Countries Styles */
+        .sales-list {
+            padding-top: 10px;
+        }
+        .sales-country-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .sales-country-item:last-child {
+            border-bottom: none;
+        }
+
+        .country-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .country-flag {
+            font-size: 1.8rem;
+        }
+        
+        .country-name {
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-top: 2px;
+        }
+        .country-value {
+            font-size: 0.9rem; 
+            font-weight: 600;
+            margin-right: auto;
+        }
+
+        /* --- Top Performing Pages List --- */
+        .page-list-header {
+            display: flex;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .page-list-header > div:first-child { width: 50%; }
+        .page-list-header > div:nth-child(2) { width: 25%; text-align: right; }
+        .page-list-header > div:nth-child(3) { width: 25%; text-align: right; }
+
+        .page-list-item {
+            display: flex;
+            font-size: 0.9rem;
+            padding: 8px 0;
+        }
+
+        .page-list-item-url { 
+            width: 50%; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
+        }
+        .page-list-item-clicks { width: 25%; text-align: right; }
+        .page-list-item-pos { width: 25%; text-align: right; }
+
+        /* --- Top Leads Bar Chart --- */
+        .leads-chart-container {
+            height: 120px; 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: space-around; 
+            padding: 0 10px;
+        }
+
+        .leads-chart-bar {
+            width: 8px; 
+            background-color: var(--color-warning); 
+            border-radius: 4px 4px 0 0;
+        }
+
+        .leads-chart-footer {
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.75rem; 
+            color: var(--color-text-light); 
+            margin-top: 5px; 
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="dashboard-title">Dashboard</h1>
+
+    <div class="grid-container stats-grid">
+
+        <div class="card">
+            <div class="stat-header">
+                <div class="card-label">Website Traffic</div>
+                <div class="card-value">91.6K</div>
+            </div>
+            <svg viewBox="0 0 100 50" preserveAspectRatio="none" class="sparkline-container">
+                <polyline fill="none" stroke="#3b82f6" stroke-width="2"
+                    points="0,40 20,10 40,35 60,15 80,45 100,5" class="sparkline-blue-shadow" />
+            </svg>
+            <div class="stat-footer">
+                <span class="growth-positive">+15%</span>
+                <span class="text-light">since last month</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-header">
+                <div class="card-label">Conversion Rate</div>
+                <div class="card-value">15%</div>
+            </div>
+            <svg viewBox="0 0 100 50" preserveAspectRatio="none" class="sparkline-container">
+                <polyline fill="none" stroke="#ef4444" stroke-width="2"
+                    points="0,10 20,40 40,25 60,45 80,5 100,30" class="sparkline-red-shadow" />
+            </svg>
+            <div class="stat-footer">
+                <span class="growth-negative">-10%</span>
+                <span class="text-light">since last week</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Active Users</div>
+            <div class="stat-footer stat-card-footer">
+                <div class="card-value card-value-small">2,986</div>
+                <span class="growth-positive">+4%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-blue w-75"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Session Duration</div>
+            <div class="stat-footer stat-card-footer">
+                <div class="card-value card-value-small">90 Sec</div>
+                <span class="growth-negative">-25%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-red w-50"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid-container main-content-grid mt-25">
+
+        <div class="card chart-main">
+            <div class="card-header">
+                <div class="card-title">Earning Reports</div>
+                <div class="text-blue font-semibold text-base" role="button">Actions</div>
+            </div>
+            
+            <div class="chart-visual">
+                <div class="y-axis-labels">
+                    <div>1,600</div>
+                    <div>1,200</div>
+                    <div>800</div>
+                    <div>400</div>
+                    <div>0</div>
+                </div>
+                <div class="chart-bars-wrapper">
+                    <div class="bar-group" title="Jan">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-60"></div>
+                            <div class="bar bar-b h-75"></div>
+                        </div>
+                        <div class="x-axis-label">Jan</div>
+                    </div>
+                    <div class="bar-group" title="Feb">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-40"></div>
+                            <div class="bar bar-b h-50"></div>
+                        </div>
+                        <div class="x-axis-label">Feb</div>
+                    </div>
+                    <div class="bar-group" title="Mar">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-80"></div>
+                            <div class="bar bar-b h-90"></div>
+                        </div>
+                        <div class="x-axis-label">Mar</div>
+                    </div>
+                    <div class="bar-group" title="Apr">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-55"></div>
+                            <div class="bar bar-b h-70"></div>
+                        </div>
+                        <div class="x-axis-label">Apr</div>
+                    </div>
+                    <div class="bar-group" title="May">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-95"></div>
+                            <div class="bar bar-b h-85"></div>
+                        </div>
+                        <div class="x-axis-label">May</div>
+                    </div>
+                    <div class="bar-group" title="Jun">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-70"></div>
+                            <div class="bar bar-b h-80"></div>
+                        </div>
+                        <div class="x-axis-label">Jun</div>
+                    </div>
+                    <div class="bar-group" title="Jul">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-30"></div>
+                            <div class="bar bar-b h-45"></div>
+                        </div>
+                        <div class="x-axis-label">Jul</div>
+                    </div>
+                    <div class="bar-group" title="Aug">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-65"></div>
+                            <div class="bar bar-b h-78"></div>
+                        </div>
+                        <div class="x-axis-label">Aug</div>
+                    </div>
+                    <div class="bar-group" title="Sep">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-85"></div>
+                            <div class="bar bar-b h-98"></div>
+                        </div>
+                        <div class="x-axis-label">Sep</div>
+                    </div>
+                    <div class="bar-group" title="Oct">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-50"></div>
+                            <div class="bar bar-b h-60"></div>
+                        </div>
+                        <div class="x-axis-label">Oct</div>
+                    </div>
+                    <div class="bar-group" title="Nov">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-75"></div>
+                            <div class="bar bar-b h-88"></div>
+                        </div>
+                        <div class="x-axis-label">Nov</div>
+                    </div>
+                    <div class="bar-group" title="Dec">
+                        <div class="bar-stack">
+                            <div class="bar bar-a h-60"></div>
+                            <div class="bar bar-b h-75"></div>
+                        </div>
+                        <div class="x-axis-label">Dec</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-summary">
+                <div>
+                    <div class="card-label mb-5">Earnings</div>
+                    <div class="text-lg font-bold">$545.60</div>
+                </div>
+                <div>
+                    <div class="card-label mb-5">Profit</div>
+                    <div class="text-lg font-bold">$256.34</div>
+                </div>
+                <div>
+                    <div class="card-label mb-5">Tax</div>
+                    <div class="text-lg font-bold">$74.19</div>
+                </div>
+                <div>
+                    <div class="card-label mb-5">Expense</div>
+                    <div class="text-lg font-bold">$1.05</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-sidebar-group">
+
+            <div class="card">
+                <div class="card-title mb-5">Average Daily Sales</div>
+                <div class="card-value card-value-small mb-15">$28,450</div>
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="avg-sales-chart">
+                    <polygon fill="#10b981" opacity="0.4"
+                        points="0,20 0,15 10,8 20,12 30,5 40,18 50,10 60,14 70,6 80,17 90,9 100,13 100,20" />
+                    <polyline fill="none" stroke="#10b981" stroke-width="1"
+                        points="0,15 10,8 20,12 30,5 40,18 50,10 60,14 70,6 80,17 90,9 100,13" />
+                </svg>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title no-border">Visit by Device</div>
+                    <span class="text-sm text-light" role="button">Total Page Visit</span>
+                </div>
+                
+                <div class="card-value card-value-small mb-20">24,565K</div>
+
+                <div class="device-progress-item">
+                    <span>Mobile</span>
+                    <div class="bar-wrapper">
+                        <div class="percentage text-blue">78%</div>
+                        <div class="progress-bar device-progress-mobile-bg">
+                            <div class="progress-fill progress-blue w-78"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="device-progress-item">
+                    <span>Tablet</span>
+                    <div class="bar-wrapper">
+                        <div class="percentage text-red">12%</div>
+                        <div class="progress-bar device-progress-tablet-bg">
+                            <div class="progress-fill progress-red w-12"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="device-progress-item">
+                    <span>Web</span>
+                    <div class="bar-wrapper">
+                        <div class="percentage text-green">10%</div>
+                        <div class="progress-bar device-progress-web-bg">
+                            <div class="progress-fill progress-green w-10"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-sm text-light mt-10 pt-15 device-footer">
+                    Last data updated - 12 min ago
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid-container main-content-grid mt-25">
+        
+        <div class="card traffic-source">
+            <div class="card-title mb-20">Traffic Source</div>
+            
+            <div class="traffic-list">
+                <div class="traffic-item">
+                    <div class="source-name">Network</div>
+                    <div class="click-count">4,810</div>
+                    <div class="progress-container">
+                        <div class="progress-bar traffic-progress-bar">
+                            <div class="progress-fill progress-blue w-70"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <div class="source-name">Instagram</div>
+                    <div class="click-count">3,550</div>
+                    <div class="progress-container">
+                        <div class="progress-bar traffic-progress-bar">
+                            <div class="progress-fill progress-green w-50"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <div class="source-name">Facebook</div>
+                    <div class="click-count">1,245</div>
+                    <div class="progress-container">
+                        <div class="progress-bar traffic-progress-bar">
+                            <div class="progress-fill progress-red w-30"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <div class="source-name">Twitter</div>
+                    <div class="click-count">1,798</div>
+                    <div class="progress-container">
+                        <div class="progress-bar traffic-progress-bar">
+                            <div class="progress-fill progress-orange w-40"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card sales-countries">
+            <div class="card-header">
+                <div class="card-title">Sales by Countries</div>
+                <div class="text-base text-blue font-semibold" role="button">View All</div>
+            </div>
+            <div class="sales-list">
+                <div class="sales-country-item">
+                    <span class="country-flag" role="img" aria-label="USA Flag">🇺🇸</span>
+                    <div class="country-info">
+                        <div class="country-value">$8,567K</div>
+                        <div class="country-name">United States</div>
+                        <div class="growth-positive">+40.8%</div>
+                    </div>
+                </div>
+                <div class="sales-country-item">
+                    <span class="country-flag" role="img" aria-label="India Flag">🇮🇳</span>
+                    <div class="country-info">
+                        <div class="country-value">$6,870K</div>
+                        <div class="country-name">India</div>
+                        <div class="growth-negative">-58.8%</div>
+                    </div>
+                </div>
+                <div class="sales-country-item">
+                    <span class="country-flag" role="img" aria-label="Canada Flag">🇨🇦</span>
+                    <div class="country-info">
+                        <div class="country-value">$4,567K</div>
+                        <div class="country-name">Canada</div>
+                        <div class="growth-positive">+39.0%</div>
+                    </div>
+                </div>
+                <div class="sales-country-item">
+                    <span class="country-flag" role="img" aria-label="New Zealand Flag">🇳🇿</span>
+                    <div class="country-info">
+                        <div class="country-value">$3,567K</div>
+                        <div class="country-name">New Zealand</div>
+                        <div class="growth-negative">-68.8%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card top-session">
+            <div class="card-title mb-25">Top Session</div>
+            <div class="pie-chart-container">
+                <div class="pie-chart" title="Pie Chart Representation of Session Sources"></div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-color color-purple"></span>Chrome</div>
+                    <div class="legend-item"><span class="legend-color color-blue"></span>Firefox</div>
+                    <div class="legend-item"><span class="legend-color color-green"></span>Safari</div>
+                    <div class="legend-item"><span class="legend-color color-orange"></span>Opera</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container main-content-grid mt-25">
+
+        <div class="card campaign-table data-table-container">
+            <div class="card-title mb-15">Campaign Source</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="w-25">Source</th>
+                        <th class="w-15">Medium</th>
+                        <th class="w-30">Campaign</th>
+                        <th class="w-15">Clicks</th>
+                        <th class="w-15">Conversion</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    <tr>
+                        <td class="text-blue">Google</td>
+                        <td>CPC</td>
+                        <td>Summer Sale P04</td>
+                        <td>4,810</td>
+                        <td class="text-green">5.2%</td>
+                    </tr>
+                    <tr>
+                        <td class="text-blue">Facebook</td>
+                        <td>Social</td>
+                        <td>Holiday Promo</td>
+                        <td>1,224</td>
+                        <td class="text-green">8.62%</td>
+                    </tr>
+                    <tr>
+                        <td class="text-blue">Instagram</td>
+                        <td>Social</td>
+                        <td>New Product Launch</td>
+                        <td>8,951</td>
+                        <td class="text-green">4.29%</td>
+                    </tr>
+                    <tr>
+                        <td class="text-blue">Twitter</td>
+                        <td>Social</td>
+                        <td>Q4 Sale</td>
+                        <td>12,018</td>
+                        <td class="text-green">43.3%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="leads-pages-group">
+
+            <div class="card">
+                <div class="card-title mb-25">Top Leads</div>
+                <div class="leads-chart-container">
+                    <div class="leads-chart-bar h-50"></div>
+                    <div class="leads-chart-bar h-75"></div>
+                    <div class="leads-chart-bar h-66"></div>
+                    <div class="leads-chart-bar h-80"></div>
+                    <div class="leads-chart-bar h-25"></div>
+                    <div class="leads-chart-bar h-60"></div>
+                    <div class="leads-chart-bar h-50"></div>
+                    <div class="leads-chart-bar h-80"></div>
+                    <div class="leads-chart-bar h-40"></div>
+                    <div class="leads-chart-bar h-75"></div>
+                    <div class="leads-chart-bar h-66"></div>
+                    <div class="leads-chart-bar h-80"></div>
+                </div>
+                <div class="leads-chart-footer">
+                    <span>Feb</span>
+                    <span>Mar</span>
+                    <span>Apr</span>
+                    <span>May</span>
+                    <span>Jun</span>
+                    <span>Jul</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title mb-15">Top Performing Pages</div>
+                <div class="page-list-header">
+                    <div>Pages</div>
+                    <div class="text-right">Clicks</div>
+                    <div class="text-right">Avg. Pos</div>
+                </div>
+                
+                <div class="page-list-item">
+                    <div class="text-blue page-list-item-url">/index</div>
+                    <div class="page-list-item-clicks">1,101</div>
+                    <div class="page-list-item-pos">3.98</div>
+                </div>
+                <div class="page-list-item">
+                    <div class="text-blue page-list-item-url">/blog-post-detail</div>
+                    <div class="page-list-item-clicks">857</div>
+                    <div class="page-list-item-pos">2.35</div>
+                </div>
+                <div class="page-list-item">
+                    <div class="text-blue page-list-item-url">/products/new-lineup</div>
+                    <div class="page-list-item-clicks">745</div>
+                    <div class="page-list-item-pos">3.58</div>
+                </div>
+                <div class="page-list-item">
+                    <div class="text-blue page-list-item-url">/licenses-and-pricing</div>
+                    <div class="page-list-item-clicks">1,587</div>
+                    <div class="page-list-item-pos">7.47</div>
+                </div>
+                <div class="text-sm text-light mt-10 text-center">
+                    royalthemes.com
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

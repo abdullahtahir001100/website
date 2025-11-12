@@ -1,0 +1,527 @@
+ 
+        :root {
+            --color-primary: #5A67D8;
+            /* Deep Indigo/Blue */
+            --color-primary-dark: #4C51BF;
+            --color-secondary: #48BB78;
+            /* Green for success */
+            --color-danger: #E53E3E;
+            /* Red for delete */
+            --color-text: #2D3748;
+            --color-light-text: #718096;
+            --color-background: #F7FAFC;
+            /* Light background */
+            --color-card-bg: #FFFFFF;
+            /* White card background */
+            --color-border: #E2E8F0;
+            --color-tag-bg: #EBF4FF;
+            /* Light blue for tags */
+            --border-radius-base: 8px;
+            --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Base Form Styles */
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--color-light-text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background-color: var(--color-card-bg);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Layout and Header (omitted for brevity) */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .top-header {
+            background-color: var(--color-card-bg);
+            border-bottom: 1px solid var(--color-border);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .main-content {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: var(--color-card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Buttons (omitted for brevity) */
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        /* Table (omitted for brevity) */
+        .controls-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            max-width: 400px;
+            padding: 0 10px;
+
+        }
+        .search-input:focus {
+            border: 1px solid rgba(0, 26, 255, 0.666) !important;
+            outline: none;
+        }
+
+        .filter-select-wrapper {
+            min-width: 150px;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-table thead th {
+            background-color: var(--color-background);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .product-table tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        /* Custom Select Component (omitted for brevity) */
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select-wrapper select {
+            display: none;
+        }
+
+        .select-selected {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            padding: 10px 15px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        .select-selected:after {
+            position: absolute;
+            content: "";
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+            width: 0;
+            height: 0;
+            border: 5px solid transparent;
+            border-color: var(--color-light-text) transparent transparent transparent;
+        }
+
+        .select-selected.select-arrow-active:after {
+            border-color: transparent transparent var(--color-light-text) transparent;
+            top: 40%;
+        }
+
+        .select-items {
+            position: absolute;
+            background-color: var(--color-card-bg);
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            border: 1px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: var(--shadow-light);
+            max-height: 200px;
+            /* SCROLLING ENABLED */
+            overflow-y: auto;
+        }
+
+        .select-items div {
+            color: var(--color-text);
+            padding: 10px 15px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .select-items div:hover,
+        .same-as-selected {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .select-hide {
+            display: none;
+        }
+
+        /* Modal (omitted for brevity) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--color-card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius-base);
+            max-width: 800px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Form Grid (omitted for brevity) */
+        .product-form {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            grid-column: span 1;
+        }
+
+        .form-group.span-2 {
+            grid-column: span 2;
+        }
+
+        .form-group.span-4 {
+            grid-column: span 4;
+        }
+
+        /* Multi-Select Tags (omitted for brevity) */
+        .multi-select-container {
+            position: relative;
+        }
+
+        .tag-input-field {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            padding: 6px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            min-height: 42px;
+        }
+
+        .tag-input {
+            flex-grow: 1;
+            border: none !important;
+            padding: 4px 0 !important;
+            font-size: 1rem !important;
+            min-width: 100px;
+            box-shadow: none !important;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--color-tag-bg);
+            color: var(--color-primary-dark);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .select-options-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: var(--shadow-light);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .select-options-list.show {
+            display: block;
+        }
+
+        .select-option {
+            display: block;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .select-option:hover {
+            background-color: #F0F4F8;
+        }
+
+        /* Image Upload Area (omitted for brevity) */
+        .image-input-pair {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .image-input-pair input[type="text"] {
+            flex-grow: 1;
+        }
+
+        .browse-btn {
+            background-color: var(--color-light-text);
+            color: white !important;
+            padding: 10px 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .browse-btn:hover {
+            background-color: #5d687a;
+        }
+
+        .image-preview-area {
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px dashed var(--color-border);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .main-image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 4px;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .image-thumbs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .thumb-wrapper {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border: 1px dashed var(--color-border);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-card-bg);
+        }
+
+        .small-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        /* === FINAL FIX CSS FOR ADD IMAGE BUTTON (REPLACED) === */
+        .add-new-thumb {
+            /* The container must be relative for the absolute input */
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px dashed var(--color-primary);
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            transition: background-color 0.2s;
+            display: flex;
+            /* Centers the text */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .add-new-thumb:hover {
+            background-color: #EBF4FF;
+        }
+
+        #small-file-upload {
+            /* Absolute positioning to cover the entire button */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            /* Make it transparent */
+            opacity: 0;
+
+            /* CRITICAL: Force it to the top layer */
+            z-index: 9999;
+
+            /* CRITICAL: Ensure the cursor changes to indicate clicking */
+            cursor: pointer;
+        }
+
+        /* Ensure the visible text sits below the transparent input */
+        .add-new-thumb span {
+            z-index: 1;
+            text-align: center;
+            /* CRITICAL: Prevents the span text from interfering with the click */
+            pointer-events: none;
+        }
+
+        /* === END FINAL FIX CSS === */
+
+        .thumb-remove {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 15px;
+            height: 15px;
+            background-color: var(--color-danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        /* Responsiveness (Basic) (omitted for brevity) */
+        @media (max-width: 768px) {
+            .product-form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-group,
+            .form-group.span-2,
+            .form-group.span-4 {
+                grid-column: span 2;
+            }
+
+            .top-header,
+            .content-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+   

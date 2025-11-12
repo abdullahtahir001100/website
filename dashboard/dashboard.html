@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Product Management Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+   
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        
+
+        <main class="main-content">
+
+            <div class="content-header">
+                <h1>Product Inventory</h1>
+                <button class="btn btn-primary" id="open-modal-btn">+ Add New Product</button>
+            </div>
+
+            <section class="product-management card">
+
+                <div class="controls-bar">
+                    <input type="text" placeholder="Search by title, artist, or style..." class="search-input">
+                    <div class="custom-select-wrapper filter-select-wrapper">
+                        <select class="filter-select">
+                            <option value="" disabled selected>Filter Category</option>
+                            <option value="drawing">Drawing</option>
+                            <option value="painting">Painting</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title / Artist</th>
+                                <th>Price Range</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="ID">1</td>
+                                <td data-label="Title / Artist"><strong>Geometric Dance</strong><small>(Japan)</small>
+                                </td>
+                                <td data-label="Price Range">$1,000 - $2,000</td>
+                                <td data-label="Category / Style">Drawing / Minimalism</td>
+                                <td data-label="Actions"><button class="btn btn-action edit-btn"
+                                        title="Edit">✏️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+        </main>
+
+    </div>
+
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal-btn">&times;</span>
+            <h3>Add/Edit Product Details</h3>
+            <form class="product-form" id="product-form">
+
+                <div class="form-group span-2"><label for="title">Title</label><input type="text" id="title" required>
+                </div>
+                <div class="form-group span-2"><label for="artist">Artist</label><input type="text" id="artist"
+                        required></div>
+
+                <div class="form-group"><label for="price">Price ($)</label><input type="number" id="price" required>
+                </div>
+                <div class="form-group custom-select-wrapper">
+                    <label for="priceRange">Price Range</label>
+                    <select id="priceRange" required>
+                        <option value="1000-2000" selected>$1000 - $2000</option>
+                        <option value="0-1000">$0 - $1000</option>
+                        <option value="2000-5000">$2000 - $5000</option>
+                        <option value="5000+">$5000+</option>
+                    </select>
+                </div>
+                <div class="form-group"><label for="dimensions">Dimensions</label><input type="text" id="dimensions"
+                        value="20 x 20 in"></div>
+                <div class="form-group custom-select-wrapper">
+                    <label for="size">Size</label>
+                    <select id="size">
+                        <option value="small" selected>Small</option>
+                        <option value="medium">Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+
+                <div class="form-group custom-select-wrapper">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="drawing" selected>Drawing</option>
+                        <option value="painting">Painting</option>
+                        <option value="sculpture">Sculpture</option>
+                    </select>
+                </div>
+                <div class="form-group"><label for="medium">Medium</label><input type="text" id="medium"></div>
+                <div class="form-group"><label for="style">Style</label><input type="text" id="style"></div>
+                <div class="form-group"><label for="subject">Subject</label><input type="text" id="subject"></div>
+
+                <div class="form-group span-2 multi-select-container">
+                    <label>Country</label>
+                    <div class="tag-input-field" data-type="country">
+                        <input type="text" class="tag-input"
+                            data-list="Japan,USA,France,Italy,Spain,China,Germany,UK,Brazil"
+                            placeholder="Search or select country...">
+                    </div>
+                </div>
+                <div class="form-group span-2 multi-select-container">
+                    <label>Color Palette</label>
+                    <div class="tag-input-field" data-type="palette">
+                        <input type="text" class="tag-input"
+                            data-list="Monochromatic,Analogous,Complementary,Triadic,Vibrant,Pastel,Earthy,High Contrast"
+                            placeholder="Search or select palette...">
+                    </div>
+                </div>
+
+                <div class="form-group span-4 image-upload-group">
+                    <label>Product Images</label>
+
+                    <div class="image-input-pair">
+                        <input type="text" id="main-image-url"
+                            placeholder="Paste Main Image URL here (overridden by file upload)">
+                        <input type="file" id="main-file-upload" accept="image/*" style="display: none;">
+                        <label for="main-file-upload" class="btn btn-secondary browse-btn">Browse / Upload</label>
+                    </div>
+
+                    <div class="image-preview-area">
+                        <img src="placeholder.jpg" alt="Image Preview" id="main-image-preview"
+                            class="main-image-preview">
+                        <p class="preview-text">Main Image Preview (File or URL)</p>
+                    </div>
+
+                    <div class="small-images-array">
+                        <label>Small Images (`smallImages`)</label>
+                        <div class="image-thumbs-container">
+                            <div class="thumb-wrapper add-new-thumb" id="add-small-image">
+                                <span>+ Add Image</span>
+                                <input type="file" id="small-file-upload" accept="image/*" multiple>
+                            </div>
+                        </div>
+                        <input type="hidden" name="smallImages" id="small-images-input" value="">
+                    </div>
+                </div>
+
+                <div class="form-group span-4">
+                    <label for="description">Description Text</label>
+                    <textarea id="description" placeholder="A meticulous abstract drawing..."></textarea>
+                </div>
+                <div class="form-group span-4">
+                    <label for="artist-bio">Artist Bio Text</label>
+                    <textarea id="artist-bio" placeholder="Tanaka is a Tokyo-based artist..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary save-btn span-4">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // --- 1. VARIABLE DECLARATIONS ---
+            const modal = document.getElementById('product-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const productForm = document.getElementById('product-form');
+
+            const mainImageUrlInput = document.getElementById('main-image-url');
+            const mainImagePreview = document.getElementById('main-image-preview');
+            const mainFileUpload = document.getElementById('main-file-upload');
+            const smallFileUpload = document.getElementById('small-file-upload');
+            const smallImagesContainer = document.querySelector('.image-thumbs-container');
+
+            // Safely get the hidden input
+            const smallImagesInput = document.getElementById('small-images-input');
+
+            let smallImageUrls = smallImagesInput
+                ? smallImagesInput.value.split(',').filter(url => url.trim() !== '')
+                : [];
+
+            // Note: addNewThumb is still useful for initial rendering, but the click is now CSS/HTML handled
+            const addNewThumb = document.getElementById('add-small-image');
+            // --- END VARIABLE DECLARATIONS ---
+
+            // --- 2. MODAL & UTILITIES (omitted for brevity) ---
+            if (openModalBtn) openModalBtn.onclick = () => modal.classList.add('open');
+            if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.remove('open');
+            if (modal) modal.onclick = (e) => {
+                if (e.target === modal) modal.classList.remove('open');
+            };
+
+            function closeAllSelect(elmnt) {
+                const selectedElements = document.getElementsByClassName("select-selected");
+                const itemsElements = document.getElementsByClassName("select-items");
+                for (let i = 0; i < selectedElements.length; i++) {
+                    if (elmnt !== selectedElements[i]) selectedElements[i].classList.remove("select-arrow-active");
+                }
+                for (let i = 0; i < itemsElements.length; i++) {
+                    if (elmnt !== selectedElements[i]) itemsElements[i].classList.add("select-hide");
+                }
+            }
+            document.addEventListener("click", closeAllSelect);
+
+
+            // --- 3. CUSTOM SELECT LOGIC (omitted for brevity) ---
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                const nativeSelect = wrapper.querySelector('select');
+                const customButton = document.createElement('div');
+                customButton.className = 'select-selected';
+                const customItems = document.createElement('div');
+                customItems.className = 'select-items select-hide';
+
+                Array.from(nativeSelect.options).forEach(option => {
+                    if (option.disabled && option.selected) return;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.innerHTML = option.innerHTML;
+                    itemDiv.dataset.value = option.value;
+                    if (option.selected && !option.disabled) itemDiv.classList.add('same-as-selected');
+
+                    itemDiv.addEventListener('click', function (e) {
+                        nativeSelect.value = this.dataset.value;
+                        customButton.innerHTML = this.innerHTML;
+                        const selected = customItems.querySelector('.same-as-selected');
+                        if (selected) selected.classList.remove('same-as-selected');
+                        this.classList.add('same-as-selected');
+                        closeAllSelect();
+                        e.stopPropagation();
+                    });
+                    customItems.appendChild(itemDiv);
+                });
+
+                customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
+                wrapper.append(customButton, customItems);
+
+                customButton.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    closeAllSelect(this);
+                    this.classList.toggle('select-arrow-active');
+                    customItems.classList.toggle('select-hide');
+                });
+            });
+
+
+            // --- 4. MULTI-SELECT TAGGING LOGIC (omitted for brevity) ---
+            function setupMultiSelect(container) {
+                const inputField = container.querySelector('.tag-input-field');
+                const tagInput = container.querySelector('.tag-input');
+                const allOptions = tagInput.dataset.list.split(',');
+                let selectedTags = new Set();
+                const suggestionsList = document.createElement('div');
+                suggestionsList.className = 'select-options-list';
+                inputField.parentElement.appendChild(suggestionsList);
+
+                function renderTags() {
+                    inputField.querySelectorAll('.tag').forEach(tag => tag.remove());
+                    selectedTags.forEach(tagValue => {
+                        const tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.dataset.value = tagValue;
+                        tag.innerHTML = `${tagValue} <span class="tag-remove">&times;</span>`;
+                        tag.querySelector('.tag-remove').onclick = (e) => {
+                            selectedTags.delete(tagValue);
+                            renderTags();
+                            filterSuggestions('');
+                            e.stopPropagation();
+                        };
+                        inputField.insertBefore(tag, tagInput);
+                    });
+                }
+
+                function filterSuggestions(query) {
+                    suggestionsList.innerHTML = '';
+                    suggestionsList.classList.remove('show');
+                    const lowerQuery = query.toLowerCase().trim();
+                    let hasSuggestions = false;
+
+                    allOptions
+                        .filter(o => !selectedTags.has(o) && (lowerQuery === '' || o.toLowerCase().includes(lowerQuery)))
+                        .forEach(option => {
+                            const optionDiv = document.createElement('span');
+                            optionDiv.className = 'select-option';
+                            optionDiv.innerHTML = option;
+                            optionDiv.onclick = () => {
+                                selectedTags.add(option);
+                                tagInput.value = '';
+                                renderTags();
+                                filterSuggestions('');
+                                tagInput.focus();
+                            };
+                            suggestionsList.appendChild(optionDiv);
+                            hasSuggestions = true;
+                        });
+
+                    if (hasSuggestions) suggestionsList.classList.add('show');
+                }
+
+                tagInput.addEventListener('input', () => filterSuggestions(tagInput.value));
+                tagInput.addEventListener('focus', () => filterSuggestions(tagInput.value));
+                document.addEventListener('click', (e) => {
+                    if (!container.contains(e.target)) suggestionsList.classList.remove('show');
+                });
+
+                renderTags();
+            }
+            document.querySelectorAll('.multi-select-container').forEach(setupMultiSelect);
+
+
+            // --- 5. IMAGE HANDLING LOGIC (File Inputs) ---
+
+            // CRITICAL FIX: The programmatic click listener (addNewThumb.addEventListener('click', ...)) 
+            // has been REMOVED because the CSS overlap now handles the click directly.
+
+            // 5.1 Main Image Handling (omitted for brevity)
+            mainImageUrlInput.addEventListener('input', () => {
+                mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg';
+            });
+            mainFileUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    mainImagePreview.src = event.target.result;
+                    mainImageUrlInput.value = `[File: ${file.name}]`;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // 5.2 Small Images Rendering
+            function renderSmallImages() {
+                if (!smallImagesContainer || !smallImagesInput) return;
+
+                // 1. Preserve the Add New Thumb element before clearing
+                const addNewThumbEl = smallImagesContainer.querySelector('#add-small-image');
+                smallImagesContainer.innerHTML = '';
+
+                // 2. Render existing thumbnails
+                smallImageUrls.forEach(url => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'thumb-wrapper';
+                    wrapper.innerHTML = `<img src="${url}" alt="Thumb" class="small-thumb">
+                                         <span class="thumb-remove" data-url="${url}">&times;</span>`;
+
+                    wrapper.querySelector('.thumb-remove').addEventListener('click', (e) => {
+                        smallImageUrls = smallImageUrls.filter(u => u !== e.target.dataset.url);
+                        updateSmallImagesArray();
+                        e.stopPropagation();
+                    });
+                    smallImagesContainer.appendChild(wrapper);
+                });
+
+                // 3. Re-append the 'Add Image' button last
+                smallImagesContainer.appendChild(addNewThumbEl);
+
+                // 4. Update hidden input for form submission
+                smallImagesInput.value = smallImageUrls.join(',');
+            }
+
+            function updateSmallImagesArray() {
+                renderSmallImages();
+            }
+
+            // 5.3 Small Images Upload (Triggered by the direct click on the transparent input)
+            if (smallFileUpload) {
+                smallFileUpload.addEventListener('change', (e) => {
+                    Array.from(e.target.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            smallImageUrls.push(event.target.result);
+                            updateSmallImagesArray();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    e.target.value = ''; // Reset file input
+                });
+            }
+
+            renderSmallImages();
+
+
+            // --- 6. FORM SUBMISSION (omitted for brevity) ---
+            productForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const productData = {
+                    title: document.getElementById('title').value,
+                    artist: document.getElementById('artist').value,
+                    price: document.getElementById('price').value,
+                    priceRange: document.getElementById('priceRange').value,
+                    size: document.getElementById('size').value,
+                    category: document.getElementById('category').value,
+
+                    mainImage: mainImageUrlInput.value,
+                    smallImages: smallImageUrls,
+
+                    country: Array.from(document.querySelector('.tag-input-field[data-type="country"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
+                    palette: Array.from(document.querySelector('.tag-input-field[data-type="palette"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
+                };
+
+                console.log('--- Product Data Submitted ---');
+                console.log(productData);
+                console.info('Form data logged. In a real app, this would be sent to a server.');
+                modal.classList.remove('open');
+            });
+        });
+    </script>
+</body>
+
+</html>
