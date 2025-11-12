@@ -743,3 +743,349 @@ RESPONSIVENESS (Media Queries)
     .product .image img{
         height: 100% !important;
     }
+   
+        /* ================================== */
+        /* === CAPTCHA AND FORM VALIDATION STYLES (Existing) === */
+        /* ================================== */
+        .input-error {
+            border-color: #dc3545 !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            text-align: left;
+            text-transform: none;
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        /* Captcha Checkbox Styles */
+        .captcha-container {
+            margin-bottom: 15px;
+            text-align: left;
+            text-transform: none;
+        }
+
+        .captcha-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-family: regular;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .captcha-checkbox-display {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            background-color: white;
+        }
+
+        .captcha-checkbox-display.checked {
+            background-color: #f7c5c1;
+            border-color: #f7c5c1;
+            color: white;
+        }
+
+        .captcha-checkbox-display i {
+            font-size: 14px;
+            display: none;
+        }
+
+        .captcha-checkbox-display.checked i {
+            display: block;
+        }
+
+        /* NEW CAPTCHA MODAL STYLES (Existing) */
+        #captchaModalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .captcha-modal-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .captcha-prompt {
+            font-family: regular;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 0 auto 10px;
+        }
+
+        .captcha-image-item {
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid transparent;
+            border-radius: 3px;
+            transition: border-color 0.2s;
+        }
+
+        .captcha-image-item img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+        }
+
+        .captcha-image-item:hover {
+            border-color: #f9b4af;
+        }
+
+        .captcha-image-item.selected {
+            border-color: #2ee05d;
+            box-shadow: 0 0 5px rgba(46, 224, 93, 0.5);
+        }
+
+        /* ADD TO CART POPUP STYLES (Existing) */
+        .cart-notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .cart-notification-box {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .cart-notification-box.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .cart-notification-box h4 {
+            color: #28a745;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-family: bold;
+        }
+
+        .cart-notification-box p {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .cart-notification-box a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f7c5c1;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: bold;
+            transition: background-color 0.2s;
+        }
+
+        .cart-notification-box a:hover {
+            background-color: #f5a9a4;
+        }
+
+        /* Cart Counter (Existing) */
+        .cart-icon-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        #cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #f7c5c1;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75em;
+            min-width: 10px;
+            text-align: center;
+            line-height: 1;
+            display: none;
+        }
+        
+        /* Scroll Buttons (Existing) */
+        .scroll-btns {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9990;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .scroll-btn {
+            background-color: #f7c5c1; /* Theme Color */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .scroll-btn:hover {
+            background-color: #f5a9a4;
+        }
+        
+        #scrollUpBtn {
+            opacity: 0; /* Hidden by default */
+            pointer-events: none;
+        }
+        
+        #scrollUpBtn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Image Hover Zoom (Existing) */
+        .product .image {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product .image img {
+            transition: transform 0.4s ease-in-out;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product:hover .image img {
+            transform: scale(1.1);
+        }
+        
+        /* ================================== */
+        /* === UPDATED: RIGHT ADVERTISEMENT POPUP === */
+        /* ================================== */
+        .ad-popup {
+            position: fixed;
+            bottom: 100px; 
+            right: 20px;
+            width: 200px; 
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            z-index: 9995; 
+            overflow: hidden;
+            display: none; 
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateX(100%); 
+            opacity: 0;
+        }
+
+        .ad-popup.show {
+            transform: translateX(0); 
+            opacity: 1;
+        }
+        
+        /* Wrapper to contain image and overlay text */
+        .ad-content-wrapper {
+            position: relative;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .ad-popup .ad-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px; 
+        }
+        
+        /* NEW: Text Overlay Style */
+        .ad-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff; /* White text color */
+            font-family: bold, sans-serif;
+            font-size: 1.2em;
+            text-align: center;
+            
+            background: rgba(247, 197, 193, 0.75); /* Semi-transparent background matching theme color */
+            border-radius: 5px;
+            max-width: 80%;
+            line-height: 1.2;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); /* Shadow for better readability */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+
+        .ad-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            text-align: center;
+            padding: 0;
+            z-index: 9996;
+            transition: background 0.2s;
+        }
+
+        .ad-close-btn:hover {
+            background: #f5a9a4; 
+            color: white;
+        }
