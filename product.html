@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ink by hand product page</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/produt.css">
+    <link rel="stylesheet" href="css/produt.css"> 
     <link rel="icon" href="images/logo.jpg" />
 </head>
 
@@ -33,7 +33,7 @@
             <a href="cart.html" class="icon-btn" aria-label="Cart"><img src="images/trolley.png" alt=""></a>
             <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu"><img src="images/ui.png" alt=""></button>
         </div>
-          <nav class="nav-links none" id="navLinks" >
+        <nav class="nav-links none" id="navLinks" >
             <a href="about.html">About</a>
             <a href="product.html">Shop</a>
             <a href="contect.html">Contacts</a>
@@ -42,123 +42,12 @@
 
     <main class="content-container">
         <aside class="sidebar" id="sidebar">
-            <div class="filter-group">
-                <h3 class="filter-header">CATEGORY</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="category" value="painting">
-                        Painting</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="category" value="sculpture">
-                        Sculpture</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="category" value="drawing">
-                        Drawing</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="category" value="photography">
-                        Photography</label>
-                </div>
+            
+            <div class="filters-wrapper">
+                <p style="text-align: center;
+padding: 10px;">Loading Filters...</p> 
             </div>
-            <div class="filter-group">
-                <h3 class="filter-header">STYLE</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style"
-                            value="abstract expressionism"> Abstract Expressionism</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="figurative">
-                        Figurative</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="minimalism">
-                        Minimalism</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="impressionism">
-                        Impressionism</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="popart"> Pop
-                        Art</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="surrealism">
-                        Surrealism</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="style" value="realism">
-                        Realism</label>
-                </div>
-            </div>
-            <div class="filter-group">
-                <h3 class="filter-header">SUBJECT</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="floral">
-                        Floral</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="landscape">
-                        Landscape</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="abstract">
-                        Abstract</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="portrait">
-                        Portrait</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="stilllife">
-                        Still Life</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="cityscape">
-                        Cityscape</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="subject" value="animal">
-                        Animal</label>
-                </div>
-            </div>
-            <div class="filter-group">
-                <h3 class="filter-header">MEDIUM</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="oil"> Oil</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="acrylic">
-                        Acrylic</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="watercolor">
-                        Watercolor</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="digital">
-                        Digital</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="ink"> Ink</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="medium" value="mixedmedia">
-                        Mixed Media</label>
-                </div>
-            </div>
-            <div class="filter-group">
-                <h3 class="filter-header">SIZE</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="size" value="small"> Small (up
-                        to 20 x 20 in)</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="size" value="medium"> Medium (20
-                        x 20 to 40 x 40 in)</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="size" value="large"> Large (40 x
-                        40 to 60 x 60 in)</label>
-                </div>
-            </div>
-            <div class="filter-group">
-                <h3 class="filter-header">PRICE</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="priceRange" value="under-500">
-                        Under $500</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="priceRange" value="500-1000">
-                        $500 - $1,000</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="priceRange" value="1000-2000">
-                        $1,000 - $2,000</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="priceRange" value="2000-5000">
-                        $2,000 - $5,000</label>
-                </div>
-            </div>
-            <div class="filter-group">
-                <h3 class="filter-header">ORIENTATION</h3>
-                <div class="filter-options-container">
-                    <label class="filter-item"><input type="checkbox" data-filter-type="orientation" value="landscape">
-                        Landscape</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="orientation" value="portrait">
-                        Portrait</label>
-                    <label class="filter-item"><input type="checkbox" data-filter-type="orientation" value="square">
-                        Square</label>
-                </div>
-            </div>
-            <div class="filter-group color-palette-picker">
-                <h3 class="filter-header">COLOR</h3>
-                <div class="filter-options-container color-options">
-                    <div class="color-swatch swatch-black" data-color="black"></div>
-                    <div class="color-swatch swatch-white" data-color="white"></div>
-                    <div class="color-swatch swatch-red" data-color="red"></div>
-                    <div class="color-swatch swatch-blue" data-color="blue"></div>
-                    <div class="color-swatch swatch-green" data-color="green"></div>
-                    <div class="color-swatch swatch-yellow" data-color="yellow"></div>
-                    <div class="color-swatch swatch-purple" data-color="purple"></div>
-                    <div class="color-swatch swatch-orange" data-color="orange"></div>
-                    <div class="color-swatch swatch-brown" data-color="brown"></div>
-                    <div class="color-swatch swatch-grey" data-color="grey"></div>
-                </div>
-            </div>
-        </aside>
+            </aside>
 
         <section class="art-gallery product-grid" id="artGallery">
             <p>Loading artwork...</p>
@@ -206,11 +95,13 @@
             </div>
         </div>
         <div class="copy">
-            Copyright © 2025 inkbyhand.com | Powered by inkbyhand.com
+            Copyright © 2025 inkbyhand.com |
+Powered by inkbyhand.com
         </div>
     </footer>
 
     <script src="js/product.js"></script>
+     <script src="js/dashboadover.js"></script>
 </body>
 
 </html>

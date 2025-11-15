@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
     
-
     
     <link rel="stylesheet" href="css/style.css">
 
@@ -20,59 +19,57 @@
 
 <body>
     <header class="inner">
-            <div class="navbar">
-                <div class="logo">
-                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                        alt="Logo">
-                </div>
-                <div class="menu-icon">
-                    <div class="naver">
-                        <a href="cart.html" class="cart-icon-container">
-                            <img src="images/trolley.png" alt="Cart" class="top">
-                            <span id="cart-count">0</span>
-                        </a>
-                    </div>
-                   
-    
-                    <div class="naver" onclick="toggleNav()">
-                        <img src="images/ui.png" alt="Menu" id="menu-icon">
-                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
-                            class="close-icon">
-                    </div>
-                </div>
-
-                <nav id="nav-links">
-                    <ul>
-                        <li><a href="/">home</a></li>
-                        <li><a href="about.html">about</a></li>
-                        <li><a href="product.html">shop</a></li>
-                        <li><a href="contect.html">contact</a></li>
-                        <li><a href="logout.html">Log Out</a></li>
-                    </ul>
-                </nav>
+        <div class="navbar">
+            <div class="logo">
+                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
+                    alt="Logo">
             </div>
-        </header>
+            <div class="menu-icon">
+                <div class="naver">
+                    <a href="cart.html" class="cart-icon-container">
+                        <img src="images/trolley.png" alt="Cart" class="top">
+                        <span id="cart-count">0</span>
+                    </a>
+                </div>
+                
+                <div class="naver" onclick="toggleNav()">
+                    <img src="images/ui.png" alt="Menu" id="menu-icon">
+                    <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
+                        class="close-icon">
+                </div>
+            </div>
+
+            <nav id="nav-links">
+                <ul>
+                    <li><a href="/">home</a></li>
+                    <li><a href="about.html">about</a></li>
+                    <li><a href="product.html">shop</a></li>
+                    <li><a href="contect.html">contact</a></li>
+                    <li><a href="logout.html">Log Out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
     <section class="main-head" id="cardHead">
         <div class="container">
-
             <h1>Your Shopping Cart</h1>
-
         </div>
     </section>
 
     <section class="cart">
-        <div class="container" id="emptyCart">
+        <div class="container" id="emptyCart" style="display: none;"> 
             <div class="empty-cart">
                 <img src="images/shopping.png" alt="" class="empty-cart-section">
                 <h3>Your cart is currently empty.</h3>
-                <p>Before proceed to checkout you must add some products to your shopping cart. You will find a lot of interesting products on our "Shop" page.</p>
+                <p>Before proceeding to checkout you must add some products to your shopping cart. You will find a lot of interesting products on our "Shop" page.</p>
                 <div class="shop-button">
                     <a href="index.html">return to shop</a>
                 </div>
             </div>
         </div>
 
-        <div id="fullCartContent">
+        <div id="fullCartContent" style="display: none;">
             <div class="container">
                 <div class="cart-table-wrapper" width="100%">
                     <table width="100%">
@@ -83,30 +80,23 @@
                                 <th width="16.66%">selection </th>
                                 <th width="16.66%">quantity</th>
                                 <th width="16.66%">price</th>
+                                <th width="16.66%">subtotal</th> 
                                 <th width="16.66%">remove</th>
                             </tr>
                         </thead>
-                        <tbody width="00%" id="cart-items">
-                            <!-- <tr class="cart-product-row" data-id="1">
-                                <td width="16.66%"><img src="images/1.jpg" alt="" class="product-image"></td>
-                                <td width="16.66%" class="product-name">product name</td>
-                                <td width="16.66%" class="product-price">500</td>
-                                <td width="16.66%"><input type="number" value="1" min="1" class="quantity-input" max="5"></td>
-                                <td width="16.66%" class="sub-total">500 Rs</td>
-                                <td width="16.66%"><img src="images/close.png" class="removebtn"></td>
-                            </tr> -->
-                        </tbody>
+                        <tbody width="100%" id="cart-items">
+                            </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="cart-summary-section" id="cartSummary">
+    <section class="cart-summary-section" id="cartSummary" style="display: none;">
         <div class="container ">
             <div class="flex-justify-center">
                 <div class="summary-contact">
-                    <p>Here contect us on
+                    <p>Here contact us on
                         <a href=" ">whatsapps </a>
                     </p>
                 </div>
@@ -122,28 +112,28 @@
                                         <p> Cart subtotal</p>
                                     </th>
                                     <th>
-                                        <p id="cartTotal">0 Rs</p>
+                                        <p id="cartSubtotal">0 Rs</p> 
                                     </th>
                                 </tr>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <p>shepping fee</p>
-                                        </td>
-                                        <td>
-                                            <p>0 Rs</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="total-row">
-                                            <h5>total</h5>
-                                        </td>
-                                        <td class="total-row">
-                                            <h5 id="totalAmount">Rs</h5>
-                                        </td>
-                                    </tr>
-                                </tbody>
                             </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <p>shipping fee</p>
+                                    </td>
+                                    <td>
+                                        <p>0 Rs</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="total-row">
+                                        <h5>total</h5>
+                                    </td>
+                                    <td class="total-row">
+                                        <h5 id="cartTotal">0 Rs</h5> 
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <div class="order-action">
                             <a href="paymant.html" class="order-button">order now</a>
@@ -154,6 +144,7 @@
             </div>
         </div>
     </section>
+    
     <div class="inner">
         <footer>
             <div class="align">
@@ -207,9 +198,9 @@
             </div>
         </footer>
     </div>
- 
-
+    
     <script src="js/cart.js"></script>
+    <script src="js/dashboadover.js"></script>
 
 
 </body>

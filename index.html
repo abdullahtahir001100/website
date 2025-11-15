@@ -20,33 +20,39 @@
     <section class="inner">
         <header class="inner">
             <div class="navbar">
-                <div class="logo">
+           
+             <div class="logo">
                     <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
                         alt="Logo">
                 </div>
                 <div class="menu-icon">
-                    <div class="naver">
+                
+             <div class="naver">
                         <a href="cart.html" class="cart-icon-container">
                             <img src="images/trolley.png" alt="Cart" class="top">
                             <span id="cart-count">0</span>
-                        </a>
+         
+                       </a>
                     </div>
                     <div class="naver" id="form1"><img src="images/user.png" alt="User"></div>
     
                     <div class="naver" onclick="toggleNav()">
-                        <img src="images/ui.png" alt="Menu" id="menu-icon">
+               
+               <img src="images/ui.png" alt="Menu" id="menu-icon">
                         <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
-                            class="close-icon">
+class="close-icon">
                     </div>
                 </div>
 
                 <nav id="nav-links">
                     <ul>
                         <li><a href="/">home</a></li>
+  
                         <li><a href="about.html">about</a></li>
                         <li><a href="product.html">shop</a></li>
                         <li><a href="contect.html">contact</a></li>
                         <li><a href="logout.html">Log Out</a></li>
+ 
                     </ul>
                 </nav>
             </div>
@@ -58,33 +64,38 @@
 
             <a href="#" class="close-btn">&times;</a>
 
-            <div class="view-container" id="loginView">
+            <div 
+class="view-container" id="loginView">
                 <h2 class="modal-title">Welcome to INKBYHAND</h2>
                 <button class="facebook-btn">
                     <i class="fab fa-facebook-f"></i> Log in With Facebook
                 </button>
                 <div class="separator">OR</div>
     
+ 
                 <form class="login-form">
                     <input type="email" name="email" placeholder="Email Address" required>
                     <div class="password-group">
                         <input type="password" name="password" id="loginPasswordInput" placeholder="Password" required>
-            
+        
+     
                         <i class="far fa-eye password-toggle" data-pw-toggle role="button"
                             aria-label="Toggle password visibility"></i>
                     </div>
-                    <a href="#" class="forgot-password terms-link"
+                 
+                   <a href="#" class="forgot-password terms-link"
                         onclick="showView('forgotPasswordView')">FORGOT PASSWORD</a>
                     <button type="submit" class="log-in-btn">LOG IN</button>
                 </form>
                 <p class="terms-text">
-                    This site is protected by reCAPTCHA and the Google
+             
+                This site is protected by reCAPTCHA and the Google
                     <a href="#">Privacy Policy</a> and
                     <a href="#">Terms of Service</a> apply.
-                </p>
+ </p>
                 <p class="register-text">
                     Don't have an account?
-                    <a class="register-link" onclick="showView('registerView')">REGISTER</a>
+ <a class="register-link" onclick="showView('registerView')">REGISTER</a>
                 </p>
             </div>
 
@@ -93,44 +104,53 @@
                 <h2 class="modal-title">Create Your Account</h2>
 
                 <button class="facebook-btn">
-                    <i class="fab fa-facebook-f"></i> Sign up With Facebook
+                   
+                   <i class="fab fa-facebook-f"></i> Sign up With Facebook
                 </button>
 
                 <div class="separator">OR</div>
 
                 <form class="register-form" id="registerForm">
                     <input type="text" name="full_name" id="registerNameInput" placeholder="Full Name" required>
-                    <div id="nameError" class="error-message"></div>
+                
+             <div id="nameError" class="error-message"></div>
 
                     <input type="email" name="email" placeholder="Email Address" required autocomplete="nope">
 
                     <div class="password-group">
                         <input type="password" name="password" id="registerPasswordInput" placeholder="Password"
-                            required>
+                   
+                         required>
                         <i class="far fa-eye password-toggle" data-pw-toggle role="button"
                             aria-label="Toggle password visibility"></i>
                         </div>
 
         
+ 
                     <div class="password-group">
                         <input type="password" name="confirm_password" id="registerConfirmPasswordInput"
                             placeholder="Confirm Password" required>
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
+                      
+                           <i class="far fa-eye password-toggle" data-pw-toggle role="button"
                             aria-label="Toggle password visibility"></i>
                         <div id="passwordMatchError" class="error-message"></div>
                     </div>
 
-                    <div class="captcha-container">
+                 
+                   <div class="captcha-container">
                         <label class="captcha-label" id="captchaLabel">
                             <span id="captchaCheckDisplay" class="captcha-checkbox-display" role="checkbox"
                                 aria-checked="false">
-                                <i class="fas fa-check"></i>
+       
+                                 <i class="fas fa-check"></i>
                             </span>
                             I'm not a robot
+              
                         </label>
                         <input type="hidden" id="captchaVerified" value="false">
                         <div id="captchaError" class="error-message" style="display:none;">Please verify that you are
                             not a robot.</div>
+  
                     </div>
 
                     <button type="submit" class="register-submit-btn">REGISTER</button>
@@ -138,13 +158,14 @@
 
                 <p class="login-prompt">
                     Already have an account?
-                    <a class="login-link" onclick="showView('loginView')">LOG IN</a>
+ <a class="login-link" onclick="showView('loginView')">LOG IN</a>
                 </p>
 
                 <p class="terms-text">
                     By registering, you agree to Saatchi Art's
                     <a href="#">Privacy Policy</a> and
-                    <a href="#">Terms of Service</a>.
+               
+                         <a href="#">Terms of Service</a>.
                 </p>
             </div>
 
@@ -152,9 +173,10 @@
                 <h2 class="modal-title">Forgot Your Password?</h2>
 
                 <p class="terms-text" style="text-align: center; margin-bottom: 25px;">
-                    Enter the email address associated with your account and we'll send you a link to reset your
+                    Enter the email address 
+ associated with your account and we'll send you a link to reset your
                     password.
-                </p>
+ </p>
 
                 <form class="forgot-form">
                     <input type="email" name="email" placeholder="Email Address" required>
@@ -162,6 +184,7 @@
                 </form>
 
                 <div id="resetPasswordView" style="display:none;margin-top:18px">
+ 
                     </div>
 
                 <button class="back-to-login" onclick="showView('loginView')">
@@ -170,7 +193,8 @@
             </div>
 
         </div>
-    </div>
+ 
+       </div>
 
     <div id="captchaModalOverlay">
         <div class="captcha-modal-box">
@@ -178,7 +202,7 @@
             <div class="captcha-grid" id="captchaGrid">
                 </div>
             <div id="captchaFailure" class="error-message" style="display:none; text-align:center;">Incorrect selection.
-                Please try again.</div>
+ Please try again.</div>
         </div>
     </div>
 
@@ -188,267 +212,127 @@
             <div class="content">
                 <div class="main banner">
                     <h2>the beauty of words , the soul of art</h2>
-                    <h1>the art of <br> calligraphy</h1>
+             
+                       <h1>the art of <br> calligraphy</h1>
                 </div>
                 <div class="flex">
                     <div class="video">
                         <video src="images/vid-1.mp4" controls autoplay loop>
-                        </video>
+       
+                                 </video>
                     </div>
                     <div class="pera">
                         <p>Where every stroke of paint , beauty comes alive .
-                            Calligraphy is <br> not just writing It is
+ Calligraphy is <br> not just writing It is
                             harmony ,grace,and timeless expression <br> shaped into art.
-                            <br> InkByHand honors the sacred
+ <br> InkByHand honors the sacred
                             art of Quranic calligraphy while <br> inspiring creativity in every hand that writes.</p>
                         <button>LEARN MORE</button>
                     </div>
 
-                </div>
+           
+             </div>
             </div>
         </section>
         <section class="banner-2">
             <div class="contain">
                 <div class="heading">
                     <h3>Grace Flows With Every Stroke</h3>
-                    <p>
+            
+                  <p>
                         Every letter carries a rythm , every stroke a meaning .... <br> Calligraphy transform ordinary
                         writing into extraordinary art.
-                        We bring grace and artistry into every curve <br> and line ,
+ We bring grace and artistry into every curve <br> and line ,
                         turning
                         simple letters into timeless beauty.
-                    </p>
+ </p>
                 </div>
                 <div class="grid">
                     <div class="images">
                         <img src="images/1a.jpg" alt="">
-                    </div>
+                    
+ </div>
                     <div class="images">
                         <img src="images/8a.jpg" alt="">
                     </div>
                     <div class="images">
-                        <img src="images/2a.jpg" alt="">
+            
+                          <img src="images/2a.jpg" alt="">
                     </div>
                 </div>
             </div>
         </section>
         <section class="banner-3">
             <div class="heading">
-                <h3>Purchase Artwork</h3>
+        
+                  <h3>Purchase Artwork</h3>
             </div>
-            <div class="flexbox">
-                <div class="product" data-id="101">
-                    <div class="image">
-                        <img src="images/1.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Modern Calligraphy</h6>
-                        <h5 data-price="2600.00">$2600.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
+            <div class="flexbox" id="products-container">
                 </div>
-                <div class="product" data-id="102">
-                    <div class="image">
-                        <img src="images/9.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Surah Rehman</h6>
-                        <h5 data-price="1200.00">$1200.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="103">
-                    <div class="image">
-                        <img src="images/2.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Surah Kausar</h6>
-                        <h5 data-price="1600.00">$1600.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="104">
-                    <div class="image">
-                        <img src="images/3.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>99 Nams of Allah</h6>
-                        <h5 data-price="2500.00">$2500.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="105">
-                    <div class="image">
-                        <img src="images/4.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Surah Ad-Duha</h6>
-                        <h5 data-price="1200.00">$1200.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="106">
-                    <div class="image">
-                        <img src="images/5.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Four Kul</h6>
-                        <h5 data-price="2600.00">$2600.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="107">
-                    <div class="image">
-                        <img src="images/6.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Surah Rehman</h6>
-                        <h5 data-price="1700.00">$1700.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="108">
-                    <div class="image">
-                        <img src="images/7.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Ocean Paintaing</h6>
-                        <h5 data-price="200.00">$200.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="109">
-                    <div class="image">
-                        <img src="images/1.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Beauty Of Quran</h6>
-                        <h5 data-price="1400.00">$1400.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="110">
-                    <div class="image">
-                        <img src="images/9.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Ayat al Kursi</h6>
-                        <h5 data-price="1400.00">$1400.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="111">
-                    <div class="image">
-                        <img src="images/11.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Darood e Ibrhimi</h6>
-                        <h5 data-price="2600.00">$2600.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="product" data-id="112">
-                    <div class="image">
-                        <img src="images/10.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <h6>Kaswa Paintaing</h6>
-                        <h5 data-price="3000.00">$3000.00</h5>
-                        <button class="add-to-cart-btn">
-                            <img src="images/trolley.png" alt="" class="cart"> &nbsp;
-                            Add To Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
 
         </section>
         <section class="banner-4">
-            <div class="heading">
+         
+           <div class="heading">
                 <h3>
                     Frequently Asked Questions
                 </h3>
                 <p>Here you’ll find answers to the most common questions about our art, services, and orders.</p>
-            </div>
+            
+ </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>Do you create custom calligraphy paintings?</h4>
 
-                        <div class="arow">
+                    
+                          <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
                 </div>
-                <div class="jsconst" id="p1">
-                    Yes! We take custom orders for Quranic verses, names, wedding gifts, and special occasions.
-                    You can
+     
+                     <div class="jsconst" id="p1">
+                    Yes!
+ We take custom orders for Quranic verses, names, wedding gifts, and special occasions.
+ You can
                     share
                     your idea, and we will turn it into a unique artwork.
-                </div>
+ </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>What materials do you use for your artwork?</h4>
 
-                        <div class="arow">
+      
+                           <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-                </div>
+       
+             </div>
                 <div class="jsconst" id="p1">
                     We use high-quality, archival-grade canvases, premium acrylic and oil paints, and traditional
                     calligraphy inks to ensure longevity and vibrant detail in every piece.
-                </div>
+ </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>How long does it take to complete a painting?</h4>
 
-                        <div class="arow">
+     
+                                     <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
+      
                 </div>
                 <div class="jsconst" id="p1">
                     Completion time varies depending on the complexity and size of the artwork, typically ranging from 2
                     to 4 weeks.
-                    Custom orders may take slightly longer.
+ Custom orders may take slightly longer.
                 </div>
             </div>
             <div class="bloker">
@@ -456,31 +340,35 @@
                     <div class="question">
                         <h4>Do you deliver worldwide?</h4>
 
-                        <div class="arow">
+    
+                                             <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-                </div>
+     
+                 </div>
                 <div class="jsconst" id="p1">
                     Yes, we offer insured worldwide shipping.
-                    Shipping costs and delivery times will be calculated at
+ Shipping costs and delivery times will be calculated at
                     checkout based on your location.
-                </div>
+ </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>How can I place an order?</h4>
 
-                        <div class="arow">
+        
+                                 <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
+         
                 </div>
                 <div class="jsconst" id="p1">
                     You can place an order directly through our "Shop" page for existing pieces, or contact us via the
                     "Contact" page to discuss a custom commission.
-                </div>
+ </div>
             </div>
 
         </section>
@@ -490,63 +378,66 @@
             <div class="align">
                 <div class="sec-1">
                     <div class="logo">
-                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
+           
+                       <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
                             class="logos" alt="">
                     </div>
                     <div class="pera">
-                        InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
+                
+                  InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
                         expression.
-                    </div>
+ </div>
                 </div>
                 <div class="sec-1">
                     <ul>
                         <li>
-                            Service
+                       
+             Service
                         </li>
                         <li>
                             <a href=""> Supply</a>
-                        </li>
+                 
+                       </li>
                         <li>
                             <a href="">Communities</a>
                         </li>
-                        <li>
+                
+                          <li>
                             <a href="">Equipment</a>
                         </li>
                     </ul>
                 </div>
-                <div class="sec-1">
+   
+                      <div class="sec-1">
                     <ul>
                         <li>Further Links</li>
                         <li><a href="">Term & Condition</a></li>
-                        <li><a href="">News</a></li>
+              
+                      <li><a href="">News</a></li>
                     </ul>
                 </div>
                 <div class="sec-1">
                     <ul>
-                        <li>Get In Touch</li>
+                
+                          <li>Get In Touch</li>
                         <li><a href=""><img src="https://www.javehandmade.store/instagram.png" class="m">
                                 instagram.com/ink_by_hand_12</a></li>
                         <li><a href=""><img src="https://www.javehandmade.store/whatsapp.png"
-                                class="n">+92-310-7581250</a>
+     
+                                 class="n">+92-310-7581250</a>
                         </li>
 
                     </ul>
                 </div>
             </div>
-            <div class="copy">
+ 
+           <div class="copy">
                 Copyright © 2025 inkbyhand.com |
-                Powered by inkbyhand.com
+ Powered by inkbyhand.com
             </div>
         </footer>
     </section>
 
-    <div class="cart-notification-overlay" id="cartNotificationOverlay">
-        <div class="cart-notification-box">
-            <h4><i class="fas fa-check-circle" style="margin-right: 8px;"></i> Item Added!</h4>
-            <p>The artwork has been successfully added to your shopping cart.</p>
-            <a href="cart.html">VIEW CART</a>
-        </div>
-    </div>
     
     <div class="scroll-btns">
         <button id="scrollUpBtn" class="scroll-btn up" title="Scroll to Top">
@@ -558,13 +449,14 @@
     </div>
 
     <div class="ad-popup" id="rightAdPopup">
-        <button class="ad-close-btn" id="adCloseBtn">&times;</button>
+    
+          <button class="ad-close-btn" id="adCloseBtn">&times;</button>
         <a href="product.html" target="_blank" title="Check out our latest offer">
             <div class="ad-content-wrapper">
                 <img src="images/3.jpg" alt="Special Offer Advertisement" class="ad-image">
                 <div class="ad-text">
                     Limited Time Offer!
-                    <br>
+ <br>
                     Save 20%
                 </div>
             </div>
@@ -573,6 +465,7 @@
 
    <script src="js/script.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="js/dashboadover.js"></script>
 
     <script src="js/animate.js"></script>
 </body>

@@ -1,257 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Product Data ---
-    const ALL_PRODUCTS_DATA = [{
-            "id": "1",
-            "image": "https://i.etsystatic.com/42536102/r/il/5d26c8/6409880809/il_1588xN.6409880809_kgs9.jpg",
-            "title": "Geometric Dance",
-            "artist": "Tomoki Tanaka",
-            "price": "$1,350",
-            "dimensions": "20 x 20 in",
-            "category": "drawing",
-            "style": "minimalism",
-            "subject": "abstract",
-            "medium": "ink",
-            "size": "small",
-            "priceRange": "1000-2000",
-            "country": "japan",
-            "orientation": "square",
-            "palette": "monochromatic",
-            "color": "black white",
-           "smallImages": [
-                        "https://res.cloudinary.com/dwnnadeb0/image/upload/v1757088860/products/1757088860744-Gemini_Generated_Image_wps1hjwps1hjwps1.png.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/5d26c8/6409880809/il_1588xN.6409880809_kgs9.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/33c0a6/6361801646/il_1588xN.6361801646_kjsj.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/3e87a0/6409880785/il_1588xN.6409880785_jv12.jpg"
-                    ],
-            "descriptionText": "A meticulous abstract drawing using sumi ink.",
-            "artistBioText": "Tanaka is a Tokyo-based artist focused on line and space."
-        },
-         
-  {
-    "id": "1",
-    "image": "images/1.jpg",
-    "title": "Geometric Dance",
-    "artist": "Tomoki Tanaka",
-    "price": "$1,350",
-    "dimensions": "20 x 20 in",
-    "category": "drawing",
-    "style": "minimalism",
-    "subject": "abstract",
-    "medium": "ink",
-    "size": "small",
-    "priceRange": "1000-2000",
-    "country": "Japan",
-    "orientation": "square",
-    "palette": "monochromatic",
-    "color": "black white",
-    "smallImages": [
-      "images/2.jpg",
-      "images/3.jpg",
-      "images/4.jpg",
-      "images/5.jpg"
-    ],
-    "descriptionText": "A meticulous abstract drawing using sumi ink.",
-    "artistBioText": "Tanaka is a Tokyo-based artist focused on line and space."
-  },
-  {
-    "id": "2",
-    "image": "images/6.jpg",
-    "title": "Golden Whispers",
-    "artist": "Aisha Rahman",
-    "price": "$950",
-    "dimensions": "18 x 24 in",
-    "category": "painting",
-    "style": "modern",
-    "subject": "floral",
-    "medium": "acrylic",
-    "size": "medium",
-    "priceRange": "500-1000",
-    "country": "Pakistan",
-    "orientation": "portrait",
-    "palette": "warm",
-    "color": "gold brown",
-    "smallImages": [
-      "images/7.jpg",
-      "images/8a.jpg",
-      "images/9.jpg"
-    ],
-    "descriptionText": "A soft modern painting symbolizing growth and serenity.",
-    "artistBioText": "Aisha Rahman blends traditional South Asian art with modern minimalism."
-  },
-  {
-    "id": "3",
-    "image": "images/10.jpg",
-    "title": "Urban Mirage",
-    "artist": "Liam Novak",
-    "price": "$2,100",
-    "dimensions": "30 x 30 in",
-    "category": "digital art",
-    "style": "abstract expressionism",
-    "subject": "cityscape",
-    "medium": "digital",
-    "size": "large",
-    "priceRange": "2000-3000",
-    "country": "USA",
-    "orientation": "square",
-    "palette": "cool",
-    "color": "blue gray white",
-    "smallImages": [
-      "images/11.jpg",
-      "images/1.jpg",
-      "images/4.jpg"
-    ],
-    "descriptionText": "A digital abstraction of city life and motion.",
-    "artistBioText": "Novak explores modern digital mediums inspired by fast-paced urban life."
-  },
-  {
-    "id": "4",
-    "image": "images/9.jpg",
-    "title": "Serenity Bloom",
-    "artist": "Mei Lin",
-    "price": "$780",
-    "dimensions": "16 x 20 in",
-    "category": "painting",
-    "style": "realism",
-    "subject": "nature",
-    "medium": "watercolor",
-    "size": "medium",
-    "priceRange": "500-1000",
-    "country": "China",
-    "orientation": "landscape",
-    "palette": "soft",
-    "color": "green pink white",
-    "smallImages": [
-      "images/1.jpg",
-      "images/1a.jpg",
-      "images/2a.jpg"
-    ],
-    "descriptionText": "A calming watercolor that captures the delicate rhythm of spring.",
-    "artistBioText": "Mei Lin is a watercolor artist specializing in delicate, nature-inspired themes."
-  },
-  {
-    "id": "5",
-    "image": "images/2a.jpg",
-    "title": "Echoes of Time",
-    "artist": "Carlos Mendes",
-    "price": "$1,800",
-    "dimensions": "24 x 36 in",
-    "category": "mixed media",
-    "style": "contemporary",
-    "subject": "abstract",
-    "medium": "mixed",
-    "size": "large",
-    "priceRange": "1500-2000",
-    "country": "Brazil",
-    "orientation": "landscape",
-    "palette": "earthy",
-    "color": "brown beige gold",
-    "smallImages": [
-      "images/4.jpg",
-      "images/5.jpg",
-      "images/9.jpg"
-    ],
-    "descriptionText": "A layered composition representing the passing of eras.",
-    "artistBioText": "Carlos Mendes merges texture and color to express the essence of memory."
-  },
-  {
-    "id": "6",
-    "image": "images/5.jpg",
-    "title": "Crimson Horizon",
-    "artist": "Sara Noor",
-    "price": "$1,250",
-    "dimensions": "22 x 22 in",
-    "category": "painting",
-    "style": "abstract minimalism",
-    "subject": "landscape",
-    "medium": "oil",
-    "size": "medium",
-    "priceRange": "1000-1500",
-    "country": "UAE",
-    "orientation": "square",
-    "palette": "vibrant",
-    "color": "red orange gold",
-    "smallImages": [
-      "images/6.jpg",
-      "images/7.jpg",
-      "images/8a.jpg"
-    ],
-    "descriptionText": "A bold and fiery abstraction inspired by desert sunsets.",
-    "artistBioText": "Sara Noor paints minimalist landscapes evoking emotion through color balance."
-  },
-        {
-            "id": "2",
-            "image": "images/10.jpg",
-            "title": "Quaran Caligraphy",
-            "artist": "Areeba Tahir",
-            "price": "Rs 8500",
-            "dimensions": "30 x 30 in",
-            "category": "painting",
-            "style": "minimalism",
-            "subject": "abstract",
-            "medium": "acrylic",
-            "size": "medium",
-            "priceRange": "500-1000",
-            "country": "usa",
-            "orientation": "square",
-            "palette": "cool",
-            "color": "blue white grey",
-            "smallImages": [
-                        "https://res.cloudinary.com/dwnnadeb0/image/upload/v1757088860/products/1757088860744-Gemini_Generated_Image_wps1hjwps1hjwps1.png.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/5d26c8/6409880809/il_1588xN.6409880809_kgs9.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/33c0a6/6361801646/il_1588xN.6361801646_kjsj.jpg",
-                        "https://i.etsystatic.com/42536102/r/il/3e87a0/6409880785/il_1588xN.6409880785_jv12.jpg"
-                    ],
-            "descriptionText": "Al-Quran Calligraphy is a sacred form of Islamic art.",
-            "artistBioText": "Areeba's work focuses on spiritual Arabic script."
-        },
-        {
-            "id": "3",
-            "image": "images/3a.jpg",
-            "title": "Desert Horizon",
-            "artist": "Lisa Chen",
-            "price": "$900",
-            "dimensions": "18 x 24 in",
-            "category": "painting",
-            "style": "abstract",
-            "subject": "landscape",
-            "medium": "oil",
-            "size": "small",
-            "priceRange": "500-1000",
-            "country": "usa",
-            "orientation": "portrait",
-            "palette": "warm",
-            "color": "orange brown",
-            "smallImages": [],
-            "descriptionText": "Desert Horizon captures the heat and stillness of the American Southwest.",
-            "artistBioText": null
-        },
-        //{
-        //     "id": "4",
-        //     "image": "https://images.unsplash.com/photo-1579783900882-c94e4e9a3f29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjY4Mzh8MHwxfGFsbHwzfHx8fHx8fDF8fDE3NTcwODg4NjB8&ixlib=rb-4.0.3&q=80&w=1080",
-        //     "title": "Urban Blur",
-        //     "artist": "Anya Sharma",
-        //     "price": "$1,100",
-        //     "dimensions": "40 x 30 in",
-        //     "category": "photography",
-        //     "style": "impressionism",
-        //     "subject": "cityscape",
-        //     "medium": "digital",
-        //     "size": "medium",
-        //     "priceRange": "1000-2000",
-        //     "country": "india",
-        //     "orientation": "portrait",
-        //     "palette": "vibrant",
-        //     "color": "red black yellow",
-        //     "smallImages": [],
-        //     "descriptionText": "A dynamic, high-energy photograph capturing motion and light in a busy metropolis.",
-        //     "artistBioText": "Sharma's photography blurs the line between reality and emotion."
-        // }
-    ];
+    // --- Global Data Store & Constants ---
+    let ALL_PRODUCTS_DATA = [];
+    let FILTER_OPTIONS = {};
 
     const productGrid = document.getElementById('artGallery');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.querySelector('.search-icon');
-    const searchBar = document.getElementById('searchBar'); // New element reference
+    const searchBar = document.getElementById('searchBar');
+    // Is page ke liye, hum saare products click count descending mein laate hain.
+    const API_URL = 'http://localhost:5000/api/products'; 
+    const filtersWrapper = document.querySelector('.filters-wrapper');
+
+    // ⭐ NEW: Mapping palette names to actual CSS colors for display
+    const colorMap = {
+        'monochromatic': '#A0A0A0', // Example grey
+        'analogous': '#4CAF50', // Example green/blue tone
+        'pastel': '#FFB6C1', // Example light pink
+        'vibrant': '#FF0000', // Example red
+        'earthy': '#8B4513', // Example brown
+        'cool': '#00BFFF', // Example deep sky blue
+        'warm': '#FFA500', // Example orange
+        // Add more mappings as per your palette values in the backend
+    };
 
     // Helper to prevent XSS issues
     function escapeHtml(str) {
@@ -263,12 +33,191 @@ document.addEventListener('DOMContentLoaded', () => {
             .replaceAll("'", '&#39;');
     }
 
-    // --- 1. Get Current Filter State (Same as before) ---
+    // Helper function for collapsing filters
+    function toggleFilterCollapse() {
+        this.classList.toggle('collapsed');
+        const container = this.nextElementSibling;
+        if (container) {
+            container.classList.toggle('collapsed');
+        }
+    }
+
+    // ⭐ NEW FUNCTION: Send API call to increment click_count
+    async function increaseClickCount(productId) {
+        try {
+            // Hum detail page ke API ko call kar rahe hain, jo count ko increment karta hai.
+            // Hum sirf GET request bhejenge, aur response ko ignore kar denge.
+            await fetch(`${API_URL}/${productId}`, {
+                method: 'GET'
+            });
+            // Console mein success message
+            console.log(`Click count incremented for product ID: ${productId}`);
+        } catch (error) {
+            console.error('Failed to increment click count:', error);
+            // Error hone par bhi navigation hone denge.
+        }
+    }
+
+
+    // --- CORE LOGIC: Dynamic Filter Extraction ---
+
+    function extractUniqueFilters(products) {
+        const filters = {
+            category: new Set(),
+            style: new Set(),
+            subject: new Set(),
+            medium: new Set(),
+            size: new Set(),
+            orientation: new Set(),
+            palette: new Set(), // Using 'palette'
+            priceRange: [
+                'under-500', '500-1000', '1000-2000', '2000-5000'
+            ]
+        };
+        const priceDisplayMap = {
+            'under-500': 'Under $500',
+            '500-1000': '$500 - $1,000',
+            '1000-2000': '$1,000 - $2,000',
+            '2000-5000': '$2,000 - $5,000'
+        };
+        products.forEach(product => {
+            if (product.category) filters.category.add(product.category);
+            if (product.medium) filters.medium.add(product.medium);
+            if (product.style) filters.style.add(product.style);
+            if (product.subject) filters.subject.add(product.subject);
+            if (product.size) filters.size.add(product.size);
+            if (product.orientation) filters.orientation.add(product.orientation);
+
+            // Corrected: Use 'palette' field (which is an array)
+            if (product.palette && Array.isArray(product.palette)) {
+                product.palette.forEach(c => filters.palette.add(c));
+            }
+        });
+        for (const key in filters) {
+            if (key === 'priceRange') {
+                FILTER_OPTIONS[key] = filters[key].map(value => ({ value: value, display: priceDisplayMap[value] }));
+            } else {
+                FILTER_OPTIONS[key] = Array.from(filters[key])
+                    .filter(v => v && String(v).trim() !== '')
+                    .sort()
+                    .map(value => ({ value: value, display: value }));
+            }
+        }
+
+        if (FILTER_OPTIONS.size) {
+            FILTER_OPTIONS.size.forEach(option => {
+                if (option.value === 'small') option.display = 'Small (up to 20 x 20 in)';
+                if (option.value === 'medium') option.display = 'Medium (20 x 20 to 40 x 40 in)';
+                if (option.value === 'large') option.display = 'Large (40 x 40 to 60 x 60 in)';
+            });
+        }
+    }
+
+    /**
+     * Renders a single filter group using the required HTML structure.
+     */
+    function renderFilterSection(title, type, options) {
+        if (!options || options.length === 0) return '';
+        const displayTitle = (type === 'palette' ? 'COLOR' : title.toUpperCase());
+        const isPaletteFilter = type === 'palette';
+        const isPriceFilter = type === 'priceRange';
+        let optionsHtml = '';
+
+        if (isPaletteFilter) {
+            optionsHtml = options.map(option => {
+                const paletteName = option.value.toLowerCase();
+                const actualColor = colorMap[paletteName] || '#CCCCCC';
+
+                const safePaletteName = escapeHtml(option.value);
+                
+                return `<div class="color-swatch" data-filter-type="palette" data-value="${safePaletteName}" style="background-color:${actualColor};" title="${safePaletteName}"></div>`;
+            }).join('');
+            optionsHtml = `<div class="filter-options-container color-options">${optionsHtml}</div>`; 
+        
+        } else {
+            optionsHtml = options.map(option => {
+                const safeId = `filter-${type}-${option.value.toLowerCase().replace(/\s/g, '-')}`;
+                const escapedValue = escapeHtml(option.value);
+                const escapedDisplay = escapeHtml(option.display);
+                
+                return `
+                    <label class="filter-item">
+                        <input type="checkbox" id="${safeId}" value="${escapedValue}" data-filter-type="${type}">
+                        ${escapedDisplay}
+                    </label>
+                `;
+            }).join('');
+            optionsHtml = `<div class="filter-options-container">${optionsHtml}</div>`; 
+        }
+
+        const colorClass = isPaletteFilter ? ' color-palette-picker' : ''; 
+
+        return `
+            <div class="filter-group${colorClass}">
+                <h3 class="filter-header">${displayTitle}</h3>
+                ${optionsHtml} </div>
+        `;
+    }
+
+    function renderAllFilters() {
+        if (!filtersWrapper) return;
+        let filtersHTML = '';
+        const filterOrder = ['category', 'style', 'subject', 'medium', 'size', 'orientation', 'priceRange', 'palette'];
+
+        filterOrder.forEach(type => {
+            const options = FILTER_OPTIONS[type];
+            if (options && options.length > 0) {
+                filtersHTML += renderFilterSection(type, type, options);
+            }
+        });
+        filtersWrapper.innerHTML = filtersHTML;
+
+        // Re-attach listeners to dynamic elements
+        attachFilterListeners();
+        attachFilterHeaderListeners();
+    }
+
+
+    // --- Data Fetching and Product Mapping ---
+    async function fetchProducts() {
+        if (!productGrid) return;
+        productGrid.innerHTML = '<p style="padding: 50px 0; text-align: center;">Fetching artwork and building filters...</p>';
+        try {
+            // API call now brings all products sorted by click_count descending
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const rawProducts = await response.json();
+            ALL_PRODUCTS_DATA = rawProducts.map(product => ({
+                ...product,
+                id: product._id,
+                image: product.mainImage,
+                priceValue: product.price ? parseFloat(product.price) : 0,
+                price: typeof product.price === 'number' ? `$${product.price.toLocaleString('en-US')}` : product.price
+
+            }));
+
+            extractUniqueFilters(ALL_PRODUCTS_DATA);
+            renderAllFilters();
+            renderFilteredProducts();
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            productGrid.innerHTML = `
+                <p class="no-results-message" style="padding: 50px 0; text-align: center; color: red; font-size: 1.2em; grid-column: 1 / -1;">
+                    ❌ Error loading products.
+                    Please check if the API server is running at ${API_URL}.
+                </p>
+            `;
+        }
+    }
+
+    // --- Filter State ---
+
     function getActiveState() {
         const activeState = {
             searchQuery: (searchInput.value || '').toLowerCase().trim()
         };
-
         const checkboxes = document.querySelectorAll('.sidebar input[type="checkbox"]:checked');
         checkboxes.forEach(checkbox => {
             const type = checkbox.getAttribute('data-filter-type');
@@ -277,114 +226,142 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeState[type] = new Set();
             }
             activeState[type].add(String(checkbox.value).toLowerCase());
+
         });
 
-        const colorSwatches = document.querySelectorAll('.color-swatch.selected');
-        if (colorSwatches.length > 0) {
-            activeState['color'] = new Set();
-            colorSwatches.forEach(swatch => {
-                const col = swatch.getAttribute('data-color');
-                if (col) activeState['color'].add(col.toLowerCase());
+        // Handle 'palette' (color) swatches separately
+        const paletteSwatches = document.querySelectorAll('.color-swatch.selected[data-filter-type="palette"]');
+        if (paletteSwatches.length > 0) {
+            activeState['palette'] = new Set();
+            paletteSwatches.forEach(swatch => {
+                const paletteVal = swatch.getAttribute('data-value');
+                if (paletteVal) activeState['palette'].add(paletteVal.toLowerCase());
             });
         }
-
+        
         return activeState;
     }
 
-    // --- 2. Filter Logic (Same as before) ---
+    // --- Filter Logic ---
     function filterProducts(products, state) {
         return products.filter(product => {
-
             if (state.searchQuery) {
                 const q = state.searchQuery;
                 const searchFields = [
                     (product.title || '').toLowerCase(),
                     (product.artist || '').toLowerCase(),
                     (product.style || '').toLowerCase(),
-                    (product.descriptionText || '').toLowerCase()
                 ];
                 const matchesSearch = searchFields.some(field => field.includes(q));
+
                 if (!matchesSearch) return false;
             }
 
             for (const type in state) {
-                if (type === 'searchQuery') continue;
-                const activeValues = state[type]; 
+                if (type === 'searchQuery' || state[type].size === 0) continue;
 
-                if (activeValues instanceof Set && activeValues.size > 0) {
-                    const productValueRaw = product[type];
-                    if (!productValueRaw) return false; 
+                const activeValues = state[type];
+                const requiredValues = Array.from(activeValues).map(v => 
+                    v.toLowerCase());
 
-                    const requiredValues = Array.from(activeValues);
+                let matchesFilter = false;
 
-                    if (type === 'color') {
-                        const productColors = String(productValueRaw).toLowerCase().split(/\s+/);
-                        const matchesColor = requiredValues.some(activeColor => productColors.includes(activeColor));
-                        if (!matchesColor) return false; 
-                    } else {
-                        const productValue = String(productValueRaw).toLowerCase();
-                        const matches = requiredValues.some(rv => rv === productValue);
-                        if (!matches) return false; 
-                    }
+                if (type === 'priceRange' && product.priceValue !== undefined) {
+                    matchesFilter = requiredValues.some(range => {
+                        const price = product.priceValue;
+                        if (range === 'under-500' && price < 500) return true;
+                        if (range === '500-1000' && price >= 500 && price <= 1000) return true;
+                        if (range === '1000-2000' && price > 1000 && price <= 2000) return true;
+                        if (range === '2000-5000' && price > 2000 && price <= 5000) return true;
+                        return false;
+                    });
+                    if (!matchesFilter) return false;
+                    continue;
                 }
-            }
 
+                if (type === 'size' || type === 'orientation') {
+                    const productValueRaw = product[type];
+                    if (!productValueRaw) return false;
+                    const productValueLower = String(productValueRaw).toLowerCase();
+                    matchesFilter = requiredValues.some(rv => rv === productValueLower);
+                    if (!matchesFilter) return false;
+                    continue;
+                }
+
+                // PALETTE (Color) Filter
+                if (type === 'palette') {
+                    const productPalette = product.palette;
+                    if (!productPalette || !Array.isArray(productPalette)) return false;
+                    const productValues = productPalette.map(v => String(v).toLowerCase());
+                    matchesFilter = requiredValues.some(rv => productValues.includes(rv));
+
+                    if (!matchesFilter) return false;
+                    continue;
+                }
+
+                // Standard filters (Category, Style, Medium, Subject)
+                const productValueRaw = product[type];
+                if (!productValueRaw) return false;
+
+                if (Array.isArray(productValueRaw)) {
+                    const productValues = productValueRaw.map(v => String(v).toLowerCase());
+                    matchesFilter = requiredValues.some(rv => productValues.includes(rv));
+                } else if (typeof productValueRaw === 'string') {
+                    const productValueLower = productValueRaw.toLowerCase();
+                    matchesFilter = requiredValues.some(rv => rv === productValueLower);
+                }
+                if (!matchesFilter) return false;
+            }
             return true;
         });
     }
 
-    // --- 3. Product Card Generation (Same as before) ---
+    // --- Product Card Rendering (MODIFIED) ---
     function createProductCard(product) {
-        // ... (Card creation logic is unchanged)
         const cardLink = document.createElement('a');
         cardLink.classList.add('art-card');
-        cardLink.href = `detail.html?id=${product.id}`; 
-        cardLink.setAttribute('aria-label', product.title || 'art item');
-
-        cardLink.addEventListener('click', () => {
-            try {
-                localStorage.setItem('selectedProduct', JSON.stringify(product));
-            } catch (err) {
-                console.warn('Could not save selectedProduct to localStorage', err);
-            }
+        cardLink.href = `detail.html?id=${product.id}`; // Navigation link
+        // ⭐ NEW: Add listener to link to increment click count before navigation
+        cardLink.addEventListener('click', (e) => {
+             // e.preventDefault(); // Don't prevent navigation, just do the API call first
+             increaseClickCount(product.id);
+             // The browser will continue the navigation to 'detail.html?id=...'
         });
+
 
         const safeTitle = escapeHtml(product.title || '');
         const safeArtist = escapeHtml(product.artist || '');
-        const safeDimensions = escapeHtml(product.dimensions || '');
         const safePrice = escapeHtml(product.price || '');
-        const imgSrc = product.image || '';
-
+        const imgSrc = product.image || 'images/placeholder.png';
         cardLink.innerHTML = `
             <div class="card-image-container">
                 <img src="${imgSrc}" alt="${safeTitle}" class="card-image" loading="lazy">
                 <div class="overlay-icons">
                     <button class="icon quick-view" aria-label="Quick View" type="button">👁️</button>
-                    <button class="icon add-to-cart" aria-label="Add to Cart" type="button" data-product-id="${product.id}">🛒</button>
+                    <button class="icon add-to-cart" 
+                        aria-label="Add to Cart" type="button" data-product-id="${product.id}">🛒</button>
                 </div>
             </div>
             <div class="card-info">
                 <h3 class="title">${safeTitle}</h3>
                 <p class="artist">${safeArtist}</p>
-                <p class="dimensions">${safeDimensions}</p>
                 <p class="price">${safePrice}</p>
+    
             </div>
         `;
-
         const addToCartBtn = cardLink.querySelector('.add-to-cart');
         if (addToCartBtn) {
             addToCartBtn.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                e.stopPropagation(); 
-                console.log(`Added Product ID ${product.id} to cart!`);
+                e.preventDefault(); // Prevent link navigation
+                e.stopPropagation(); // Stop event from bubbling up to the cardLink
                 alert(`Added ${safeTitle} to cart!`);
+                // Note: Agar aap cart mein add karte hain, toh click count nahi badhega.
             });
         }
 
         return cardLink;
     }
 
-    // --- 4. Main Render Function (Same as before) ---
     function renderFilteredProducts() {
         const activeState = getActiveState();
         const filteredProducts = filterProducts(ALL_PRODUCTS_DATA, activeState);
@@ -392,12 +369,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!productGrid) return;
 
         productGrid.innerHTML = '';
-
         if (filteredProducts.length === 0) {
             productGrid.style.display = 'block';
             productGrid.innerHTML = `
                 <p class="no-results-message" style="padding: 50px 0; text-align: center; color: #555; font-size: 1.2em; grid-column: 1 / -1;">
-                    😔 Sorry, no art matches your current selection. Try broadening your search!
+                    😔 Sorry, no art matches your current selection.
+                    Try broadening your search!
                 </p>
             `;
         } else {
@@ -409,82 +386,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. Event Listeners ---
+    // --- Event Listeners Setup ---
 
-    // **NEW** Search Bar Toggle Logic
-    const handleSearchToggle = () => {
-        // 1. Check if the bar is currently expanded
-        const isExpanded = searchBar.classList.contains('active');
+    function attachFilterListeners() {
+        const filterControls = document.querySelectorAll('.sidebar input[type="checkbox"]');
+        filterControls.forEach(control => {
+            control.removeEventListener('change', renderFilteredProducts);
+            control.addEventListener('change', renderFilteredProducts);
+        });
         
+        const paletteSwatches = document.querySelectorAll('.color-swatch[data-filter-type="palette"]');
+        paletteSwatches.forEach(swatch => {
+            swatch.removeEventListener('click', handlePaletteSwatchClick);
+            swatch.addEventListener('click', handlePaletteSwatchClick);
+        });
+    }
+
+    function handlePaletteSwatchClick() {
+        this.classList.toggle('selected');
+        renderFilteredProducts();
+    }
+
+    function attachFilterHeaderListeners() {
+        const filterHeaders = document.querySelectorAll('.filter-header');
+        filterHeaders.forEach(header => {
+            header.removeEventListener('click', toggleFilterCollapse);
+            header.addEventListener('click', toggleFilterCollapse);
+        });
+    }
+
+    // --- Search Logic ---
+    const handleSearchToggle = () => {
+        const isExpanded = searchBar.classList.contains('active');
+        const query = searchInput.value.trim();
+
         if (isExpanded) {
-            // If expanded AND input has text, run the search logic
-            if (searchInput.value.trim() !== "") {
-                renderFilteredProducts();
-            } else {
-                // If expanded and empty, collapse the bar
+            renderFilteredProducts(); 
+
+            if (query === "") { 
                 searchBar.classList.remove('active');
             }
         } else {
-            // If collapsed, expand the bar and focus the input
             searchBar.classList.add('active');
             searchInput.focus();
         }
     };
-    
-    // Attach the new handler to the search button click
+
     if (searchButton) searchButton.addEventListener('click', handleSearchToggle);
-    
-    // Only run search if Enter is pressed while expanded
+
     if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => { 
+        searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent form submission
+                e.preventDefault();
                 renderFilteredProducts();
-                searchInput.blur(); // Optional: remove focus after search
+                searchInput.blur();
             }
         });
     }
-
-    // Filters and Color Swatches
-    const filterControls = document.querySelectorAll('.sidebar input[type="checkbox"], .color-swatch');
-    filterControls.forEach(control => {
-        control.addEventListener(control.tagName === 'INPUT' ? 'change' : 'click', function() {
-            if (this.classList.contains('color-swatch')) {
-                this.classList.toggle('selected');
-            }
-            renderFilteredProducts();
-        });
-    });
-
-    // Mobile Menu Toggle (Same as before)
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuToggle.innerHTML = navLinks.classList.contains('active') ? '<img src="images/close.png" alt="">' : '<img src="images/ui.png" alt="">';
-            menuToggle.setAttribute('aria-expanded', navLinks.classList.contains('active'));
-        });
-    }
-
-    // Filter Header Collapse/Expand (Same as before)
-    const filterHeaders = document.querySelectorAll('.filter-header');
-    filterHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            this.classList.toggle('collapsed');
-            const container = this.nextElementSibling;
-            if (container) {
-                container.classList.toggle('collapsed');
-            }
-        });
-        
-        if (window.innerWidth < 768) {
-            header.classList.add('collapsed');
-            const container = header.nextElementSibling;
-            if (container) container.classList.add('collapsed');
-        }
-    });
 
     // --- Initial Load ---
-    renderFilteredProducts();
+    fetchProducts();
 });

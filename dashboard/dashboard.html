@@ -6,14 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art Product Management Dashboard</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-   
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
+<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            
+            <div class="flex-shrink-0">
+                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
+                    <span class="text-blue-600">Pro</span>Dashboard
+                </a>
+            </div>
 
+            <nav class="hidden md:block">
+                <div class="flex items-baseline space-x-6">
+                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
+                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
+                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
+                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
+                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
+                    
+                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
+                        Profile
+                    </a>
+                </div>
+            </nav>
+
+            <div class="md:hidden">
+                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
+
+    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
+            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
+            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
+            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
+            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
+            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
+            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
+        </div>
+    </div>
+</header>
     <div class="dashboard-container">
-
-        
 
         <main class="main-content">
 
@@ -27,10 +74,11 @@
                 <div class="controls-bar">
                     <input type="text" placeholder="Search by title, artist, or style..." class="search-input">
                     <div class="custom-select-wrapper filter-select-wrapper">
-                        <select class="filter-select">
-                            <option value="" disabled selected>Filter Category</option>
+                        <select class="filter-select" id="filterCategorySelect">
+                            <option value="" selected>All Categories</option>
                             <option value="drawing">Drawing</option>
                             <option value="painting">Painting</option>
+                            <option value="sculpture">Sculpture</option>
                         </select>
                     </div>
                 </div>
@@ -46,15 +94,9 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="product-table-body">
                             <tr>
-                                <td data-label="ID">1</td>
-                                <td data-label="Title / Artist"><strong>Geometric Dance</strong><small>(Japan)</small>
-                                </td>
-                                <td data-label="Price Range">$1,000 - $2,000</td>
-                                <td data-label="Category / Style">Drawing / Minimalism</td>
-                                <td data-label="Actions"><button class="btn btn-action edit-btn"
-                                        title="Edit">✏️</button></td>
+                                <td colspan="5">Loading products...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -68,25 +110,28 @@
     <div class="modal-overlay" id="product-modal">
         <div class="modal-content">
             <span class="close-btn" id="close-modal-btn">&times;</span>
-            <h3>Add/Edit Product Details</h3>
+            <h3 id="modal-title">Add New Product</h3>
             <form class="product-form" id="product-form">
+
+                <input type="hidden" id="product-id" value="">
 
                 <div class="form-group span-2"><label for="title">Title</label><input type="text" id="title" required>
                 </div>
-                <div class="form-group span-2"><label for="artist">Artist</label><input type="text" id="artist"
-                        required></div>
+                <div class="form-group span-2"><label for="artist">Artist</label><input type="text" id="artist" required>
+                </div>
 
                 <div class="form-group"><label for="price">Price ($)</label><input type="number" id="price" required>
                 </div>
                 <div class="form-group custom-select-wrapper">
                     <label for="priceRange">Price Range</label>
                     <select id="priceRange" required>
-                        <option value="1000-2000" selected>$1000 - $2000</option>
                         <option value="0-1000">$0 - $1000</option>
+                        <option value="1000-2000" selected>$1000 - $2000</option>
                         <option value="2000-5000">$2000 - $5000</option>
                         <option value="5000+">$5000+</option>
                     </select>
                 </div>
+
                 <div class="form-group"><label for="dimensions">Dimensions</label><input type="text" id="dimensions"
                         value="20 x 20 in"></div>
                 <div class="form-group custom-select-wrapper">
@@ -99,6 +144,14 @@
                 </div>
 
                 <div class="form-group custom-select-wrapper">
+                    <label for="orientation">Orientation</label>
+                    <select id="orientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                        <option value="square" selected>Square</option>
+                    </select>
+                </div>
+                <div class="form-group custom-select-wrapper">
                     <label for="category">Category</label>
                     <select id="category">
                         <option value="drawing" selected>Drawing</option>
@@ -110,20 +163,23 @@
                 <div class="form-group"><label for="style">Style</label><input type="text" id="style"></div>
                 <div class="form-group"><label for="subject">Subject</label><input type="text" id="subject"></div>
 
-                <div class="form-group span-2 multi-select-container">
+                <div class="form-group span-4 multi-select-container">
                     <label>Country</label>
                     <div class="tag-input-field" data-type="country">
                         <input type="text" class="tag-input"
                             data-list="Japan,USA,France,Italy,Spain,China,Germany,UK,Brazil"
                             placeholder="Search or select country...">
+                        <span class="tag-input-icon" data-action="enter">🔍</span>
                     </div>
                 </div>
-                <div class="form-group span-2 multi-select-container">
+
+                <div class="form-group span-4 multi-select-container">
                     <label>Color Palette</label>
                     <div class="tag-input-field" data-type="palette">
                         <input type="text" class="tag-input"
                             data-list="Monochromatic,Analogous,Complementary,Triadic,Vibrant,Pastel,Earthy,High Contrast"
                             placeholder="Search or select palette...">
+                        <span class="tag-input-icon" data-action="enter">🔍</span>
                     </div>
                 </div>
 
@@ -177,31 +233,73 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const productForm = document.getElementById('product-form');
+            const productTableBody = document.querySelector('.product-table tbody');
+            const modalTitle = document.getElementById('modal-title');
+            const hiddenProductId = document.getElementById('product-id');
 
             const mainImageUrlInput = document.getElementById('main-image-url');
             const mainImagePreview = document.getElementById('main-image-preview');
             const mainFileUpload = document.getElementById('main-file-upload');
             const smallFileUpload = document.getElementById('small-file-upload');
             const smallImagesContainer = document.querySelector('.image-thumbs-container');
-
-            // Safely get the hidden input
             const smallImagesInput = document.getElementById('small-images-input');
+            const searchInput = document.querySelector('.search-input');
+            const filterSelect = document.querySelector('.filter-select');
+            let smallImageUrls = [];
+            const API_URL = 'http://localhost:5000/api/products';
 
-            let smallImageUrls = smallImagesInput
-                ? smallImagesInput.value.split(',').filter(url => url.trim() !== '')
-                : [];
+            let allProducts = [];
+            // --- 2. MODAL & FORM UTILITIES ---
 
-            // Note: addNewThumb is still useful for initial rendering, but the click is now CSS/HTML handled
-            const addNewThumb = document.getElementById('add-small-image');
-            // --- END VARIABLE DECLARATIONS ---
+            // Helper to manually set the custom select display
+            function updateCustomSelectDisplay(nativeSelect) {
+                const wrapper = nativeSelect.closest('.custom-select-wrapper');
+                const customButton = wrapper ? wrapper.querySelector('.select-selected') : null;
 
-            // --- 2. MODAL & UTILITIES (omitted for brevity) ---
-            if (openModalBtn) openModalBtn.onclick = () => modal.classList.add('open');
+                if (customButton) {
+                    const selectedOption = Array.from(nativeSelect.options).find(opt => opt.value === nativeSelect.value);
+                    customButton.innerHTML = selectedOption ? selectedOption.innerHTML : nativeSelect.options[0].innerHTML;
+                }
+            }
+
+            function clearForm() {
+                productForm.reset();
+                hiddenProductId.value = '';
+                modalTitle.textContent = 'Add New Product';
+                mainImagePreview.src = 'placeholder.jpg';
+                smallImageUrls = [];
+                renderSmallImages();
+                // Reset Multi-Select Tags
+                document.querySelectorAll('.tag-input-field').forEach(inputField => {
+                    if (inputField.api && inputField.api.reset) {
+                        inputField.api.reset();
+                    }
+                });
+
+                // Reset Custom Selects and update their visual display
+                document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
+                    const nativeSelect = wrapper.querySelector('select');
+                    if (nativeSelect) {
+                        // Reset to the first option (or selected default in HTML)
+                        nativeSelect.value = nativeSelect.options[0].value;
+                        updateCustomSelectDisplay(nativeSelect);
+                    }
+                });
+            }
+
+            if (openModalBtn) {
+                openModalBtn.onclick = () => {
+                    clearForm();
+                    modal.classList.add('open');
+                };
+            }
+
             if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.remove('open');
             if (modal) modal.onclick = (e) => {
                 if (e.target === modal) modal.classList.remove('open');
             };
 
+            // Global handler to close custom selects
             function closeAllSelect(elmnt) {
                 const selectedElements = document.getElementsByClassName("select-selected");
                 const itemsElements = document.getElementsByClassName("select-items");
@@ -213,56 +311,97 @@
                 }
             }
             document.addEventListener("click", closeAllSelect);
+            // --- 3. CUSTOM SELECT LOGIC (FIXED) ---
+            function setupCustomSelects() {
+                document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                    const nativeSelect = wrapper.querySelector('select');
+                    if (!nativeSelect) return;
+
+                    // Prevent re-creating custom select if it already exists
+                    if (wrapper.querySelector('.select-selected')) return;
+
+                    const customButton = document.createElement('div');
+                    customButton.className = 'select-selected';
+                    const customItems = document.createElement('div');
+                    customItems.className = 'select-items select-hide';
+
+                    Array.from(nativeSelect.options).forEach(option => {
+                        // Skip the default disabled/all option in filter select
+                        if (nativeSelect.classList.contains('filter-select') && option.value === "") {
+                            customButton.innerHTML = option.innerHTML;
+                            // Set default display
+                            return;
+                        }
+
+                        const itemDiv = document.createElement('div');
+                        itemDiv.innerHTML = option.innerHTML;
+                        itemDiv.dataset.value = option.value;
+                        if (option.selected) itemDiv.classList.add('same-as-selected');
+
+                        itemDiv.addEventListener('click', function (e) {
+                            nativeSelect.value = this.dataset.value;
+                            customButton.innerHTML = this.innerHTML;
 
 
-            // --- 3. CUSTOM SELECT LOGIC (omitted for brevity) ---
-            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
-                const nativeSelect = wrapper.querySelector('select');
-                const customButton = document.createElement('div');
-                customButton.className = 'select-selected';
-                const customItems = document.createElement('div');
-                customItems.className = 'select-items select-hide';
+                            
+                            const selected = customItems.querySelector('.same-as-selected');
+                            if (selected) selected.classList.remove('same-as-selected');
+                            this.classList.add('same-as-selected');
 
-                Array.from(nativeSelect.options).forEach(option => {
-                    if (option.disabled && option.selected) return;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.innerHTML = option.innerHTML;
-                    itemDiv.dataset.value = option.value;
-                    if (option.selected && !option.disabled) itemDiv.classList.add('same-as-selected');
+                            closeAllSelect();
+                            e.stopPropagation();
 
-                    itemDiv.addEventListener('click', function (e) {
-                        nativeSelect.value = this.dataset.value;
-                        customButton.innerHTML = this.innerHTML;
-                        const selected = customItems.querySelector('.same-as-selected');
-                        if (selected) selected.classList.remove('same-as-selected');
-                        this.classList.add('same-as-selected');
-                        closeAllSelect();
-                        e.stopPropagation();
+
+                            // Trigger search if it's the main filter select
+                            if (nativeSelect.classList.contains('filter-select')) {
+                                handleSearch();
+                            }
+
+                        });
+                        customItems.appendChild(itemDiv);
                     });
-                    customItems.appendChild(itemDiv);
+
+                    // Set initial display for non-filter selects
+                    if (!nativeSelect.classList.contains('filter-select')) {
+                        customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
+                    }
+
+                    wrapper.append(customButton, customItems);
+                    customButton.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        closeAllSelect(this);
+                        this.classList.toggle('select-arrow-active');
+                        customItems.classList.toggle('select-hide');
+
+ 
+                    });
                 });
-
-                customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
-                wrapper.append(customButton, customItems);
-
-                customButton.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    closeAllSelect(this);
-                    this.classList.toggle('select-arrow-active');
-                    customItems.classList.toggle('select-hide');
-                });
-            });
+            }
+            setupCustomSelects();
+            // Call on initial load
 
 
-            // --- 4. MULTI-SELECT TAGGING LOGIC (omitted for brevity) ---
+            // --- 4. MULTI-SELECT TAGGING LOGIC (Icon/Enter Logic Added) ---
             function setupMultiSelect(container) {
                 const inputField = container.querySelector('.tag-input-field');
                 const tagInput = container.querySelector('.tag-input');
+                // ⭐ NEW: Select the icon element
+                const tagIcon = container.querySelector('.tag-input-icon[data-action="enter"]');
                 const allOptions = tagInput.dataset.list.split(',');
                 let selectedTags = new Set();
                 const suggestionsList = document.createElement('div');
                 suggestionsList.className = 'select-options-list';
                 inputField.parentElement.appendChild(suggestionsList);
+                // ⭐ NEW FUNCTION: Add tag from input value
+                function addTagFromInput() {
+                    const value = tagInput.value.trim();
+                    if (value && !selectedTags.has(value)) {
+                        selectedTags.add(value);
+                        tagInput.value = '';
+                        renderTags();
+                        filterSuggestions('');
+                    }
+                }
 
                 function renderTags() {
                     inputField.querySelectorAll('.tag').forEach(tag => tag.remove());
@@ -270,14 +409,20 @@
                         const tag = document.createElement('span');
                         tag.className = 'tag';
                         tag.dataset.value = tagValue;
+
+                   
                         tag.innerHTML = `${tagValue} <span class="tag-remove">&times;</span>`;
                         tag.querySelector('.tag-remove').onclick = (e) => {
                             selectedTags.delete(tagValue);
                             renderTags();
+
+       
                             filterSuggestions('');
                             e.stopPropagation();
                         };
                         inputField.insertBefore(tag, tagInput);
+
+  
                     });
                 }
 
@@ -291,80 +436,123 @@
                         .filter(o => !selectedTags.has(o) && (lowerQuery === '' || o.toLowerCase().includes(lowerQuery)))
                         .forEach(option => {
                             const optionDiv = document.createElement('span');
+
+  
                             optionDiv.className = 'select-option';
                             optionDiv.innerHTML = option;
                             optionDiv.onclick = () => {
+
+          
                                 selectedTags.add(option);
                                 tagInput.value = '';
                                 renderTags();
+
+            
                                 filterSuggestions('');
                                 tagInput.focus();
                             };
+
+                    
                             suggestionsList.appendChild(optionDiv);
                             hasSuggestions = true;
                         });
-
                     if (hasSuggestions) suggestionsList.classList.add('show');
                 }
 
                 tagInput.addEventListener('input', () => filterSuggestions(tagInput.value));
                 tagInput.addEventListener('focus', () => filterSuggestions(tagInput.value));
+                
+                // ⭐ NEW: Add tag on Enter key press
+                tagInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); 
+                    
+                        addTagFromInput();
+                        suggestionsList.classList.remove('show');
+                    }
+                });
+                // ⭐ NEW: Add tag on icon click
+                if (tagIcon) {
+                    tagIcon.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        addTagFromInput();
+    
+                        suggestionsList.classList.remove('show');
+                        tagInput.focus();
+                    });
+                }
+
+
                 document.addEventListener('click', (e) => {
                     if (!container.contains(e.target)) suggestionsList.classList.remove('show');
                 });
-
                 renderTags();
+
+                inputField.api = {
+                    reset: () => {
+                        selectedTags.clear();
+                        renderTags();
+                    },
+                    set: (tagsArray = []) => {
+                        selectedTags = new Set(tagsArray);
+                        renderTags();
+                    }
+                };
             }
             document.querySelectorAll('.multi-select-container').forEach(setupMultiSelect);
+            // --- 5. IMAGE HANDLING LOGIC ---
 
+            if (mainImageUrlInput) {
+                mainImageUrlInput.addEventListener('input', () => {
+                    mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg';
+                });
+            }
+            if (mainFileUpload) {
+                mainFileUpload.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader 
+                        = new FileReader();
+                    reader.onload = (event) => {
+                        mainImagePreview.src = event.target.result;
+                        mainImageUrlInput.value = event.target.result;
+                    };
 
-            // --- 5. IMAGE HANDLING LOGIC (File Inputs) ---
+  
+                    reader.readAsDataURL(file);
+                });
+            }
 
-            // CRITICAL FIX: The programmatic click listener (addNewThumb.addEventListener('click', ...)) 
-            // has been REMOVED because the CSS overlap now handles the click directly.
-
-            // 5.1 Main Image Handling (omitted for brevity)
-            mainImageUrlInput.addEventListener('input', () => {
-                mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg';
-            });
-            mainFileUpload.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    mainImagePreview.src = event.target.result;
-                    mainImageUrlInput.value = `[File: ${file.name}]`;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // 5.2 Small Images Rendering
             function renderSmallImages() {
                 if (!smallImagesContainer || !smallImagesInput) return;
-
-                // 1. Preserve the Add New Thumb element before clearing
                 const addNewThumbEl = smallImagesContainer.querySelector('#add-small-image');
                 smallImagesContainer.innerHTML = '';
 
-                // 2. Render existing thumbnails
                 smallImageUrls.forEach(url => {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'thumb-wrapper';
-                    wrapper.innerHTML = `<img src="${url}" alt="Thumb" class="small-thumb">
-                                         <span class="thumb-remove" data-url="${url}">&times;</span>`;
+                    const altText = url.startsWith('data:') ? 'Data URL Thumb' : 'Uploaded URL';
+
+                
+                    wrapper.innerHTML = `<img src="${url}" alt="${altText}" class="small-thumb">
+                                                 <span class="thumb-remove" data-url="${url}">&times;</span>`;
 
                     wrapper.querySelector('.thumb-remove').addEventListener('click', (e) => {
-                        smallImageUrls = smallImageUrls.filter(u => u !== e.target.dataset.url);
-                        updateSmallImagesArray();
+
+                 
                         e.stopPropagation();
+                        const urlToRemove = e.target.dataset.url;
+                        smallImageUrls = smallImageUrls.filter(u => u !== urlToRemove);
+                        updateSmallImagesArray();
+
+            
                     });
                     smallImagesContainer.appendChild(wrapper);
                 });
+                if (addNewThumbEl) {
+                    smallImagesContainer.appendChild(addNewThumbEl);
+                }
 
-                // 3. Re-append the 'Add Image' button last
-                smallImagesContainer.appendChild(addNewThumbEl);
-
-                // 4. Update hidden input for form submission
                 smallImagesInput.value = smallImageUrls.join(',');
             }
 
@@ -372,48 +560,299 @@
                 renderSmallImages();
             }
 
-            // 5.3 Small Images Upload (Triggered by the direct click on the transparent input)
             if (smallFileUpload) {
                 smallFileUpload.addEventListener('change', (e) => {
                     Array.from(e.target.files).forEach(file => {
                         const reader = new FileReader();
+
+                 
                         reader.onload = (event) => {
                             smallImageUrls.push(event.target.result);
                             updateSmallImagesArray();
                         };
+
+         
                         reader.readAsDataURL(file);
                     });
-                    e.target.value = ''; // Reset file input
+                    e.target.value = '';
                 });
             }
 
             renderSmallImages();
+            // --- 6. RENDERING AND SEARCH LOGIC ---
+
+            function renderProducts(productsToDisplay) {
+                if (!productTableBody) return;
+                productTableBody.innerHTML = '';
+
+                if (productsToDisplay.length === 0) {
+                    productTableBody.innerHTML = '<tr><td colspan="5">No products found.</td></tr>';
+                    return;
+                }
+
+                productsToDisplay.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td data-label="ID">${product._id.slice(-6)}</td>
+
+           
+                        <td data-label="Title / Artist">
+                            <strong>${product.title || 'N/A'}</strong>
+                            <small>(${product.artist || 'N/A'})</small>
+
+                        
+                        </td>
+                        <td data-label="Price Range">${product.priceRange || '$' + product.price}</td>
+                        <td data-label="Category">${product.category || 'N/A'}</td>
+                        <td data-label="Actions">
+
+                  
+                            <button class="btn btn-action edit-btn" data-id="${product._id}" title="Edit">✏️</button>
+                            <button class="btn btn-action delete-btn" data-id="${product._id}" title="Delete">🗑️</button>
+                        </td>
+                    `;
+                    productTableBody.appendChild(row);
+                });
+            }
+
+            function handleSearch() {
+                const query = searchInput.value.toLowerCase().trim();
+                const categoryFilter = filterSelect.value.toLowerCase();
+
+                const filtered = allProducts.filter(product => {
+                    // 1. Search Filter (Title, Artist, Style)
+                    const matchesQuery = !query ||
+                        (product.title && product.title.toLowerCase().includes(query)) ||
+
+              
+                        (product.artist && product.artist.toLowerCase().includes(query)) ||
+                        (product.style && product.style.toLowerCase().includes(query));
+
+                    // 2. Category Filter
+                    const matchesCategory = categoryFilter === '' ||
+
+            
+                        (product.category && product.category.toLowerCase() === categoryFilter);
+
+                    return matchesQuery && matchesCategory;
+                });
+                renderProducts(filtered);
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', handleSearch);
+            }
+
+            // Listen for changes on the native filter select element (triggered by custom select)
+            if (filterSelect) {
+                // If using the custom select implementation, the change is handled within setupCustomSelects
+                // If not using the custom select, use 'change' event:
+
+        
+                // filterSelect.addEventListener('change', handleSearch);
+            }
+
+            async function loadProducts() {
+                if (!productTableBody) return;
+                productTableBody.innerHTML = '<tr><td colspan="5">Loading products...</td></tr>';
+
+                try {
+                    const response = await fetch(API_URL);
+                    if (!response.ok) throw new Error('Network response was not ok');
+
+                    allProducts = await response.json();
+                    handleSearch();
+                } catch (error) {
+                    console.error('Failed to load products:', error);
+                    productTableBody.innerHTML = '<tr><td colspan="5">Failed to load products. (Check API server)</td></tr>';
+                }
+            }
 
 
-            // --- 6. FORM SUBMISSION (omitted for brevity) ---
-            productForm.addEventListener('submit', function (e) {
+            // --- 7. EDIT & DELETE CLICK HANDLING (FIXED form population) ---
+
+            function populateFormForEdit(product) {
+                modalTitle.textContent = `Edit Product: ${product.title}`;
+                hiddenProductId.value = product._id;
+
+                document.getElementById('title').value = product.title || '';
+                document.getElementById('artist').value = product.artist || '';
+                document.getElementById('price').value = product.price || 0;
+                document.getElementById('dimensions').value = product.dimensions || '';
+                document.getElementById('medium').value = product.medium || '';
+                document.getElementById('style').value = product.style || '';
+                document.getElementById('subject').value = product.subject || '';
+                document.getElementById('description').value = product.description || '';
+                document.getElementById('artist-bio').value = product.artistBio || '';
+                // Set native select values
+                document.getElementById('priceRange').value = product.priceRange ||
+                    '1000-2000';
+                document.getElementById('size').value = product.size || 'small';
+                document.getElementById('category').value = product.category || 'drawing';
+                // ⭐ NEW: Set Orientation value
+                document.getElementById('orientation').value = product.orientation ||
+                    'square';
+
+
+                // Update Custom Selects display after setting native value
+                document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
+                    const nativeSelect = wrapper.querySelector('select');
+                    if (nativeSelect) {
+                        updateCustomSelectDisplay(nativeSelect);
+
+   
+                    }
+                });
+                mainImageUrlInput.value = product.mainImage || '';
+                mainImagePreview.src = product.mainImage || 'placeholder.jpg';
+                smallImageUrls = product.smallImages || [];
+                renderSmallImages();
+                // Set Multi-Select Tags using the API
+                document.querySelector('.tag-input-field[data-type="country"]').api.set(product.country || []);
+                document.querySelector('.tag-input-field[data-type="palette"]').api.set(product.palette || []);
+            }
+
+            productTableBody.addEventListener('click', async (e) => {
+                const target = e.target;
+
+                if (target.classList.contains('edit-btn')) {
+                    const id = target.dataset.id;
+                    try 
+                    {
+                        const res = await fetch(`${API_URL}/${id}`);
+                        if (!res.ok) throw new Error('Failed to fetch product details');
+
+                        const product = await res.json();
+
+            
+                        clearForm(); // Form reset first
+                        populateFormForEdit(product);
+                        modal.classList.add('open');
+
+                    } catch (error) {
+
+             
+                        console.error(error);
+                        alert(`Error fetching product: ${error.message}`);
+                    }
+                }
+
+
+                if (target.classList.contains('delete-btn')) {
+        
+                    const id = target.dataset.id;
+                    if (!confirm('Are you sure you want to delete this product?This action cannot be undone.')) {
+                        return;
+                    }
+
+                    try {
+                        // ⭐ FIX: Add Authorization Header to fix 401/403 errors on DELETE
+                        const authToken = localStorage.getItem('token'); 
+
+                        const res = await fetch(`${API_URL}/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                // Assuming the server expects a Bearer Token for authorization
+                                'Authorization': `Bearer ${authToken}` 
+                            }
+                     
+                        });
+
+                        if (!res.ok) {
+                            // Attempt to get a detailed error message from the server response
+                            const errorData = await res.json().catch(() => ({}));
+                            throw new Error(errorData.msg || `Failed to delete product (Status: ${res.status})`);
+                        }
+
+                        console.log('Product deleted');
+                        loadProducts();
+                    } catch (error) {
+                        console.error(error);
+                        alert(`Error: ${error.message}`);
+                    }
+                }
+            });
+            // --- 8. FORM SUBMISSION (Add vs Edit) ---
+            productForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
+
+                const saveButton = productForm.querySelector('.save-btn');
+                saveButton.textContent = 'Saving...';
+                saveButton.disabled = true;
+
+
+     
+                const productId = hiddenProductId.value;
+                const isEditing = !!productId;
 
                 const productData = {
                     title: document.getElementById('title').value,
                     artist: document.getElementById('artist').value,
+
+      
                     price: document.getElementById('price').value,
                     priceRange: document.getElementById('priceRange').value,
+                    dimensions: document.getElementById('dimensions').value,
                     size: document.getElementById('size').value,
                     category: document.getElementById('category').value,
 
-                    mainImage: mainImageUrlInput.value,
-                    smallImages: smallImageUrls,
+ 
+                    medium: document.getElementById('medium').value,
+                    style: document.getElementById('style').value,
+                    subject: document.getElementById('subject').value,
+                    // ⭐ NEW: Orientation added to data
 
+            
+                    orientation: document.getElementById('orientation').value,
+                    // ⭐
+                    description: document.getElementById('description').value,
+                    artistBio: document.getElementById('artist-bio').value,
+                    mainImage: mainImageUrlInput.value,
+
+       
+                    smallImages: smallImageUrls,
                     country: Array.from(document.querySelector('.tag-input-field[data-type="country"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
                     palette: Array.from(document.querySelector('.tag-input-field[data-type="palette"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
                 };
+                const url = isEditing ? `${API_URL}/${productId}` : API_URL;
+                const method = isEditing ? 'PUT' : 'POST';
 
-                console.log('--- Product Data Submitted ---');
-                console.log(productData);
-                console.info('Form data logged. In a real app, this would be sent to a server.');
-                modal.classList.remove('open');
+                // Fetch auth token for POST/PUT requests
+                const authToken = localStorage.getItem('token'); 
+                
+                try {
+                    const response = await fetch(url, {
+                        method: method,
+                        // Authorization header added here for POST/PUT as well
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+
+                     
+                        body: JSON.stringify(productData),
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.msg || 'Failed to save product');
+                    }
+
+                    console.log(`Product ${isEditing ? 'updated' : 'saved'} successfully`);
+                    modal.classList.remove('open');
+                    clearForm();
+                    loadProducts();
+
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    alert(`Error: ${error.message}`);
+                } finally {
+                    saveButton.textContent = 'Save Product';
+                    saveButton.disabled = false;
+                }
             });
+            // Initial load
+            loadProducts();
+
         });
     </script>
 </body>

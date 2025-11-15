@@ -1,0 +1,10 @@
+
+{
+  "routes": [
+    {
+      "src": "/(.*)", 
+      "status": 404,
+      "dest": "/errors/404.html" 
+    }
+  ]
+}

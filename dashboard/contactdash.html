@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Submissions Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+    </style>
+    <script>
+        // 🚨 IMPORTANT: Apne backend server ka URL yahan set karein
+        const API_BASE_URL = 'http://localhost:5000/api/contact'; 
+
+        // Variable to hold the current list of submissions (will be dynamic)
+        let submissionsData = [];
+        // Variable to hold the ID of the submission currently being viewed in details
+        let currentDetailId = null;
+
+        // --- Helper Function for UI Messages ---
+        const showToast = (message, type = 'success') => {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white font-medium z-50 transition-opacity duration-300 ${type === 'error' ? 'bg-red-600' : 'bg-green-600'}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        };
+
+        // --- View Switching Functionality ---
+        const switchView = (viewName) => {
+            const dashboardView = document.getElementById('dashboard-view');
+            const detailsView = document.getElementById('details-view');
+
+            if (viewName === 'dashboard') {
+                detailsView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                currentDetailId = null; // Clear current ID
+                fetchSubmissions(); // Refresh the data when going back
+            } else if (viewName === 'details') {
+                dashboardView.classList.add('hidden');
+                detailsView.classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        
+        // ------------------------------------------------------------------
+        // 1. DYNAMIC TABLE RENDERING
+        // ------------------------------------------------------------------
+        const renderTable = (data) => {
+            const tbody = document.getElementById('submissions-tbody');
+            tbody.innerHTML = ''; // Clear previous data
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500">No contact messages found.</td></tr>';
+                return;
+            }
+
+            data.forEach(sub => {
+                const isRead = sub.isRead || false; // Backend field is 'isRead'
+                const rowClass = isRead 
+                    ? 'bg-gray-50 text-gray-500 hover:bg-indigo-50' 
+                    : 'bg-white font-semibold text-gray-800 hover:bg-indigo-50';
+
+                const readDot = !isRead 
+                    ? '<span class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></span>'
+                    : '';
+                
+                // Format the date for display
+                const submissionDate = new Date(sub.createdAt).toLocaleDateString('en-US', { 
+                    month: 'short', day: 'numeric', year: 'numeric' 
+                });
+
+                const row = `
+                    <tr class="border-b transition duration-150 ${rowClass}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm flex items-center">
+                            ${readDot}
+                            ${sub.firstName} ${sub.lastName}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${sub.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${sub.subject || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm max-w-xs truncate">${sub.message.substring(0, 50)}...</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="showDetails('${sub._id}')" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-100 transition duration-150">
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        };
+
+        // ------------------------------------------------------------------
+        // 2. FETCH DATA FROM API
+        // ------------------------------------------------------------------
+        const fetchSubmissions = async () => {
+            try {
+                const response = await fetch(API_BASE_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Assuming your backend returns { success: true, data: [...] }
+                submissionsData = data.data; 
+                renderTable(submissionsData);
+
+            } catch (error) {
+                console.error("Error fetching submissions:", error);
+                const tbody = document.getElementById('submissions-tbody');
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-red-500 font-bold">Failed to load data. Please check the API connection.</td></tr>';
+                showToast('Failed to load dashboard data.', 'error');
+            }
+        };
+
+        // ------------------------------------------------------------------
+        // 3. SHOW DETAILS VIEW
+        // ------------------------------------------------------------------
+        const showDetails = (id) => {
+            const submission = submissionsData.find(sub => sub._id === id);
+
+            if (!submission) {
+                showToast('Message details not found.', 'error');
+                return;
+            }
+            
+            currentDetailId = id; // Store the ID for actions
+            
+            // Format date again for detail view
+            const submissionDate = new Date(submission.createdAt).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            });
+
+            // Populate the details section
+            document.getElementById('detail-name').textContent = `${submission.firstName} ${submission.lastName}`;
+            document.getElementById('detail-email').textContent = submission.email;
+            document.getElementById('detail-contact').textContent = submission.contactDetails;
+            document.getElementById('detail-subject').textContent = submission.subject || 'N/A';
+            document.getElementById('detail-date').textContent = submissionDate;
+            document.getElementById('detail-message').textContent = submission.message;
+            
+            // Update status badge
+            const isRead = submission.isRead || false;
+            const statusBadge = document.getElementById('detail-status-badge');
+            statusBadge.textContent = isRead ? 'Read' : 'Unread';
+            statusBadge.className = isRead 
+                ? 'inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-200 text-gray-800'
+                : 'inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800';
+
+            // Update action button based on read status
+            const markReadBtn = document.getElementById('mark-read-btn');
+            markReadBtn.textContent = isRead ? 'Already Read' : 'Mark as Read';
+            markReadBtn.disabled = isRead;
+            markReadBtn.className = isRead 
+                ? 'px-6 py-2 bg-gray-400 text-white rounded-lg shadow-md text-base font-medium cursor-not-allowed'
+                : 'px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 text-base font-medium';
+            
+            // Switch to the details view
+            switchView('details');
+        };
+
+        // ------------------------------------------------------------------
+        // 4. API ACTIONS (Mark as Read / Delete)
+        // ------------------------------------------------------------------
+
+        const handleAction = async (action) => {
+            if (!currentDetailId) return;
+
+            const url = action === 'read' ? `${API_BASE_URL}/${currentDetailId}/read` : `${API_BASE_URL}/${currentDetailId}`;
+            const method = action === 'read' ? 'PUT' : 'DELETE';
+            
+            if (action === 'delete' && !confirm('Are you sure you want to permanently delete this message?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(url, { method });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `API error! status: ${response.status}`);
+                }
+
+                showToast(`Message successfully ${action === 'read' ? 'marked as read' : 'deleted'}.`);
+                
+                // Go back to the dashboard and refresh the list
+                switchView('dashboard'); 
+
+            } catch (error) {
+                console.error(`Error performing ${action} action:`, error);
+                showToast(`Failed to ${action} message: ${error.message}`, 'error');
+            }
+        };
+
+
+        // --- Initialize Data on Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchSubmissions();
+            // Attach global handlers
+            window.showDetails = showDetails;
+            window.switchView = switchView;
+            window.handleAction = handleAction;
+        });
+
+    </script>
+</head>
+<body>
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            
+            <div class="flex-shrink-0">
+                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
+                    <span class="text-blue-600">Pro</span>Dashboard
+                </a>
+            </div>
+
+            <nav class="hidden md:block">
+                <div class="flex items-baseline space-x-6">
+                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
+                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
+                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
+                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
+                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
+                    
+                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
+                        Profile
+                    </a>
+                </div>
+            </nav>
+
+            <div class="md:hidden">
+                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
+
+    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
+            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
+            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
+            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
+            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
+            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
+            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
+        </div>
+    </div>
+</header>
+    <div id="loader" class="fixed inset-0 bg-white/70 flex items-center justify-center z-50 transition-opacity" style="display:none;">
+        <svg class="animate-spin h-10 w-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </div>
+
+    <div id="dashboard-view" class="max-w-7xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-6 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Submissions Dashboard
+        </h1>
+        <p class="text-gray-600 mb-8">All contact messages fetched from the backend API.</p>
+        
+        <div class="bg-white shadow-2xl rounded-xl overflow-hidden mb-12">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sender</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Snippet</th>
+                            <th scope="col" class="relative px-6 py-3"><span class="sr-only">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissions-tbody" class="divide-y divide-gray-200">
+                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">Loading submissions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="details-view" class="hidden max-w-7xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+        <div class="p-8 bg-white rounded-xl shadow-2xl transition duration-300 mb-20">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 mb-6">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-3 sm:mb-0">Message Details</h2>
+                <span id="detail-status-badge" class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium">
+                    </span>
+            </div>
+            
+            <div id="detail-body" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <p><strong>Name:</strong> <span id="detail-name" class="font-medium text-gray-800"></span></p>
+                    <p><strong>Submitted On:</strong> <span id="detail-date" class="font-medium text-gray-800"></span></p>
+                    <p><strong>Email:</strong> <span id="detail-email" class="font-medium text-gray-800"></span></p>
+                    <p><strong>Contact Details:</strong> <span id="detail-contact" class="font-medium text-gray-800"></span></p>
+                    <p class="md:col-span-2"><strong>Subject:</strong> <span id="detail-subject" class="font-medium text-gray-800"></span></p>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Full Message:</h3>
+                    <div class="p-4 border border-gray-300 bg-gray-50 rounded-lg min-h-[200px]">
+                        <p id="detail-message" class="whitespace-pre-wrap text-base leading-relaxed text-gray-800">
+                            </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-3">
+                <button onclick="switchView('dashboard')" class="px-6 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-150 text-base font-medium order-1 sm:order-1">
+                    ← Back to Dashboard
+                </button>
+                <div class="flex space-x-3 order-2 sm:order-2">
+                    <button id="mark-read-btn" onclick="handleAction('read')" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 text-base font-medium">
+                        Mark as Read
+                    </button>
+                    <button onclick="handleAction('delete')" class="px-6 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-150 text-base font-medium">
+                        Delete Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

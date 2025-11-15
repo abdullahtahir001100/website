@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management Dashboard</title>
+    <title>Order Tracking Dashboard (Read-Only with Cancellation Request)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/dashboard.css">
     <script>
         tailwind.config = {
             theme: {
@@ -14,10 +13,9 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'primary': {
-                            500: '#4F46E5', // Indigo
-                            600: '#4338CA',
-                        },
+                        // Standard colors
+                        'primary': { 500: '#4F46E5', 600: '#4338CA' }, // Indigo
+                        // Status colors (Updated to include Requested)
                         'status-pending': '#F59E0B',    // Amber/Yellow
                         'status-processing': '#2563EB', // Blue
                         'status-shipped': '#F59E0B',    // Amber/Yellow
@@ -30,155 +28,28 @@
         }
     </script>
     <style>
-        /* Optional custom styles for better readability and structure */
-        body {
-            background-color: #f3f4f6;
-            font-family: 'Inter', sans-serif;
-        }
-        .card {
-            background-color: #ffffff;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 1.25rem; /* p-5 */
-        }
-        .detail-item {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        .status-button {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 9999px; /* rounded-full */
-            transition: all 0.2s;
-        }
-        .status-button.active {
-            background-color: theme('colors.primary.500');
-            color: blue;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .status-button:not(.active) {
-            background-color: #e5e7eb; /* bg-gray-200 */
-            color: #4b5563; /* text-gray-700 */
-        }
-        .status-button:hover:not(.active) {
-            background-color: #d1d5db; /* bg-gray-300 */
-        }
+        /* Shared styles for card and timeline */
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
+        .card { background-color: #ffffff; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border-radius: 0.75rem; padding: 1.25rem; }
+        .detail-item { padding-top: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #f3f4f6; }
+        .detail-item:last-child { border-bottom: none; }
         
-        /* ⭐ Timeline styles */
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-        }
-        .timeline-item {
-            margin-bottom: 20px;
-            position: relative;
-            padding-left: 30px;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #D1D5DB; /* bg-gray-300 */
-            z-index: 1;
-        }
-        .timeline-item.completed::before {
-            background-color: theme('colors.status-delivered'); /* Green */
-        }
-        .timeline-item.estimated::before {
-            background-color: #9CA3AF; /* Gray 400 */
-            border: 2px dashed #4B5563;
-        }
-        .timeline::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 4px;
-            bottom: 0;
-            width: 2px;
-            background-color: #E5E7EB; /* bg-gray-200 */
-        }
-        .timeline-item:last-child::after {
-            content: none;
-        }
+        /* Timeline styles */
+        .timeline { position: relative; padding-left: 20px; }
+        .timeline-item { margin-bottom: 20px; position: relative; padding-left: 30px; }
+        .timeline-item::before { content: ''; position: absolute; top: 5px; left: 0; width: 10px; height: 10px; border-radius: 50%; background-color: #D1D5DB; z-index: 1; }
+        .timeline-item.completed::before { background-color: #10B981; } 
+        .timeline-item.estimated::before { background-color: #9CA3AF; border: 2px dashed #4B5563; } 
+        .timeline::after { content: ''; position: absolute; top: 15px; left: 4px; bottom: 0; width: 2px; background-color: #E5E7EB; }
+        .timeline-item:last-child::after { content: none; }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-10">
-<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            
-            <div class="flex-shrink-0">
-                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
-                    <span class="text-blue-600">Pro</span>Dashboard
-                </a>
-            </div>
 
-            <nav class="hidden md:block">
-                <div class="flex items-baseline space-x-6">
-                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
-                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
-                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
-                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
-                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
-                    
-                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
-                        Profile
-                    </a>
-                </div>
-            </nav>
-
-            <div class="md:hidden">
-                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
-
-    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
-            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
-            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
-            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
-            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
-        </div>
-    </div>
-</header>
     <div class="max-w-7xl mx-auto" id="app-container">
 
         <div id="order-list-view" class="space-y-6">
-            <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Recent Orders</h1>
-            
-            <div class="header">
-                <nav>
-                    <ul id="filter-nav" class="flex flex-wrap gap-0">
-                        <li><button class="status-button active" data-status-filter="all">All Orders</button></li>
-                        <li><button class="status-button" data-status-filter="Pending">Pending</button></li>
-                        <li><button class="status-button" data-status-filter="Processing">Processing</button></li>
-                        <li><button class="status-button" data-status-filter="Shipped">Shipped</button></li>
-                        <li><button class="status-button" data-status-filter="Delivered">Delivered</button></li>
-                        <li><button class="status-button" data-status-filter="Cancelled">Cancelled</button></li>
-                        <li><button class="status-button" data-status-filter="Requested">Requested</button></li>
-                    </ul>
-                </nav>
-            </div>
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-6">All Orders Tracking</h1>
             
             <div class="card p-0 overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -200,13 +71,12 @@
                 <div id="error-message" class="hidden p-8 text-center text-red-500 font-medium"></div>
             </div>
         </div>
-
         <div id="order-detail-view" class="hidden">
             
             <header class="mb-8">
                 <button onclick="toggleView('list')" class="flex items-center text-primary-500 hover:text-primary-600 font-medium text-sm p-2 rounded-lg bg-white shadow hover:shadow-md transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    Back to Orders
+                    Back to All Orders
                 </button>
                 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-6">
@@ -229,20 +99,16 @@
                             </svg>
                             Order Timeline
                         </h2>
-                        <div class="mb-4 bg-gray-50 p-3 rounded-lg flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-700">Set Estimated Delivery Time:</p>
-                            <select id="delivery-time-select" class="p-2 border border-gray-300 rounded-lg text-sm" onchange="updateDeliveryTime(this.value)">
-                                <option value="1">1 Week (7 Days)</option>
-                                <option value="1.5">1.5 Weeks (10 Days)</option>
-                                <option value="2">2 Weeks (14 Days)</option>
-                                <option value="3">3 Weeks (21 Days)</option>
-                                <option value="4">4 Weeks (28 Days)</option>
-                            </select>
+                         <div class="mb-4 bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm font-medium text-gray-700">Estimated Delivery Time: 
+                                <span id="delivery-weeks-display" class="font-bold text-primary-500"></span>
+                            </p>
                         </div>
                         <div id="timeline-list" class="timeline">
                             <p class="text-gray-500">Timeline loading...</p>
                         </div>
                     </div>
+
                     <div id="product-details-card" class="card">
                         <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -250,8 +116,7 @@
                             </svg>
                             Product Details
                         </h2>
-                        <div id="product-list" class="space-y-4">
-                            </div>
+                        <div id="product-list" class="space-y-4"></div>
                     </div>
                     
                     <div class="card">
@@ -263,32 +128,29 @@
                             Payment & Summary
                         </h2>
                         <div class="space-y-3">
-                            <div class="flex justify-between items-center text-gray-600">
-                                <span>Subtotal</span>
-                                <span id="summary-subtotal" class="font-medium">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-gray-600">
-                                <span>Discount (<span id="summary-discount-code">None</span>)</span>
-                                <span id="summary-discount" class="font-medium text-green-600">-$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-gray-600 pb-3 border-b border-dashed border-gray-200">
-                                <span>Shipping Fee</span>
-                                <span id="summary-shipping" class="font-medium">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-lg font-bold text-gray-900 pt-3">
-                                <span>Total Payable</span>
-                                <span id="summary-total">$0.00</span>
-                            </div>
-                            <div class="text-sm text-gray-600 pt-2 border-t border-gray-100">
-                                **Payment Method:** <span id="payment-method-display" class="font-semibold text-primary-500 capitalize">COD</span>
-                            </div>
+                            <div class="flex justify-between items-center text-gray-600"><span>Subtotal</span><span id="summary-subtotal" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between items-center text-gray-600"><span>Discount (<span id="summary-discount-code">None</span>)</span><span id="summary-discount" class="font-medium text-green-600">-$0.00</span></div>
+                            <div class="flex justify-between items-center text-gray-600 pb-3 border-b border-dashed border-gray-200"><span>Shipping Fee</span><span id="summary-shipping" class="font-medium">$0.00</span></div>
+                            <div class="flex justify-between items-center text-lg font-bold text-gray-900 pt-3"><span>Total Paid/Payable</span><span id="summary-total">$0.00</span></div>
+                            <div class="text-sm text-gray-600 pt-2 border-t border-gray-100">**Payment Method:** <span id="payment-method-display" class="font-semibold text-primary-500 capitalize">COD</span></div>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="lg:col-span-1 space-y-6">
-
+                    
+                    <div id="cancellation-card" class="card">
+                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Order Actions
+                        </h2>
+                        <div id="cancellation-request-area">
+                            </div>
+                        <p id="cancellation-message" class="text-xs text-red-500 italic mt-3 hidden"></p>
+                    </div>
                     <div class="card">
                         <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -296,8 +158,7 @@
                             </svg>
                             Customer & Shipping
                         </h2>
-                        <div id="user-details-list" class="space-y-2">
-                            </div>
+                        <div id="user-details-list" class="space-y-2"></div>
                         <div id="map-link-container" class="mt-4 pt-4 border-t border-gray-100">
                             <a id="map-link" class="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.121-6.26l-1.414-1.414a1.998 1.998 0 00-2.828 0L7 12m14 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -316,42 +177,11 @@
                         <p id="instruction-content" class="text-sm text-gray-700 italic bg-gray-50 p-3 rounded-lg">No special instructions provided by the customer.</p>
                     </div>
 
-                    <div class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            Update Status
-                        </h2>
-                        <select id="status-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition mb-4">
-                            <option value="Pending">Pending</option>
-                            <option value="Requested">Requested</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                        <button onclick="updateOrderStatus()" id="update-status-btn" class="w-full bg-primary-500 text-white font-semibold py-3 rounded-lg hover:bg-primary-600 transition shadow-lg">
-                            Apply New Status
-                        </button>
-                    </div>
-
-                    <div class="card bg-red-50 border-2 border-red-200">
-                        <h2 class="flex items-center text-xl font-bold text-red-700 mb-4 pb-2 border-b border-red-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Admin Actions
-                        </h2>
-                        <button onclick="deleteOrder()" id="delete-order-btn" class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition shadow-lg mt-2">
-                            Permanently Delete Order
-                        </button>
-                        <p class="text-xs text-red-500 mt-2 text-center">Caution: This action cannot be undone.</p>
-                    </div>
-                    </div>
+                </div>
 
             </div>
         </div>
-
-    </div>
+        </div>
 
     <script>
         // --- API Configuration ---
@@ -359,11 +189,8 @@
 
         // --- Global State & Configuration ---
         let ALL_ORDERS = []; 
-        let CURRENT_FILTER = 'all'; 
         let CURRENT_ORDER_ID = null;
         
-        // ⭐ Global state for delivery weeks and ratios
-        let DELIVERY_WEEKS = 2; // Default starting value
         const PROCESSING_RATIO = 0.4; 
         const SHIPPING_RATIO = 0.6; 
 
@@ -380,7 +207,7 @@
         const formatDateTime = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
 
         // ----------------------------------------------------------------------
-        // --- TIMELINE MANAGEMENT & API CALLS ---
+        // --- TIMELINE & HELPER FUNCTIONS ---
         // ----------------------------------------------------------------------
         
         function calculateEstimatedDate(baseDateString, daysToAdd) {
@@ -388,63 +215,103 @@
             date.setDate(date.getDate() + daysToAdd);
             return date;
         }
-
+        
+        // ----------------------------------------------------------------------
+        // --- CANCELLATION LOGIC (NO ALERT) ---
+        // ----------------------------------------------------------------------
+        
         /**
-         * Updates the global delivery time and persists it via the new API route.
+         * Sends a request to the backend to change the order status to 'Requested'.
          */
-        async function updateDeliveryTime(weeks) {
-            DELIVERY_WEEKS = parseFloat(weeks);
-            const orderId = CURRENT_ORDER_ID;
-            
-            if (!orderId) return;
+        async function requestCancellation() {
+            if (!CURRENT_ORDER_ID) {
+                // Replaced alert with console.error for internal state check
+                console.error("Internal Error: No order ID is set for cancellation.");
+                return;
+            }
 
-            const selectEl = document.getElementById('delivery-time-select');
-            selectEl.disabled = true;
+            // Kept confirm() for crucial user confirmation on destructive action
+            if (!confirm("Are you sure you want to request cancellation for this order? This action cannot be undone.")) {
+                return;
+            }
+
+            const button = document.getElementById('request-cancellation-btn');
+            const messageEl = document.getElementById('cancellation-message');
+
+            button.disabled = true;
+            button.textContent = 'Submitting Request...';
+            messageEl.textContent = '';
+            messageEl.classList.add('hidden');
 
             try {
-                // Call the new API route
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}/deliverytime`, {
+                const response = await fetch(`${API_BASE_URL}/orders/${CURRENT_ORDER_ID}/request-cancellation`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ deliveryWeeks: DELIVERY_WEEKS })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageEl.textContent = data.message;
+                    messageEl.classList.remove('hidden');
+                    // Refresh local order data and re-render the detail view
+                    await fetchOrders(); 
+                    const updatedOrder = ALL_ORDERS.find(o => o._id === CURRENT_ORDER_ID);
+                    if(updatedOrder) {
+                        renderOrderDetail(updatedOrder); 
+                    }
+                } else {
+                    messageEl.textContent = `Failed: ${data.message || 'Server error.'}`;
+                    messageEl.classList.remove('hidden');
+                    button.disabled = false;
+                    button.textContent = 'Request Cancellation';
                 }
 
-                const updatedData = await response.json();
-                const updatedOrder = updatedData.data;
-
-                // Update local state
-                const orderIndex = ALL_ORDERS.findIndex(o => o._id === updatedOrder._id);
-                if (orderIndex !== -1) {
-                    ALL_ORDERS[orderIndex] = updatedOrder;
-                }
-
-                // Re-render the timeline using the current order's creation date
-                renderOrderTimeline(updatedOrder.statusUpdates, updatedOrder.createdAt, updatedOrder.deliveryWeeks);
-                
-                alert(`Estimated delivery time updated to ${DELIVERY_WEEKS} weeks.`);
-                
             } catch (error) {
-                console.error('Error updating delivery time:', error);
-                alert(`Error: Could not update delivery time. Details: ${error.message}`);
-                // Revert selection on error
-                const currentOrder = ALL_ORDERS.find(o => o._id === orderId);
-                selectEl.value = currentOrder?.deliveryWeeks || 1; 
-            } finally {
-                selectEl.disabled = false;
+                console.error('Cancellation request failed:', error);
+                messageEl.textContent = 'An unexpected error occurred while processing the request.';
+                messageEl.classList.remove('hidden');
+                button.disabled = false;
+                button.textContent = 'Request Cancellation';
             }
         }
+        
+        /**
+         * Renders the cancellation request button based on the order status.
+         */
+        function renderCancellationArea(currentStatus) {
+            const areaEl = document.getElementById('cancellation-request-area');
+            const messageEl = document.getElementById('cancellation-message');
+            areaEl.innerHTML = '';
+            messageEl.classList.add('hidden');
 
+            // Allowed statuses for requesting cancellation
+            if (currentStatus === 'Pending' || currentStatus === 'Processing') {
+                areaEl.innerHTML = `
+                    <p class="text-sm text-gray-700 mb-3">If you no longer wish to receive this order, you can request for cancellation.</p>
+                    <button id="request-cancellation-btn" onclick="requestCancellation()"
+                        class="w-full px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition disabled:bg-red-300">
+                        Request Cancellation
+                    </button>
+                `;
+            } else if (currentStatus === 'Requested') {
+                areaEl.innerHTML = `<p class="text-sm font-bold text-status-requested p-3 border border-status-requested rounded-lg bg-status-requested/10">Cancellation Request Submitted</p>`;
+                messageEl.textContent = 'Your cancellation request is currently pending review by the admin team.';
+                messageEl.classList.remove('hidden');
+            } else if (currentStatus === 'Shipped' || currentStatus === 'Delivered' || currentStatus === 'Cancelled') {
+                areaEl.innerHTML = `<p class="text-sm font-bold text-gray-500 p-3 border border-gray-300 rounded-lg">Cannot Cancel</p>`;
+                messageEl.textContent = `Order is already ${currentStatus}. Please contact support directly for further actions.`;
+                messageEl.classList.remove('hidden');
+            }
+        }
+        
         // ----------------------------------------------------------------------
-        // --- API & DATA FETCHING ---
+        // --- API & DATA FETCHING (All Orders) ---
         // ----------------------------------------------------------------------
         async function fetchOrders() {
             const tbodyEl = document.getElementById('orders-table-body');
             const errorEl = document.getElementById('error-message');
-            tbodyEl.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500">Fetching orders from server...</td></tr>';
+            tbodyEl.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500">Fetching all orders from server...</td></tr>';
             errorEl.classList.add('hidden');
 
             try {
@@ -462,7 +329,8 @@
                     document.getElementById('no-orders-message').classList.add('hidden');
                 }
 
-                renderOrderList(ALL_ORDERS.filter(filterOrder));
+                // Render all orders
+                renderOrderList(ALL_ORDERS);
                 
             } catch (error) {
                 console.error("Failed to fetch orders:", error);
@@ -472,125 +340,10 @@
             }
         }
         
-        async function updateOrderStatus() {
-            const orderId = CURRENT_ORDER_ID;
-            const newStatus = document.getElementById('status-select').value;
-            const button = document.getElementById('update-status-btn');
-
-            if (!orderId) {
-                alert("Error: No order selected.");
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = `Updating to ${newStatus}...`;
-
-            try {
-                // The backend handles adding the status update to the statusUpdates array
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const updatedData = await response.json();
-                const updatedOrder = updatedData.data;
-
-                // Update the local ALL_ORDERS list
-                const orderIndex = ALL_ORDERS.findIndex(o => o._id === updatedOrder._id);
-                if (orderIndex !== -1) {
-                    ALL_ORDERS[orderIndex] = updatedOrder;
-                }
-                
-                renderOrderDetail(updatedOrder); 
-                renderOrderList(ALL_ORDERS.filter(filterOrder)); 
-                
-                alert(`Status for Order ${orderId} updated to: ${newStatus}`);
-
-            } catch (error) {
-                console.error('Error updating status:', error);
-                alert(`Error: Could not update status. Details: ${error.message}`);
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Apply New Status';
-            }
-        }
-
-        // ⭐ NEW FUNCTION: Delete Order
-        async function deleteOrder() {
-            const orderId = CURRENT_ORDER_ID;
-            const button = document.getElementById('delete-order-btn');
-
-            if (!orderId) {
-                alert("Error: No order selected for deletion.");
-                return;
-            }
-
-            if (!confirm(`Are you absolutely sure you want to PERMANENTLY delete Order ID ${orderId}? This action cannot be undone.`)) {
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = `Deleting Order...`;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
-                    method: 'DELETE',
-                });
-
-                if (!response.ok) {
-                    // Check for 404 specifically
-                    if (response.status === 404) {
-                         throw new Error('Order not found on the server.');
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // Remove the order from the local ALL_ORDERS list
-                ALL_ORDERS = ALL_ORDERS.filter(o => o._id !== orderId);
-                
-                alert(`Order ID ${orderId} was successfully deleted.`);
-
-                // Redirect back to the list view
-                toggleView('list');
-
-            } catch (error) {
-                console.error('Error deleting order:', error);
-                alert(`Error: Could not delete order. Details: ${error.message}`);
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Permanently Delete Order';
-            }
-        }
-        // ⭐ END NEW FUNCTION: Delete Order
-
         // ----------------------------------------------------------------------
         // --- LIST VIEW LOGIC ---
         // ----------------------------------------------------------------------
-        function filterOrder(order) {
-            if (CURRENT_FILTER === 'all') {
-                return true;
-            }
-            return order.status === CURRENT_FILTER; 
-        }
-
-        function handleFilterClick(event) {
-            const button = event.target.closest('.status-button');
-            if (!button) return;
-
-            document.querySelectorAll('.status-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            CURRENT_FILTER = button.getAttribute('data-status-filter');
-            renderOrderList(ALL_ORDERS.filter(filterOrder));
-        }
-
+        
         function renderOrderList(orders) {
             const tbodyEl = document.getElementById('orders-table-body');
             tbodyEl.innerHTML = ''; 
@@ -627,14 +380,13 @@
         }
 
         // ----------------------------------------------------------------------
-        // --- DETAIL VIEW LOGIC ---
+        // --- DETAIL VIEW LOGIC (Read-Only) ---
         // ----------------------------------------------------------------------
 
         function renderOrderDetail(order) {
-            // ⭐ Set global state from the order object
+            // Set global state
             CURRENT_ORDER_ID = order._id;
-            // Use the value from the database, default to 2 if missing
-            DELIVERY_WEEKS = order.deliveryWeeks || 2; 
+            const deliveryWeeks = order.deliveryWeeks || 2; 
 
             // Header Details
             document.getElementById('detail-order-id').textContent = order._id;
@@ -645,12 +397,8 @@
             const statusColor = statusClassMap[order.status] || 'bg-gray-500';
             statusEl.className = statusEl.className.replace(/bg-[\w-]+/g, '') + ` ${statusColor}`; 
             
-            // Status Dropdown
-            document.getElementById('status-select').value = order.status;
-            
-            // ⭐ Delivery Time Selector: Set to the value stored in the order
-            document.getElementById('delivery-time-select').value = DELIVERY_WEEKS.toString();
-
+            // Delivery Time Display (Read-Only)
+            document.getElementById('delivery-weeks-display').textContent = `${deliveryWeeks} weeks`;
 
             // Summary Details
             document.getElementById('summary-subtotal').textContent = formatCurrency(order.subtotalAmount);
@@ -667,8 +415,8 @@
             renderProductList(order.items);
             renderUserDetails(order);
             renderMapLink(order.geoLocation);
-            // ⭐ Render Timeline with data from schema
-            renderOrderTimeline(order.statusUpdates, order.createdAt, order.deliveryWeeks); 
+            renderOrderTimeline(order.statusUpdates, order.createdAt, deliveryWeeks); 
+            renderCancellationArea(order.status); 
         }
 
         function renderProductList(items) {
@@ -705,11 +453,13 @@
             const listEl = document.getElementById('user-details-list');
             listEl.innerHTML = '';
 
+            const shippingAddress = `${order.shippingAddress.streetAddress}, ${order.shippingAddress.city}, ${order.shippingAddress.province}, ${order.shippingAddress.zipCode}, ${order.shippingAddress.country}`;
+
             const details = [
                 { icon: 'user', label: 'Customer Name', value: order.customerName },
                 { icon: 'mail', label: 'Email', value: order.customerEmail },
                 { icon: 'phone', label: 'Phone', value: order.customerPhone },
-                { icon: 'mapPin', label: 'Shipping Address', value: `${order.shippingAddress.streetAddress}, ${order.shippingAddress.city}, ${order.shippingAddress.province}, ${order.shippingAddress.zipCode}, ${order.shippingAddress.country}` }
+                { icon: 'mapPin', label: 'Shipping Address', value: shippingAddress }
             ];
 
             const icons = {
@@ -737,10 +487,9 @@
             const linkEl = document.getElementById('map-link');
             const containerEl = document.getElementById('map-link-container');
             if (geoLocation && geoLocation.latitude && geoLocation.longitude) {
-                // Corrected Google Maps URL construction
-                const mapUrl = `http://www.google.com/maps/search/?api=1&query=${geoLocation.latitude},${geoLocation.longitude}`;
+                // Ensure correct Google Maps URL format (e.g., marker on location)
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${geoLocation.latitude},${geoLocation.longitude}`;
                 linkEl.href = mapUrl;
-                linkEl.setAttribute('target', '_blank');
                 containerEl.classList.remove('hidden'); 
             } else {
                 linkEl.removeAttribute('href');
@@ -748,16 +497,11 @@
             }
         }
         
-        /**
-         * Renders the Order Timeline, including estimated dates based on deliveryWeeks.
-         */
         function renderOrderTimeline(statusUpdates, orderCreatedAt, deliveryWeeks) {
             const timelineEl = document.getElementById('timeline-list');
             timelineEl.innerHTML = '';
             
-            // Get the delivery time (default to 2 if DB value is missing)
             const currentWeeks = deliveryWeeks || 2; 
-
             const totalDays = currentWeeks * 7;
             const processingDays = Math.round(totalDays * PROCESSING_RATIO); 
             const shippingDays = totalDays - processingDays; 
@@ -765,7 +509,7 @@
             // Calculate estimated dates based on order creation
             const createdDate = new Date(orderCreatedAt);
             const estProcessingDate = calculateEstimatedDate(orderCreatedAt, processingDays);
-            const estShippedDate = calculateEstimatedDate(orderCreatedAt, processingDays + 1); // Shipped starts day after processing ends
+            const estShippedDate = calculateEstimatedDate(orderCreatedAt, processingDays + 1);
             const estDeliveryDate = calculateEstimatedDate(orderCreatedAt, totalDays);
 
             // 1. Order Placed (Actual Date)
@@ -776,31 +520,21 @@
                 note: 'Order confirmed and payment received.'
             }];
 
-            // 2. Manufacturing/Processing (Estimated or Actual)
-            const actualProcessing = statusUpdates.find(u => u.status === 'Processing');
-            timelineEvents.push({
-                status: 'Processing (Making/Preparation)',
-                date: actualProcessing ? new Date(actualProcessing.date) : estProcessingDate,
-                isActual: !!actualProcessing,
-                note: actualProcessing ? actualProcessing.note : `Estimated completion in ${processingDays} days from order.`
-            });
+            // 2, 3, 4: Estimated/Actual milestones
+            const milestones = [
+                { status: 'Processing', estDate: estProcessingDate, note: `Estimated completion in ${processingDays} days from order.` },
+                { status: 'Shipped', estDate: estShippedDate, note: `Estimated shipping time: ${shippingDays} days.` },
+                { status: 'Delivered', estDate: estDeliveryDate, note: `Estimated Total Delivery: ${totalDays} days from order.` }
+            ];
 
-            // 3. Shipped (Estimated or Actual)
-            const actualShipped = statusUpdates.find(u => u.status === 'Shipped');
-            timelineEvents.push({
-                status: 'Shipped (In Transit)',
-                date: actualShipped ? new Date(actualShipped.date) : estShippedDate,
-                isActual: !!actualShipped,
-                note: actualShipped ? actualShipped.note : `Estimated shipping time: ${shippingDays} days. (From day ${processingDays + 1})`
-            });
-
-            // 4. Delivered (Estimated or Actual)
-            const actualDelivered = statusUpdates.find(u => u.status === 'Delivered');
-            timelineEvents.push({
-                status: 'Delivered',
-                date: actualDelivered ? new Date(actualDelivered.date) : estDeliveryDate,
-                isActual: !!actualDelivered,
-                note: actualDelivered ? actualDelivered.note : `Estimated Total Delivery: ${totalDays} days from order.`
+            milestones.forEach(milestone => {
+                const actualUpdate = statusUpdates.find(u => u.status === milestone.status);
+                timelineEvents.push({
+                    status: milestone.status + (milestone.status === 'Processing' ? ' (Making/Preparation)' : milestone.status === 'Shipped' ? ' (In Transit)' : ''),
+                    date: actualUpdate ? new Date(actualUpdate.date) : milestone.estDate,
+                    isActual: !!actualUpdate,
+                    note: actualUpdate ? actualUpdate.note : milestone.note
+                });
             });
 
             // Sort by date (oldest first for a proper timeline view)
@@ -808,16 +542,12 @@
             const now = new Date();
 
             timelineEvents.forEach(event => {
-                const isActualEvent = event.isActual;
                 const isEstimated = !event.isActual;
                 
                 let timelineItemClass = 'timeline-item';
-
-                // Completed state: If it's an actual event and the date has passed
-                if (isActualEvent && event.date <= now) {
+                if (event.isActual && event.date <= now) {
                     timelineItemClass += ' completed';
                 } else if (isEstimated || event.date > now) {
-                    // Estimated state: If it's a future event (actual or estimated)
                     timelineItemClass += ' estimated';
                 }
                 
@@ -857,7 +587,7 @@
 
 
         // ----------------------------------------------------------------------
-        // --- VIEW TOGGLER ---
+        // --- VIEW TOGGLER (NO ALERT) ---
         // ----------------------------------------------------------------------
 
         function toggleView(view, orderId = null) {
@@ -867,26 +597,30 @@
             if (view === 'list') {
                 listView.classList.remove('hidden');
                 detailView.classList.add('hidden');
-                renderOrderList(ALL_ORDERS.filter(filterOrder)); 
+                // Always display all orders when returning to the list
+                renderOrderList(ALL_ORDERS); 
             } else if (view === 'detail' && orderId) {
+                // Find the order using its MongoDB _id
                 const order = ALL_ORDERS.find(o => o._id === orderId);
                 if (order) {
                     renderOrderDetail(order);
                     listView.classList.add('hidden');
                     detailView.classList.remove('hidden');
                 } else {
-                    alert('Error: Order not found locally. Please refresh.');
-                    console.error('Order not found:', orderId);
+                    // Replaced alert with console.error for internal lookup error
+                    console.error('Error: Order not found locally for ID:', orderId);
+                    // No action needed; the UI remains on the list view which is correct.
                 }
             }
         }
 
         // Execute initial load and setup
         window.onload = function() {
-            document.getElementById('filter-nav').addEventListener('click', handleFilterClick);
+            // Start the API fetching process
             fetchOrders();
         };
     </script>
+     <script src="js/dashboadover.js"></script>
 
 </body>
 </html>

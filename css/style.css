@@ -274,7 +274,10 @@ img {
 }
 
 .inner .banner-4 {
-    padding: 5rem 0;
+    padding-bottom: 5rem;
+}
+.inner .banner-3 .flexbox{
+    padding-top: 3rem;
 }
 
 .inner .banner-4 p {
@@ -1088,4 +1091,7 @@ RESPONSIVENESS (Media Queries)
         .ad-close-btn:hover {
             background: #f5a9a4; 
             color: white;
+        }
+        .shadow-sm{
+            margin-bottom: 3rem !important;
         }

@@ -5,62 +5,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Detail</title>
-   
-  
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/details.css">
-    
-    <link rel="stylesheet" href="css/style.css">
-    
     <link rel="stylesheet" href="css/header.css">
     
     <link rel="icon" href="images/logo.jpg" />
 </head>
 
 <body>
-     <header class="inner">
-            <div class="navbar">
-                <div class="logo">
-                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                        alt="Logo">
-                </div>
-                <div class="menu-icon">
-                    <div class="naver">
-                        <a href="cart.html" class="cart-icon-container">
-                            <img src="images/trolley.png" alt="Cart" class="top">
-                            <span id="cart-count">0</span>
-                        </a>
-                    </div>
-                   
-    
-                    <div class="naver" onclick="toggleNav()">
-                        <img src="images/ui.png" alt="Menu" id="menu-icon">
-                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
-                            class="close-icon">
-                    </div>
-                </div>
-
-                <nav id="nav-links">
-                    <ul>
-                        <li><a href="/">home</a></li>
-                        <li><a href="about.html">about</a></li>
-                        <li><a href="product.html">shop</a></li>
-                        <li><a href="contect.html">contact</a></li>
-                        <li><a href="logout.html">Log Out</a></li>
-                    </ul>
-                </nav>
+    <header class="inner">
+        <div class="navbar">
+            <div class="logo">
+                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo">
             </div>
-        </header>
+            <div class="menu-icon">
+                <div class="naver">
+                    <a href="cart.html" class="cart-icon-container">
+                        <img src="images/trolley.png" alt="Cart" class="top">
+                        <span id="cart-count">0</span>
+                    </a>
+                </div>
+                
+                <div class="naver" onclick="toggleNav()">
+                    <img src="images/ui.png" alt="Menu" id="menu-icon">
+                    <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;" class="close-icon">
+                </div>
+            </div>
+
+            <nav id="nav-links">
+                <ul>
+                    <li><a href="/">home</a></li>
+                    <li><a href="about.html">about</a></li>
+                    <li><a href="product.html">shop</a></li>
+                    <li><a href="contect.html">contact</a></li>
+                    <li><a href="logout.html">Log Out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
     <div class="cart-popup" id="cartPopup">
         Item added to cart!
     </div>
 
     <div class="product-container">
         <div class="product-layout">
+            
+            <div class="smallimages">
+                <div class="images small-images-container">
+                    </div>
+            </div>
 
             <div class="image-column">
                 <div class="image-wrapper">
-                    <img src="" alt="Main Product Image" class="product-image">
+                    <img src="images/placeholder.png" alt="Main Product Image" class="product-image">
                 </div>
             </div>
 
@@ -72,10 +71,11 @@
                 <p class="summary-text">
                     Loading product summary...
                 </p>
+                
                 <div class="flex">
                     <div class="custom-select-wrapper">
                         <select class="hidden-native-select" id="hidden-native-select">
-                            <option value="Signed Print (Limited Ed.)" disabled selected>Select an Option</option>
+                            <option value="" disabled selected>Select an Option</option> 
                             <option value="Unframed">Option: Unframed</option>
                             <option value="Basic Gallery Frame">Option: Basic Gallery Frame</option>
                             <option value="Custom Archival Frame">Option: Custom Archival Frame</option>
@@ -90,14 +90,18 @@
                     </div>
                     <div class="quantity-control">
                         <label for="quantity">Quantity:</label>
-                        <input type="number" id="quantity" value="1">
+                        <input type="number" id="quantity" value="1" min="1" max="5">
                     </div>
                 </div>
 
-
-                <button class="add-to-cart-btn" id="add-to-cart-btns">
-                    Add to Cart
-                </button>
+                <div class="action-buttons-wrapper">
+                    <button class="add-to-cart-btn" id="add-to-cart-btns">
+                        Add to Cart
+                    </button>
+                    <button class="add-to-cart-btn go-to-cart-btn" id="go-to-cart-btn" style="display: none;">
+                        🛒 Go to Cart
+                    </button>
+                </div>
 
                 <div class="features-box">
                     <h3>Artwork Highlights</h3>
@@ -153,6 +157,7 @@
             </div>
         </div>
     </div>
+    
     <div class="inner">
         <footer>
             <div class="align">
@@ -166,18 +171,10 @@
                 </div>
                 <div class="sec-1">
                     <ul>
-                        <li>
-                            Service
-                        </li>
-                        <li>
-                            <a href=""> Supply</a>
-                        </li>
-                        <li>
-                            <a href="">Communities</a>
-                        </li>
-                        <li>
-                            <a href="">Equipment</a>
-                        </li>
+                        <li>Service</li>
+                        <li><a href=""> Supply</a></li>
+                        <li><a href="">Communities</a></li>
+                        <li><a href="">Equipment</a></li>
                     </ul>
                 </div>
                 <div class="sec-1">
@@ -197,7 +194,6 @@
                         <li>
                             <a href=""><img src="https://www.javehandmade.store/whatsapp.png" class="n">+92-310-7581250</a>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -207,9 +203,8 @@
         </footer>
     </div>
 
- 
     <script src="js/detail.js"></script>
-    
+    <script src="js/dashboadover.js"></script>
 </body>
 
 </html>

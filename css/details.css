@@ -498,12 +498,13 @@
         display: flex;
         justify-content: center;
         gap: 10px;
+        flex-direction: column;
         margin-top: 15px;
-        width: 40%;
+        width: 100%;
     }
     
     .small-img-wrapper {
-        width: 100%;
+        width: calc(100%/1);
     }
     
     .small-img-wrapper img {
