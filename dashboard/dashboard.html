@@ -226,635 +226,388 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-            // --- 1. VARIABLE DECLARATIONS ---
-            const modal = document.getElementById('product-modal');
-            const openModalBtn = document.getElementById('open-modal-btn');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const productForm = document.getElementById('product-form');
-            const productTableBody = document.querySelector('.product-table tbody');
-            const modalTitle = document.getElementById('modal-title');
-            const hiddenProductId = document.getElementById('product-id');
+    // --- 1. VARIABLE DECLARATIONS ---
+    const modal = document.getElementById('product-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const productForm = document.getElementById('product-form');
+    const productTableBody = document.querySelector('.product-table tbody');
+    const modalTitle = document.getElementById('modal-title');
+    const hiddenProductId = document.getElementById('product-id');
 
-            const mainImageUrlInput = document.getElementById('main-image-url');
-            const mainImagePreview = document.getElementById('main-image-preview');
-            const mainFileUpload = document.getElementById('main-file-upload');
-            const smallFileUpload = document.getElementById('small-file-upload');
-            const smallImagesContainer = document.querySelector('.image-thumbs-container');
-            const smallImagesInput = document.getElementById('small-images-input');
-            const searchInput = document.querySelector('.search-input');
-            const filterSelect = document.querySelector('.filter-select');
-            let smallImageUrls = [];
-            const API_URL = 'http://localhost:5000/api/products';
+    const mainImageUrlInput = document.getElementById('main-image-url');
+    const mainImagePreview = document.getElementById('main-image-preview');
+    const mainFileUpload = document.getElementById('main-file-upload');
+    const smallFileUpload = document.getElementById('small-file-upload');
+    const smallImagesContainer = document.querySelector('.image-thumbs-container');
+    const smallImagesInput = document.getElementById('small-images-input');
+    const searchInput = document.querySelector('.search-input');
+    const filterSelect = document.querySelector('.filter-select');
+    let smallImageUrls = [];
+    const API_URL = 'http://localhost:5000/api/products';
 
-            let allProducts = [];
-            // --- 2. MODAL & FORM UTILITIES ---
+    let allProducts = [];
 
-            // Helper to manually set the custom select display
-            function updateCustomSelectDisplay(nativeSelect) {
-                const wrapper = nativeSelect.closest('.custom-select-wrapper');
-                const customButton = wrapper ? wrapper.querySelector('.select-selected') : null;
+    // --- 2. MODAL & FORM UTILITIES ---
+    function updateCustomSelectDisplay(nativeSelect) {
+        const wrapper = nativeSelect.closest('.custom-select-wrapper');
+        const customButton = wrapper ? wrapper.querySelector('.select-selected') : null;
+        if (customButton) {
+            const selectedOption = Array.from(nativeSelect.options).find(opt => opt.value === nativeSelect.value);
+            customButton.innerHTML = selectedOption ? selectedOption.innerHTML : nativeSelect.options[0].innerHTML;
+        }
+    }
 
-                if (customButton) {
-                    const selectedOption = Array.from(nativeSelect.options).find(opt => opt.value === nativeSelect.value);
-                    customButton.innerHTML = selectedOption ? selectedOption.innerHTML : nativeSelect.options[0].innerHTML;
-                }
+    function clearForm() {
+        productForm.reset();
+        hiddenProductId.value = '';
+        modalTitle.textContent = 'Add New Product';
+        mainImagePreview.src = 'placeholder.jpg';
+        smallImageUrls = [];
+        renderSmallImages();
+        document.querySelectorAll('.tag-input-field').forEach(inputField => {
+            if (inputField.api && inputField.api.reset) inputField.api.reset();
+        });
+        document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
+            const nativeSelect = wrapper.querySelector('select');
+            if (nativeSelect) {
+                nativeSelect.value = nativeSelect.options[0].value;
+                updateCustomSelectDisplay(nativeSelect);
             }
+        });
+    }
 
-            function clearForm() {
-                productForm.reset();
-                hiddenProductId.value = '';
-                modalTitle.textContent = 'Add New Product';
-                mainImagePreview.src = 'placeholder.jpg';
-                smallImageUrls = [];
-                renderSmallImages();
-                // Reset Multi-Select Tags
-                document.querySelectorAll('.tag-input-field').forEach(inputField => {
-                    if (inputField.api && inputField.api.reset) {
-                        inputField.api.reset();
-                    }
-                });
+    if (openModalBtn) openModalBtn.onclick = () => { clearForm(); modal.classList.add('open'); };
+    if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.remove('open');
+    if (modal) modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
 
-                // Reset Custom Selects and update their visual display
-                document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
-                    const nativeSelect = wrapper.querySelector('select');
-                    if (nativeSelect) {
-                        // Reset to the first option (or selected default in HTML)
-                        nativeSelect.value = nativeSelect.options[0].value;
-                        updateCustomSelectDisplay(nativeSelect);
-                    }
-                });
-            }
+    function closeAllSelect(elmnt) {
+        const selectedElements = document.getElementsByClassName("select-selected");
+        const itemsElements = document.getElementsByClassName("select-items");
+        for (let i = 0; i < selectedElements.length; i++) {
+            if (elmnt !== selectedElements[i]) selectedElements[i].classList.remove("select-arrow-active");
+        }
+        for (let i = 0; i < itemsElements.length; i++) {
+            if (elmnt !== selectedElements[i]) itemsElements[i].classList.add("select-hide");
+        }
+    }
+    document.addEventListener("click", closeAllSelect);
 
-            if (openModalBtn) {
-                openModalBtn.onclick = () => {
-                    clearForm();
-                    modal.classList.add('open');
-                };
-            }
+    // --- 3. CUSTOM SELECT LOGIC ---
+    function setupCustomSelects() {
+        document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+            const nativeSelect = wrapper.querySelector('select');
+            if (!nativeSelect || wrapper.querySelector('.select-selected')) return;
 
-            if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.remove('open');
-            if (modal) modal.onclick = (e) => {
-                if (e.target === modal) modal.classList.remove('open');
-            };
+            const customButton = document.createElement('div');
+            customButton.className = 'select-selected';
+            const customItems = document.createElement('div');
+            customItems.className = 'select-items select-hide';
 
-            // Global handler to close custom selects
-            function closeAllSelect(elmnt) {
-                const selectedElements = document.getElementsByClassName("select-selected");
-                const itemsElements = document.getElementsByClassName("select-items");
-                for (let i = 0; i < selectedElements.length; i++) {
-                    if (elmnt !== selectedElements[i]) selectedElements[i].classList.remove("select-arrow-active");
-                }
-                for (let i = 0; i < itemsElements.length; i++) {
-                    if (elmnt !== selectedElements[i]) itemsElements[i].classList.add("select-hide");
-                }
-            }
-            document.addEventListener("click", closeAllSelect);
-            // --- 3. CUSTOM SELECT LOGIC (FIXED) ---
-            function setupCustomSelects() {
-                document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
-                    const nativeSelect = wrapper.querySelector('select');
-                    if (!nativeSelect) return;
-
-                    // Prevent re-creating custom select if it already exists
-                    if (wrapper.querySelector('.select-selected')) return;
-
-                    const customButton = document.createElement('div');
-                    customButton.className = 'select-selected';
-                    const customItems = document.createElement('div');
-                    customItems.className = 'select-items select-hide';
-
-                    Array.from(nativeSelect.options).forEach(option => {
-                        // Skip the default disabled/all option in filter select
-                        if (nativeSelect.classList.contains('filter-select') && option.value === "") {
-                            customButton.innerHTML = option.innerHTML;
-                            // Set default display
-                            return;
-                        }
-
-                        const itemDiv = document.createElement('div');
-                        itemDiv.innerHTML = option.innerHTML;
-                        itemDiv.dataset.value = option.value;
-                        if (option.selected) itemDiv.classList.add('same-as-selected');
-
-                        itemDiv.addEventListener('click', function (e) {
-                            nativeSelect.value = this.dataset.value;
-                            customButton.innerHTML = this.innerHTML;
-
-
-                            
-                            const selected = customItems.querySelector('.same-as-selected');
-                            if (selected) selected.classList.remove('same-as-selected');
-                            this.classList.add('same-as-selected');
-
-                            closeAllSelect();
-                            e.stopPropagation();
-
-
-                            // Trigger search if it's the main filter select
-                            if (nativeSelect.classList.contains('filter-select')) {
-                                handleSearch();
-                            }
-
-                        });
-                        customItems.appendChild(itemDiv);
-                    });
-
-                    // Set initial display for non-filter selects
-                    if (!nativeSelect.classList.contains('filter-select')) {
-                        customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
-                    }
-
-                    wrapper.append(customButton, customItems);
-                    customButton.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        closeAllSelect(this);
-                        this.classList.toggle('select-arrow-active');
-                        customItems.classList.toggle('select-hide');
-
- 
-                    });
-                });
-            }
-            setupCustomSelects();
-            // Call on initial load
-
-
-            // --- 4. MULTI-SELECT TAGGING LOGIC (Icon/Enter Logic Added) ---
-            function setupMultiSelect(container) {
-                const inputField = container.querySelector('.tag-input-field');
-                const tagInput = container.querySelector('.tag-input');
-                // ⭐ NEW: Select the icon element
-                const tagIcon = container.querySelector('.tag-input-icon[data-action="enter"]');
-                const allOptions = tagInput.dataset.list.split(',');
-                let selectedTags = new Set();
-                const suggestionsList = document.createElement('div');
-                suggestionsList.className = 'select-options-list';
-                inputField.parentElement.appendChild(suggestionsList);
-                // ⭐ NEW FUNCTION: Add tag from input value
-                function addTagFromInput() {
-                    const value = tagInput.value.trim();
-                    if (value && !selectedTags.has(value)) {
-                        selectedTags.add(value);
-                        tagInput.value = '';
-                        renderTags();
-                        filterSuggestions('');
-                    }
-                }
-
-                function renderTags() {
-                    inputField.querySelectorAll('.tag').forEach(tag => tag.remove());
-                    selectedTags.forEach(tagValue => {
-                        const tag = document.createElement('span');
-                        tag.className = 'tag';
-                        tag.dataset.value = tagValue;
-
-                   
-                        tag.innerHTML = `${tagValue} <span class="tag-remove">&times;</span>`;
-                        tag.querySelector('.tag-remove').onclick = (e) => {
-                            selectedTags.delete(tagValue);
-                            renderTags();
-
-       
-                            filterSuggestions('');
-                            e.stopPropagation();
-                        };
-                        inputField.insertBefore(tag, tagInput);
-
-  
-                    });
-                }
-
-                function filterSuggestions(query) {
-                    suggestionsList.innerHTML = '';
-                    suggestionsList.classList.remove('show');
-                    const lowerQuery = query.toLowerCase().trim();
-                    let hasSuggestions = false;
-
-                    allOptions
-                        .filter(o => !selectedTags.has(o) && (lowerQuery === '' || o.toLowerCase().includes(lowerQuery)))
-                        .forEach(option => {
-                            const optionDiv = document.createElement('span');
-
-  
-                            optionDiv.className = 'select-option';
-                            optionDiv.innerHTML = option;
-                            optionDiv.onclick = () => {
-
-          
-                                selectedTags.add(option);
-                                tagInput.value = '';
-                                renderTags();
-
-            
-                                filterSuggestions('');
-                                tagInput.focus();
-                            };
-
-                    
-                            suggestionsList.appendChild(optionDiv);
-                            hasSuggestions = true;
-                        });
-                    if (hasSuggestions) suggestionsList.classList.add('show');
-                }
-
-                tagInput.addEventListener('input', () => filterSuggestions(tagInput.value));
-                tagInput.addEventListener('focus', () => filterSuggestions(tagInput.value));
-                
-                // ⭐ NEW: Add tag on Enter key press
-                tagInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault(); 
-                    
-                        addTagFromInput();
-                        suggestionsList.classList.remove('show');
-                    }
-                });
-                // ⭐ NEW: Add tag on icon click
-                if (tagIcon) {
-                    tagIcon.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        addTagFromInput();
-    
-                        suggestionsList.classList.remove('show');
-                        tagInput.focus();
-                    });
-                }
-
-
-                document.addEventListener('click', (e) => {
-                    if (!container.contains(e.target)) suggestionsList.classList.remove('show');
-                });
-                renderTags();
-
-                inputField.api = {
-                    reset: () => {
-                        selectedTags.clear();
-                        renderTags();
-                    },
-                    set: (tagsArray = []) => {
-                        selectedTags = new Set(tagsArray);
-                        renderTags();
-                    }
-                };
-            }
-            document.querySelectorAll('.multi-select-container').forEach(setupMultiSelect);
-            // --- 5. IMAGE HANDLING LOGIC ---
-
-            if (mainImageUrlInput) {
-                mainImageUrlInput.addEventListener('input', () => {
-                    mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg';
-                });
-            }
-            if (mainFileUpload) {
-                mainFileUpload.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader 
-                        = new FileReader();
-                    reader.onload = (event) => {
-                        mainImagePreview.src = event.target.result;
-                        mainImageUrlInput.value = event.target.result;
-                    };
-
-  
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            function renderSmallImages() {
-                if (!smallImagesContainer || !smallImagesInput) return;
-                const addNewThumbEl = smallImagesContainer.querySelector('#add-small-image');
-                smallImagesContainer.innerHTML = '';
-
-                smallImageUrls.forEach(url => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'thumb-wrapper';
-                    const altText = url.startsWith('data:') ? 'Data URL Thumb' : 'Uploaded URL';
-
-                
-                    wrapper.innerHTML = `<img src="${url}" alt="${altText}" class="small-thumb">
-                                                 <span class="thumb-remove" data-url="${url}">&times;</span>`;
-
-                    wrapper.querySelector('.thumb-remove').addEventListener('click', (e) => {
-
-                 
-                        e.stopPropagation();
-                        const urlToRemove = e.target.dataset.url;
-                        smallImageUrls = smallImageUrls.filter(u => u !== urlToRemove);
-                        updateSmallImagesArray();
-
-            
-                    });
-                    smallImagesContainer.appendChild(wrapper);
-                });
-                if (addNewThumbEl) {
-                    smallImagesContainer.appendChild(addNewThumbEl);
-                }
-
-                smallImagesInput.value = smallImageUrls.join(',');
-            }
-
-            function updateSmallImagesArray() {
-                renderSmallImages();
-            }
-
-            if (smallFileUpload) {
-                smallFileUpload.addEventListener('change', (e) => {
-                    Array.from(e.target.files).forEach(file => {
-                        const reader = new FileReader();
-
-                 
-                        reader.onload = (event) => {
-                            smallImageUrls.push(event.target.result);
-                            updateSmallImagesArray();
-                        };
-
-         
-                        reader.readAsDataURL(file);
-                    });
-                    e.target.value = '';
-                });
-            }
-
-            renderSmallImages();
-            // --- 6. RENDERING AND SEARCH LOGIC ---
-
-            function renderProducts(productsToDisplay) {
-                if (!productTableBody) return;
-                productTableBody.innerHTML = '';
-
-                if (productsToDisplay.length === 0) {
-                    productTableBody.innerHTML = '<tr><td colspan="5">No products found.</td></tr>';
+            Array.from(nativeSelect.options).forEach(option => {
+                if (nativeSelect.classList.contains('filter-select') && option.value === "") {
+                    customButton.innerHTML = option.innerHTML;
                     return;
                 }
-
-                productsToDisplay.forEach(product => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td data-label="ID">${product._id.slice(-6)}</td>
-
-           
-                        <td data-label="Title / Artist">
-                            <strong>${product.title || 'N/A'}</strong>
-                            <small>(${product.artist || 'N/A'})</small>
-
-                        
-                        </td>
-                        <td data-label="Price Range">${product.priceRange || '$' + product.price}</td>
-                        <td data-label="Category">${product.category || 'N/A'}</td>
-                        <td data-label="Actions">
-
-                  
-                            <button class="btn btn-action edit-btn" data-id="${product._id}" title="Edit">✏️</button>
-                            <button class="btn btn-action delete-btn" data-id="${product._id}" title="Delete">🗑️</button>
-                        </td>
-                    `;
-                    productTableBody.appendChild(row);
+                const itemDiv = document.createElement('div');
+                itemDiv.innerHTML = option.innerHTML;
+                itemDiv.dataset.value = option.value;
+                if (option.selected) itemDiv.classList.add('same-as-selected');
+                itemDiv.addEventListener('click', function (e) {
+                    nativeSelect.value = this.dataset.value;
+                    customButton.innerHTML = this.innerHTML;
+                    const selected = customItems.querySelector('.same-as-selected');
+                    if (selected) selected.classList.remove('same-as-selected');
+                    this.classList.add('same-as-selected');
+                    closeAllSelect();
+                    e.stopPropagation();
+                    if (nativeSelect.classList.contains('filter-select')) handleSearch();
                 });
-            }
-
-            function handleSearch() {
-                const query = searchInput.value.toLowerCase().trim();
-                const categoryFilter = filterSelect.value.toLowerCase();
-
-                const filtered = allProducts.filter(product => {
-                    // 1. Search Filter (Title, Artist, Style)
-                    const matchesQuery = !query ||
-                        (product.title && product.title.toLowerCase().includes(query)) ||
-
-              
-                        (product.artist && product.artist.toLowerCase().includes(query)) ||
-                        (product.style && product.style.toLowerCase().includes(query));
-
-                    // 2. Category Filter
-                    const matchesCategory = categoryFilter === '' ||
-
-            
-                        (product.category && product.category.toLowerCase() === categoryFilter);
-
-                    return matchesQuery && matchesCategory;
-                });
-                renderProducts(filtered);
-            }
-
-            if (searchInput) {
-                searchInput.addEventListener('input', handleSearch);
-            }
-
-            // Listen for changes on the native filter select element (triggered by custom select)
-            if (filterSelect) {
-                // If using the custom select implementation, the change is handled within setupCustomSelects
-                // If not using the custom select, use 'change' event:
-
-        
-                // filterSelect.addEventListener('change', handleSearch);
-            }
-
-            async function loadProducts() {
-                if (!productTableBody) return;
-                productTableBody.innerHTML = '<tr><td colspan="5">Loading products...</td></tr>';
-
-                try {
-                    const response = await fetch(API_URL);
-                    if (!response.ok) throw new Error('Network response was not ok');
-
-                    allProducts = await response.json();
-                    handleSearch();
-                } catch (error) {
-                    console.error('Failed to load products:', error);
-                    productTableBody.innerHTML = '<tr><td colspan="5">Failed to load products. (Check API server)</td></tr>';
-                }
-            }
-
-
-            // --- 7. EDIT & DELETE CLICK HANDLING (FIXED form population) ---
-
-            function populateFormForEdit(product) {
-                modalTitle.textContent = `Edit Product: ${product.title}`;
-                hiddenProductId.value = product._id;
-
-                document.getElementById('title').value = product.title || '';
-                document.getElementById('artist').value = product.artist || '';
-                document.getElementById('price').value = product.price || 0;
-                document.getElementById('dimensions').value = product.dimensions || '';
-                document.getElementById('medium').value = product.medium || '';
-                document.getElementById('style').value = product.style || '';
-                document.getElementById('subject').value = product.subject || '';
-                document.getElementById('description').value = product.description || '';
-                document.getElementById('artist-bio').value = product.artistBio || '';
-                // Set native select values
-                document.getElementById('priceRange').value = product.priceRange ||
-                    '1000-2000';
-                document.getElementById('size').value = product.size || 'small';
-                document.getElementById('category').value = product.category || 'drawing';
-                // ⭐ NEW: Set Orientation value
-                document.getElementById('orientation').value = product.orientation ||
-                    'square';
-
-
-                // Update Custom Selects display after setting native value
-                document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
-                    const nativeSelect = wrapper.querySelector('select');
-                    if (nativeSelect) {
-                        updateCustomSelectDisplay(nativeSelect);
-
-   
-                    }
-                });
-                mainImageUrlInput.value = product.mainImage || '';
-                mainImagePreview.src = product.mainImage || 'placeholder.jpg';
-                smallImageUrls = product.smallImages || [];
-                renderSmallImages();
-                // Set Multi-Select Tags using the API
-                document.querySelector('.tag-input-field[data-type="country"]').api.set(product.country || []);
-                document.querySelector('.tag-input-field[data-type="palette"]').api.set(product.palette || []);
-            }
-
-            productTableBody.addEventListener('click', async (e) => {
-                const target = e.target;
-
-                if (target.classList.contains('edit-btn')) {
-                    const id = target.dataset.id;
-                    try 
-                    {
-                        const res = await fetch(`${API_URL}/${id}`);
-                        if (!res.ok) throw new Error('Failed to fetch product details');
-
-                        const product = await res.json();
-
-            
-                        clearForm(); // Form reset first
-                        populateFormForEdit(product);
-                        modal.classList.add('open');
-
-                    } catch (error) {
-
-             
-                        console.error(error);
-                        alert(`Error fetching product: ${error.message}`);
-                    }
-                }
-
-
-                if (target.classList.contains('delete-btn')) {
-        
-                    const id = target.dataset.id;
-                    if (!confirm('Are you sure you want to delete this product?This action cannot be undone.')) {
-                        return;
-                    }
-
-                    try {
-                        // ⭐ FIX: Add Authorization Header to fix 401/403 errors on DELETE
-                        const authToken = localStorage.getItem('token'); 
-
-                        const res = await fetch(`${API_URL}/${id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                // Assuming the server expects a Bearer Token for authorization
-                                'Authorization': `Bearer ${authToken}` 
-                            }
-                     
-                        });
-
-                        if (!res.ok) {
-                            // Attempt to get a detailed error message from the server response
-                            const errorData = await res.json().catch(() => ({}));
-                            throw new Error(errorData.msg || `Failed to delete product (Status: ${res.status})`);
-                        }
-
-                        console.log('Product deleted');
-                        loadProducts();
-                    } catch (error) {
-                        console.error(error);
-                        alert(`Error: ${error.message}`);
-                    }
-                }
+                customItems.appendChild(itemDiv);
             });
-            // --- 8. FORM SUBMISSION (Add vs Edit) ---
-            productForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
-
-                const saveButton = productForm.querySelector('.save-btn');
-                saveButton.textContent = 'Saving...';
-                saveButton.disabled = true;
-
-
-     
-                const productId = hiddenProductId.value;
-                const isEditing = !!productId;
-
-                const productData = {
-                    title: document.getElementById('title').value,
-                    artist: document.getElementById('artist').value,
-
-      
-                    price: document.getElementById('price').value,
-                    priceRange: document.getElementById('priceRange').value,
-                    dimensions: document.getElementById('dimensions').value,
-                    size: document.getElementById('size').value,
-                    category: document.getElementById('category').value,
-
- 
-                    medium: document.getElementById('medium').value,
-                    style: document.getElementById('style').value,
-                    subject: document.getElementById('subject').value,
-                    // ⭐ NEW: Orientation added to data
-
-            
-                    orientation: document.getElementById('orientation').value,
-                    // ⭐
-                    description: document.getElementById('description').value,
-                    artistBio: document.getElementById('artist-bio').value,
-                    mainImage: mainImageUrlInput.value,
-
-       
-                    smallImages: smallImageUrls,
-                    country: Array.from(document.querySelector('.tag-input-field[data-type="country"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
-                    palette: Array.from(document.querySelector('.tag-input-field[data-type="palette"]').querySelectorAll('.tag')).map(tag => tag.dataset.value),
-                };
-                const url = isEditing ? `${API_URL}/${productId}` : API_URL;
-                const method = isEditing ? 'PUT' : 'POST';
-
-                // Fetch auth token for POST/PUT requests
-                const authToken = localStorage.getItem('token'); 
-                
-                try {
-                    const response = await fetch(url, {
-                        method: method,
-                        // Authorization header added here for POST/PUT as well
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-
-                     
-                        body: JSON.stringify(productData),
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.msg || 'Failed to save product');
-                    }
-
-                    console.log(`Product ${isEditing ? 'updated' : 'saved'} successfully`);
-                    modal.classList.remove('open');
-                    clearForm();
-                    loadProducts();
-
-                } catch (error) {
-                    console.error('Form submission error:', error);
-                    alert(`Error: ${error.message}`);
-                } finally {
-                    saveButton.textContent = 'Save Product';
-                    saveButton.disabled = false;
-                }
+            if (!nativeSelect.classList.contains('filter-select')) {
+                customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
+            }
+            wrapper.append(customButton, customItems);
+            customButton.addEventListener('click', function (e) {
+                e.stopPropagation();
+                closeAllSelect(this);
+                this.classList.toggle('select-arrow-active');
+                customItems.classList.toggle('select-hide');
             });
-            // Initial load
-            loadProducts();
-
         });
-    </script>
+    }
+    setupCustomSelects();
+
+    // --- 4. MULTI-SELECT TAG LOGIC ---
+    function setupMultiSelect(container) {
+        const inputField = container.querySelector('.tag-input-field');
+        const tagInput = container.querySelector('.tag-input');
+        const tagIcon = container.querySelector('.tag-input-icon[data-action="enter"]');
+        const allOptions = tagInput.dataset.list.split(',');
+        let selectedTags = new Set();
+        const suggestionsList = document.createElement('div');
+        suggestionsList.className = 'select-options-list';
+        inputField.parentElement.appendChild(suggestionsList);
+
+        function addTagFromInput() {
+            const value = tagInput.value.trim();
+            if (value && !selectedTags.has(value)) {
+                selectedTags.add(value);
+                tagInput.value = '';
+                renderTags();
+                filterSuggestions('');
+            }
+        }
+
+        function renderTags() {
+            inputField.querySelectorAll('.tag').forEach(tag => tag.remove());
+            selectedTags.forEach(tagValue => {
+                const tag = document.createElement('span');
+                tag.className = 'tag';
+                tag.dataset.value = tagValue;
+                tag.innerHTML = `${tagValue} <span class="tag-remove">&times;</span>`;
+                tag.querySelector('.tag-remove').onclick = (e) => {
+                    selectedTags.delete(tagValue);
+                    renderTags();
+                    filterSuggestions('');
+                    e.stopPropagation();
+                };
+                inputField.insertBefore(tag, tagInput);
+            });
+        }
+
+        function filterSuggestions(query) {
+            suggestionsList.innerHTML = '';
+            suggestionsList.classList.remove('show');
+            const lowerQuery = query.toLowerCase().trim();
+            let hasSuggestions = false;
+            allOptions.filter(o => !selectedTags.has(o) && (lowerQuery === '' || o.toLowerCase().includes(lowerQuery)))
+                .forEach(option => {
+                    const optionDiv = document.createElement('span');
+                    optionDiv.className = 'select-option';
+                    optionDiv.innerHTML = option;
+                    optionDiv.onclick = () => { selectedTags.add(option); tagInput.value=''; renderTags(); filterSuggestions(''); tagInput.focus(); };
+                    suggestionsList.appendChild(optionDiv);
+                    hasSuggestions = true;
+                });
+            if (hasSuggestions) suggestionsList.classList.add('show');
+        }
+
+        tagInput.addEventListener('input', () => filterSuggestions(tagInput.value));
+        tagInput.addEventListener('focus', () => filterSuggestions(tagInput.value));
+        tagInput.addEventListener('keydown', (e) => { if (e.key==='Enter'){ e.preventDefault(); addTagFromInput(); suggestionsList.classList.remove('show'); } });
+        if (tagIcon) tagIcon.addEventListener('click', (e)=>{ e.stopPropagation(); addTagFromInput(); suggestionsList.classList.remove('show'); tagInput.focus(); });
+        document.addEventListener('click', (e) => { if (!container.contains(e.target)) suggestionsList.classList.remove('show'); });
+        renderTags();
+
+        inputField.api = {
+            reset: () => { selectedTags.clear(); renderTags(); },
+            set: (tagsArray = []) => { selectedTags = new Set(tagsArray); renderTags(); }
+        };
+    }
+    document.querySelectorAll('.multi-select-container').forEach(setupMultiSelect);
+
+    // --- 5. IMAGE HANDLING ---
+    if (mainImageUrlInput) mainImageUrlInput.addEventListener('input', () => { mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg'; });
+    if (mainFileUpload) mainFileUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => { mainImagePreview.src=event.target.result; mainImageUrlInput.value=event.target.result; };
+        reader.readAsDataURL(file);
+    });
+
+    function renderSmallImages() {
+        if (!smallImagesContainer || !smallImagesInput) return;
+        const addNewThumbEl = smallImagesContainer.querySelector('#add-small-image');
+        smallImagesContainer.innerHTML='';
+        smallImageUrls.forEach(url=>{
+            const wrapper=document.createElement('div'); wrapper.className='thumb-wrapper';
+            const altText = url.startsWith('data:')?'Data URL Thumb':'Uploaded URL';
+            wrapper.innerHTML=`<img src="${url}" alt="${altText}" class="small-thumb"><span class="thumb-remove" data-url="${url}">&times;</span>`;
+            wrapper.querySelector('.thumb-remove').addEventListener('click', e=>{
+                e.stopPropagation();
+                const urlToRemove=e.target.dataset.url;
+                smallImageUrls = smallImageUrls.filter(u=>u!==urlToRemove);
+                updateSmallImagesArray();
+            });
+            smallImagesContainer.appendChild(wrapper);
+        });
+        if (addNewThumbEl) smallImagesContainer.appendChild(addNewThumbEl);
+        smallImagesInput.value = smallImageUrls.join(',');
+    }
+
+    function updateSmallImagesArray(){ renderSmallImages(); }
+
+    if (smallFileUpload) smallFileUpload.addEventListener('change', (e)=>{
+        Array.from(e.target.files).forEach(file=>{
+            const reader = new FileReader();
+            reader.onload = (event)=>{ smallImageUrls.push(event.target.result); updateSmallImagesArray(); };
+            reader.readAsDataURL(file);
+        });
+        e.target.value='';
+    });
+
+    renderSmallImages();
+
+    // --- 6. RENDER & SEARCH ---
+    function renderProducts(productsToDisplay){
+        if (!productTableBody) return;
+        productTableBody.innerHTML='';
+        if (productsToDisplay.length===0){
+            productTableBody.innerHTML='<tr><td colspan="5">No products found.</td></tr>';
+            return;
+        }
+        productsToDisplay.forEach(product=>{
+            const row=document.createElement('tr');
+            row.innerHTML=`
+                <td data-label="ID">${product._id.slice(-6)}</td>
+                <td data-label="Title / Artist"><strong>${product.title||'N/A'}</strong><small>(${product.artist||'N/A'})</small></td>
+                <td data-label="Price Range">${product.priceRange||'$'+product.price}</td>
+                <td data-label="Category">${product.category||'N/A'}</td>
+                <td data-label="Actions">
+                    <button class="btn btn-action edit-btn" data-id="${product._id}" title="Edit">✏️</button>
+                    <button class="btn btn-action delete-btn" data-id="${product._id}" title="Delete">🗑️</button>
+                </td>
+            `;
+            productTableBody.appendChild(row);
+        });
+    }
+
+    function handleSearch(){
+        const query=searchInput.value.toLowerCase().trim();
+        const categoryFilter=filterSelect.value.toLowerCase();
+        const filtered = allProducts.filter(product=>{
+            const matchesQuery = !query || (product.title && product.title.toLowerCase().includes(query)) || (product.artist && product.artist.toLowerCase().includes(query)) || (product.style && product.style.toLowerCase().includes(query));
+            const matchesCategory = categoryFilter==='' || (product.category && product.category.toLowerCase()===categoryFilter);
+            return matchesQuery && matchesCategory;
+        });
+        renderProducts(filtered);
+    }
+
+    if(searchInput) searchInput.addEventListener('input', handleSearch);
+
+    async function loadProducts(){
+        if(!productTableBody) return;
+        productTableBody.innerHTML='<tr><td colspan="5">Loading products...</td></tr>';
+        try{
+            const response=await fetch(API_URL);
+            if(!response.ok) throw new Error('Network response was not ok');
+            allProducts=await response.json();
+            handleSearch();
+        }catch(error){
+            console.error('Failed to load products:',error);
+            productTableBody.innerHTML='<tr><td colspan="5">Failed to load products. (Check API server)</td></tr>';
+        }
+    }
+
+    // --- 7. EDIT & DELETE ---
+    function populateFormForEdit(product){
+        modalTitle.textContent=`Edit Product: ${product.title}`;
+        hiddenProductId.value=product._id;
+        document.getElementById('title').value=product.title||'';
+        document.getElementById('artist').value=product.artist||'';
+        document.getElementById('price').value=product.price||0;
+        document.getElementById('dimensions').value=product.dimensions||'';
+        document.getElementById('medium').value=product.medium||'';
+        document.getElementById('style').value=product.style||'';
+        document.getElementById('subject').value=product.subject||'';
+        document.getElementById('description').value=product.description||'';
+        document.getElementById('artist-bio').value=product.artistBio||'';
+        document.getElementById('priceRange').value=product.priceRange||'1000-2000';
+        document.getElementById('size').value=product.size||'small';
+        document.getElementById('category').value=product.category||'drawing';
+        document.getElementById('orientation').value=product.orientation||'square';
+        document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper=>{
+            const nativeSelect=wrapper.querySelector('select');
+            if(nativeSelect) updateCustomSelectDisplay(nativeSelect);
+        });
+        mainImageUrlInput.value=product.mainImage||'';
+        mainImagePreview.src=product.mainImage||'placeholder.jpg';
+        smallImageUrls=product.smallImages||[];
+        renderSmallImages();
+        document.querySelector('.tag-input-field[data-type="country"]').api.set(product.country||[]);
+        document.querySelector('.tag-input-field[data-type="palette"]').api.set(product.palette||[]);
+    }
+
+    productTableBody.addEventListener('click', async (e)=>{
+        const target=e.target;
+        if(target.classList.contains('edit-btn')){
+            const id=target.dataset.id;
+            try{
+                const res=await fetch(`${API_URL}/${id}`);
+                if(!res.ok) throw new Error('Failed to fetch product details');
+                const product=await res.json();
+                clearForm();
+                populateFormForEdit(product);
+                modal.classList.add('open');
+            }catch(error){ console.error(error); alert(`Error fetching product: ${error.message}`);}
+        }
+        if(target.classList.contains('delete-btn')){
+            const id=target.dataset.id;
+            if(!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+            try{
+                const authToken=localStorage.getItem('token');
+                const res=await fetch(`${API_URL}/${id}`,{method:'DELETE', headers:{'Authorization':`Bearer ${authToken}`}});
+                if(!res.ok){
+                    const errorData=await res.json().catch(()=>({}));
+                    throw new Error(errorData.msg || `Failed to delete product (Status: ${res.status})`);
+                }
+                console.log('Product deleted');
+                loadProducts();
+            }catch(error){ console.error(error); alert(`Error: ${error.message}`);}
+        }
+    });
+
+    // --- 8. FORM SUBMISSION ---
+    productForm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const saveButton=productForm.querySelector('.save-btn');
+        saveButton.textContent='Saving...'; saveButton.disabled=true;
+        const productId=hiddenProductId.value;
+        const isEditing=!!productId;
+        const productData={
+            title: document.getElementById('title').value,
+            artist: document.getElementById('artist').value,
+            price: document.getElementById('price').value,
+            priceRange: document.getElementById('priceRange').value,
+            dimensions: document.getElementById('dimensions').value,
+            size: document.getElementById('size').value,
+            category: document.getElementById('category').value,
+            medium: document.getElementById('medium').value,
+            style: document.getElementById('style').value,
+            subject: document.getElementById('subject').value,
+            orientation: document.getElementById('orientation').value,
+            description: document.getElementById('description').value,
+            artistBio: document.getElementById('artist-bio').value,
+            mainImage: mainImageUrlInput.value,
+            smallImages: smallImageUrls,
+            country: Array.from(document.querySelector('.tag-input-field[data-type="country"]').querySelectorAll('.tag')).map(tag=>tag.dataset.value),
+            palette: Array.from(document.querySelector('.tag-input-field[data-type="palette"]').querySelectorAll('.tag')).map(tag=>tag.dataset.value),
+        };
+        const url=isEditing?`${API_URL}/${productId}`:API_URL;
+        const method=isEditing?'PUT':'POST';
+        const authToken=localStorage.getItem('token');
+        try{
+            const response=await fetch(url,{method:method, headers:{'Content-Type':'application/json','Authorization':`Bearer ${authToken}`}, body:JSON.stringify(productData)});
+            if(!response.ok){
+                const errorData=await response.json().catch(()=>({}));
+                throw new Error(errorData.msg||'Failed to save product');
+            }
+            console.log(`Product ${isEditing?'updated':'saved'} successfully`);
+            modal.classList.remove('open'); clearForm(); loadProducts();
+        }catch(error){ console.error('Form submission error:',error); alert(`Error: ${error.message}`);}
+        finally{ saveButton.textContent='Save Product'; saveButton.disabled=false; }
+    });
+
+    // INITIAL LOAD
+    loadProducts();
+
+}); // DOMContentLoaded
+</script>
+
 </body>
 
 </html>

@@ -1,39 +1,39 @@
 @font-face {
-  font-family: style;
-  src: url("../fonts/Agbalumo/Agbalumo-Regular.ttf");
+    font-family: style;
+    src: url("../fonts/Agbalumo/Agbalumo-Regular.ttf");
 }
 
 @font-face {
-  font-family: fogala;
-  src: url("../fonts/Fjalla_One/FjallaOne-Regular.ttf");
+    font-family: fogala;
+    src: url("../fonts/Fjalla_One/FjallaOne-Regular.ttf");
 }
 
 @font-face {
-  font-family: regular;
-  src: url("../fonts/ArefRuqaa-Regular.ttf");
+    font-family: regular;
+    src: url("../fonts/ArefRuqaa-Regular.ttf");
 }
 
 @font-face {
-  font-family: lighter;
-  src: url("../fonts/ADLaM_Display/ADLaMDisplay-Regular.ttf");
+    font-family: lighter;
+    src: url("../fonts/ADLaM_Display/ADLaMDisplay-Regular.ttf");
 }
 
 @font-face {
-  font-family: light;
-  src: url("../fonts/Poppins/Poppins-Light.ttf");
+    font-family: light;
+    src: url("../fonts/Poppins/Poppins-Light.ttf");
 }
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  font-family: light;
-  text-transform: capitalize;
-  color: #333;
-  line-height: 1.6;
+    font-family: light !important;
+    text-transform: capitalize;
+    color: #333;
+    line-height: 1.6;
 }
 
 h1,
@@ -42,450 +42,397 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: style;
-  line-height: 1.4;
-  margin: 0 0 10px;
-  color: #222;
+    font-family: style;
+    line-height: 1.4;
+    margin: 0 0 10px;
+    color: #222;
 }
 
 p {
-  margin: 0 0 15px;
+    margin: 0 0 15px;
 }
 
 h1 {
-  font-size: 48px;
+    font-size: 48px;
 }
 
 h2 {
-  font-size: 36px;
+    font-size: 36px;
 }
 
 h3 {
-  font-size: 28px;
+    font-size: 28px;
 }
 
 h4 {
-  font-size: 22px;
+    font-size: 22px;
 }
 
 h5 {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 h6 {
-  font-size: 16px;
+    font-size: 16px;
 }
 
 section {
-  position: relative;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+    position: relative;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
 }
 
 .container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 .flex-group {
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .flex-justify-center {
-  display: flex;
-  align-items: center !important;
-  justify-content: space-between;
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between;
 }
 
 img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 img {
-  cursor: pointer;
-}
-
-/* This class seems unused in the HTML but kept for completeness */
-.product-details {
-  width: 48%;
-}
-
-.products-section {
-  padding-top: 8rem;
-}
-
-.right-align-filters .flex-justify-center {
-  justify-content: flex-start;
-}
-
-.right-align-filters label {
-  margin: 0 10px 0 0;
+    cursor: pointer;
 }
 
 /* --- Cart Table Styles (Min-width ensures responsiveness) --- */
 .cart-table-wrapper {
-  overflow-x: auto;
-  margin-bottom: 3rem;
+    overflow-x: auto;
+    margin-bottom: 3rem;
 }
 
 .cart-table-wrapper table {
-  border-collapse: collapse;
-  min-width: 600px; /* Forces scroll on smaller screens */
+    border-collapse: collapse;
+    min-width: 600px; /* Forces scroll on smaller screens */
 }
 
 .cart-table-wrapper th,
 .cart-table-wrapper td {
-  padding: 15px 10px;
-  vertical-align: middle;
-  text-align: center;
+    padding: 15px 10px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 thead th {
-  color: #222;
-  font-family: Bold;
-  text-transform: uppercase;
-  font-size: 14px;
-  letter-spacing: 0.5px;
+    color: #222;
+    font-family: Bold; /* Assuming Bold is defined in a separate font-face */
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 td {
-  color: #555;
-  font-family: Medium;
+    color: #555;
+    /* font-family: Medium; Assuming Medium is defined in a separate font-face */
 }
 
 td img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  padding: 5px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    padding: 5px;
 }
 
 td,
 th p,
 td p,
 .total-row h5 {
-  font-family: lighter !important;
+    font-family: lighter !important;
 }
 
 th,
 .summary-heading p,
 .order-button,
 .summary-contact p {
-  font-family: style !important;
+    font-family: style !important;
 }
 
 td h4 {
-  font-size: 14px;
-  color: #333;
-  text-transform: none;
+    font-size: 14px;
+    color: #333;
+    text-transform: none;
 }
 
 td p {
-  font-size: 16px;
-  font-family: Medium;
-  color: #222;
-  margin: 0;
+    font-size: 16px;
+    /* font-family: Medium; */
+    color: #222;
+    margin: 0;
 }
 
 .summary-contact {
-  width: 50%;
-  text-align: center;
+    width: 50%;
+    text-align: center;
 }
 
 .summary-contact p {
-  font-size: 18px;
-  font-family: Medium;
-  text-transform: none;
-  color: #555;
+    font-size: 18px;
+    /* font-family: Medium; */
+    text-transform: none;
+    color: #555;
 }
 
 .summary-contact a {
-  color: #2ee05d;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s;
+    color: #2ee05d;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
 }
 
 .summary-contact a:hover {
-  color: #22c74e;
+    color: #22c74e;
 }
 
 .cart-summary-section {
-  padding-top: 0;
+    padding-top: 0;
 }
 
 .cart-summary-section .flex-justify-center {
-  justify-content: space-between;
-  align-items: flex-start;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .summary-total-box {
-  width: 45%;
+    width: 45%;
 }
 
 .summary-box {
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
 }
 
 .summary-heading {
-  text-align: center;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #f7c5c1;
-  padding-bottom: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f7c5c1;
+    padding-bottom: 10px;
 }
 
 .summary-heading p {
-  font-size: 24px;
-  font-family: Medium;
-  text-transform: uppercase;
-  color: #222;
-  margin: 0;
+    font-size: 24px;
+    /* font-family: Medium; */
+    text-transform: uppercase;
+    color: #222;
+    margin: 0;
 }
 
 .summary-total-box table {
-  width: 100%;
+    width: 100%;
 }
 
 .summary-total-box table th,
 .summary-total-box td {
-  padding: 12px 15px;
-  text-align: left;
-  position: static;
-  left: auto;
-  top: auto;
+    padding: 12px 15px;
+    text-align: left;
+    position: static;
+    left: auto;
+    top: auto;
 }
 
 .summary-total-box table th p,
 .summary-total-box table td p {
-  margin: 0;
-  font-family: Medium;
-  color: #555;
+    margin: 0;
+    /* font-family: Medium; */
+    color: #555;
 }
 
 .summary-total-box table th:nth-child(2),
 .summary-total-box table td:nth-child(2) {
-  text-align: right;
-  font-family: Medium;
-  color: #222;
+    text-align: right;
+    /* font-family: Medium; */
+    color: #222;
 }
 
 .total-row {
-  background-color: #f5fff5;
-  font-weight: bold;
+    background-color: #f5fff5;
+    font-weight: bold;
 }
 
 .total-row h5 {
-  font-family: Medium;
-  font-weight: normal;
-  font-size: 18px;
-  color: #f7c5c1;
-  margin: 0;
-  text-transform: none;
+    /* font-family: Medium; */
+    font-weight: normal;
+    font-size: 18px;
+    color: #f7c5c1;
+    margin: 0;
+    text-transform: none;
 }
 
 .order-button {
-  text-decoration: none;
-  text-transform: uppercase;
-  color: #fff;
-  background-color: #f7c5c1;
-  border: none;
-  padding: 15px 40px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: Medium;
-  letter-spacing: 1px;
-  width: 100%;
-  margin-top: 20px;
-  transition: background-color 0.3s, transform 0.1s;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #f7c5c1;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    /* font-family: Medium; */
+    letter-spacing: 1px;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.1s;
+    display: inline-block; /* Added for the anchor tag */
 }
 
 .order-button:hover {
-  background-color: #f9b4af;
-  transform: translateY(-2px);
+    background-color: #f9b4af;
+    transform: translateY(-2px);
 }
 
 .order-action {
-  padding: 20px 0 0;
-  text-align: center;
+    padding: 20px 0 0;
+    text-align: center;
 }
 
 label {
-  color: #2b2a2aa2;
-}
-
-.table-cell-header-spacer::before {
-  display: none;
+    color: #2b2a2aa2;
 }
 
 .main-head {
-  text-align: center;
+    text-align: center;
 }
 
 .cart {
-  padding: 0;
+    padding: 0;
 }
 
-.removebtn {
-  width: 26px;
+.remove-cell img {
+    width: 26px;
+    height: auto; /* Changed from 100% */
 }
 
 .quantity-input {
-  outline: none;
-  padding: 10px;
-  border: 1px solid #f9b4af;
+    outline: none;
+    padding: 10px;
+    border: 1px solid #f9b4af;
+    width: 44px; /* Explicit width for input */
+    text-align: center;
 }
 
 .empty-cart {
-  width: 40%;
-  margin: 0 auto;
+    width: 40%;
+    margin: 0 auto;
+    text-align: center;
 }
 
 #emptyCart {
-  padding: 3rem 0;
+    padding: 3rem 0;
 }
 
 .empty-cart-section {
-  width: 50%;
+    width: 50%;
+    max-width: 150px;
+    margin: 0 auto 20px;
 }
 
-header ul {
-  height: 33em !important;
+.shop-button a {
+    color: blue !important;
+    text-decoration: none;
+    font-family: style !important;
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.shop-button a:hover {
+    background-color: #f0f8ff;
 }
 
 /* ------------------------------------------- */
-/* --- NEW RESPONSIVENESS RULES START HERE --- */
+/* --- RESPONSIVENESS RULES --- */
 /* ------------------------------------------- */
 
-/* 1. Product Detail Layout (applies to max-width: 992px) */
-/* This handles the transition from two columns to a stacked layout */
 @media (max-width: 992px) {
-  .product-layout {
-    /* Ensure the product layout itself is a flexible container */
-    display: flex; 
-    flex-direction: column; /* Stack columns vertically */
-    gap: 30px; /* Add some space between image and details */
-  }
-
-  .image-column,
-  .details-column {
-    width: 100%; /* Make each column full width */
-    padding: 0 15px; /* Add horizontal padding for edges */
-  }
-
-  .product-title {
-    font-size: 38px; /* Slightly reduce large title size */
-  }
-
-  /* Adjustments for the small image container if present */
-  .small-images-container {
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 10px;
-  }
+    /* Header/Nav adjustment for mobile */
+    header ul {
+        height: auto !important; /* Fix to allow proper collapse/expand */
+    }
 }
 
 /* 2. Cart Summary Layout (applies to max-width: 768px) */
-/* Stacks the Total Box and Contact Box */
 @media (max-width: 768px) {
-  .cart-summary-section .flex-justify-center {
-    flex-direction: column; /* Stack total box and contact info */
-    gap: 30px;
-  }
+    .cart-summary-section .flex-justify-center {
+        flex-direction: column; /* Stack total box and contact info */
+        gap: 30px;
+    }
 
-  .summary-contact,
-  .summary-total-box {
-    width: 100%; /* Make both elements full width */
-  }
+    .summary-contact,
+    .summary-total-box {
+        width: 100%; /* Make both elements full width */
+    }
 
-  /* Related Products Grid adjustment */
-  .related-products .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Allow for 2-3 columns */
-    gap: 20px;
-  }
+    h1 {
+        font-size: 32px;
+    }
 
-  /* Tab Navigation styling for small screens */
-  .tab-nav {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    border-bottom: 1px solid #eee;
-  }
-
-  .tab-button {
-    flex-shrink: 0; /* Prevents buttons from squeezing */
-    padding: 10px 15px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  h2 {
-    font-size: 28px;
-  }
+    h2 {
+        font-size: 28px;
+    }
+    
+    /* Center text in summary contact */
+    .summary-contact {
+        text-align: center;
+    }
 }
 
 /* 3. Small Mobile Adjustments (applies to max-width: 480px) */
 @media (max-width: 480px) {
-  /* Adjustments for the select and quantity group */
-  .details-column .flex {
-    flex-direction: column; /* Stack quantity and select vertically */
-    gap: 15px;
-  }
+    
+    /* Footer adjustments for smaller screens */
+    .inner footer .align {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .inner footer .sec-1 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 
-  .custom-select-wrapper,
-  .quantity-control {
-    width: 100%; /* Make them full width */
-  }
-  
-  .quantity-control label {
-    display: block; /* Label on its own line */
-    margin-bottom: 5px;
-  }
+    .inner footer ul {
+        list-style: none;
+        padding: 0;
+    }
 
-  .quantity-control input {
-    width: 100%;
-  }
-  
-  /* Footer adjustments for smaller screens */
-  footer .align {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  footer .sec-1 {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-
-  footer ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  /* Make empty cart section full width */
-  .empty-cart {
-    width: 80%; 
-  }
-}
-input[type="number"]{
-        width: 44px;
-}
-.shop-button a{
-    color: blue !important;
+    /* Make empty cart section full width */
+    .empty-cart {
+        width: 90%; 
+    }
+    
+    /* Adjust table header size */
+    thead th {
+        font-size: 12px;
+    }
+    
+    td p {
+        font-size: 14px;
+    }
+    
+    .summary-heading p {
+        font-size: 20px;
+    }
 }
