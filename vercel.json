@@ -2,9 +2,15 @@
 {
   "routes": [
     {
-      "src": "/(.*)", 
+      "src": "/(.*)",
       "status": 404,
-      "dest": "/errors/404.html" 
+      "dest": "/errors/404.html"
+    },
+   
+    {
+      "src": "/(.*)",
+      "status": 500,
+      "dest": "/errors/500.html"
     }
   ]
 }
