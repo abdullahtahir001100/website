@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Detail | Art Gallery</title>
     <!-- Load Tailwind CSS for modern, responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/global.css">
     <style>
         /* Custom styles to match the aesthetic and provide specific layouts */
         body {
@@ -13,10 +15,11 @@
             background-color: #f7f7f7;
             color: #333;
         }
-        .smallimages{
+
+        .smallimages {
             width: fit-content;
         }
-      
+
         /* Header Styling */
         .navbar {
             display: flex;
@@ -26,18 +29,23 @@
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .inner {
             background-color: #fff;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             margin-bottom: 1rem;
         }
+
         .logo img {
             height: 40px;
             width: auto;
         }
+
         #nav-links {
-            display: none; /* Hidden by default on mobile */
+            display: none;
+            /* Hidden by default on mobile */
         }
+
         #nav-links.active {
             display: block;
             position: absolute;
@@ -48,86 +56,126 @@
             z-index: 10;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         #nav-links.active ul {
             padding: 1rem;
         }
+
         #nav-links.active li {
             padding: 0.5rem 0;
             border-bottom: 1px solid #eee;
         }
+
         .menu-icon {
             display: flex;
             gap: 0.5rem;
         }
+
+        .image-column,
+        .smallimages {
+            grid-area: image;
+            position: sticky;
+            top: 20px;
+            /* scroll کرتے وقت اوپر سے 20px پر چپک جائے گا */
+            align-self: flex-start;
+        }
+
         .naver {
             cursor: pointer;
             padding: 0.5rem;
         }
+
         .naver img {
             width: 24px;
             height: 24px;
         }
+
         .cart-icon-container {
             position: relative;
             display: inline-block;
         }
+
         #cart-count {
             position: absolute;
             top: -8px;
             right: -8px;
-            background-color: #f97316; /* Orange-600 */
+            background-color: #f97316;
+            /* Orange-600 */
             color: white;
             border-radius: 50%;
             padding: 1px 6px;
             font-size: 0.75rem;
             line-height: 1;
         }
+
         /* Product Layout */
         .product-layout {
             display: grid;
             gap: 2rem;
-            grid-template-areas: 
+            grid-template-areas:
                 "image details"
                 "smallimages details";
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem 1rem;
         }
+
+        @media (max-width: 768px) {
+            .product-grid a {
+                width: 46%;
+            }
+        }
+
+        @media (max-width: 468px) {
+            .product-grid a {
+                width: 100%;
+            }
+        }
+
         @media (min-width: 768px) {
             .product-layout {
                 grid-template-columns: 1fr 2fr 2fr;
-                grid-template-areas: 
+                grid-template-areas:
                     "smallimages image details";
             }
-            .image-column {
-                grid-area: image;
-            }
+
+
+
             .details-column {
                 grid-area: details;
             }
+
             .smallimages {
                 grid-area: smallimages;
             }
         }
+
         /* Image Gallery */
         .small-images-container {
             display: flex;
-            flex-direction: row; /* Default to row for mobile */
+            flex-direction: row;
+            flex-wrap: wrap;
+            /* Default to row for mobile */
             gap: 0.5rem;
             overflow-x: auto;
             padding-bottom: 0.5rem;
         }
+
         @media (min-width: 768px) {
             .small-images-container {
-                flex-direction: column; /* Column on desktop */
+                flex-direction: column;
+                /* Column on desktop */
                 overflow-x: hidden;
             }
         }
+
         .small-img-wrapper {
             flex-shrink: 0;
-            width: 60px; /* fixed width for thumbnails */
+            width: 60px;
+            /* fixed width for thumbnails */
             height: 60px;
         }
+
         .small-img-thumbnail {
             width: 100%;
             height: 100%;
@@ -137,9 +185,12 @@
             border-radius: 0.5rem;
             transition: border-color 0.2s;
         }
+
         .small-img-thumbnail.active-thumbnail {
-            border-color: #f97316; /* Orange-600 active border */
+            border-color: #f97316;
+            /* Orange-600 active border */
         }
+
         .product-image {
             width: 100%;
             max-height: 600px;
@@ -147,6 +198,7 @@
             border-radius: 0.75rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
+
         /* Details Column */
         .collection-tag {
             color: #f97316;
@@ -155,26 +207,31 @@
             text-transform: uppercase;
             font-size: 0.875rem;
         }
+
         .product-title {
             font-size: 2.25rem;
             font-weight: 800;
             margin-top: 0.5rem;
             line-height: 1.1;
         }
+
         .product-price {
             font-size: 1.5rem;
             color: #1f2937;
             font-weight: 700;
             margin-top: 0.5rem;
         }
+
         /* Custom Select Styling */
         .custom-select-wrapper {
             position: relative;
             flex-grow: 1;
         }
+
         .hidden-native-select {
             display: none;
         }
+
         .select-selected {
             background-color: #fff;
             padding: 0.75rem 1rem;
@@ -185,6 +242,7 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .select-items {
             position: absolute;
             background-color: #fff;
@@ -200,30 +258,38 @@
             overflow-y: auto;
             display: none;
         }
+
         .select-items.select-open {
             display: block;
         }
+
         .select-items div {
             padding: 0.75rem 1rem;
             cursor: pointer;
             border-bottom: 1px solid #eee;
         }
-        .select-items div:hover, .same-as-selected {
+
+        .select-items div:hover,
+        .same-as-selected {
             background-color: #f3f4f6;
         }
+
         .arrow::after {
             content: "▼";
             font-size: 0.75rem;
             color: #4b5563;
         }
+
         .select-arrow-active .arrow::after {
             content: "▲";
         }
+
         .quantity-control {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
+
         .quantity-control input {
             width: 60px;
             padding: 0.5rem;
@@ -231,6 +297,7 @@
             border-radius: 0.5rem;
             text-align: center;
         }
+
         .add-to-cart-btn {
             background-color: #f97316;
             color: white;
@@ -240,23 +307,29 @@
             transition: background-color 0.2s, transform 0.1s;
             width: 100%;
         }
+
         .add-to-cart-btn:hover {
             background-color: #ea580c;
             transform: translateY(-1px);
         }
+
         .go-to-cart-btn {
-            background-color: #10b981; /* Emerald Green */
+            background-color: #10b981;
+            /* Emerald Green */
         }
+
         .go-to-cart-btn:hover {
             background-color: #059669;
         }
+
         /* Tabs Styling */
         .tab-nav {
             display: flex;
             border-bottom: 2px solid #e5e7eb;
             margin-bottom: 1.5rem;
-           
+
         }
+
         .tab-button {
             padding: 1rem 1.5rem;
             white-space: nowrap;
@@ -265,28 +338,34 @@
             font-weight: 500;
             transition: color 0.2s, border-color 0.2s;
             border-bottom: 2px solid transparent;
-            margin-bottom: -2px; /* Pull up to overlap border */
+            margin-bottom: -2px;
+            /* Pull up to overlap border */
         }
+
         .tab-button.active {
             color: #f97316;
             border-bottom-color: #f97316;
             font-weight: 600;
         }
+
         .tab-content h3 {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
         }
+
         .tab-content h4 {
             font-size: 1.125rem;
             font-weight: 600;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
+
         /* Related Products */
         .related-products {
             padding: 3rem 0;
         }
+
         .related-title {
             font-size: 2rem;
             font-weight: 800;
@@ -294,11 +373,13 @@
             margin-bottom: 2rem;
             color: #1f2937;
         }
+
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
         }
+
         .product-card {
             display: block;
             background-color: white;
@@ -308,47 +389,57 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s, box-shadow 0.2s;
         }
+
         .product-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
+
         .product-card-image-wrapper {
             height: 250px;
             overflow: hidden;
         }
+
         .product-card-image-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s;
         }
+
         .product-card:hover .product-card-image-wrapper img {
             transform: scale(1.05);
         }
+
         .product-card-info {
             padding: 1rem;
         }
+
         .product-card-title {
             font-weight: 700;
             font-size: 1.125rem;
             color: #1f2937;
             margin-bottom: 0.25rem;
         }
+
         .product-card-category {
             font-size: 0.875rem;
             color: #6b7280;
             margin-bottom: 0.5rem;
         }
+
         .product-card-price {
             font-weight: 700;
             color: #f97316;
         }
+
         /* Footer Styling */
         footer {
             background-color: #1f2937;
             color: white;
             padding: 3rem 0;
         }
+
         footer .align {
             max-width: 1200px;
             margin: 0 auto;
@@ -357,11 +448,13 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             padding: 0 1rem;
         }
+
         footer .sec-1 ul li:first-child {
             font-weight: 700;
             margin-bottom: 1rem;
             font-size: 1.125rem;
         }
+
         footer .sec-1 ul li a {
             color: #d1d5db;
             text-decoration: none;
@@ -370,14 +463,18 @@
             margin-bottom: 0.5rem;
             transition: color 0.2s;
         }
+
         footer .sec-1 ul li a:hover {
             color: #f97316;
         }
-        footer .sec-1 .m, footer .sec-1 .n {
+
+        footer .sec-1 .m,
+        footer .sec-1 .n {
             width: 18px;
             height: 18px;
             margin-right: 0.5rem;
         }
+
         .copy {
             text-align: center;
             padding: 1.5rem 1rem 0;
@@ -386,16 +483,28 @@
             font-size: 0.875rem;
             color: #9ca3af;
         }
-          .product-layout{
+
+        .product-layout {
             grid-template-columns: 0.1fr 2fr 2fr;
         }
-        .test{
+
+        .test {
             font-size: 14px !important;
             font-weight: 100;
             font-family: light;
         }
-        body{
+
+        body {
             font-family: light;
+        }
+
+        .tab-nav {
+            overflow: scroll;
+        }
+        .related-products .product-grid{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
     </style>
     <link rel="stylesheet" href="css/style.css">
@@ -403,22 +512,34 @@
 
 <body>
     <!-- Cart Added Modal (New Popup) -->
-    <div id="productAddedModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300" aria-modal="true" role="dialog">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto p-6 transition-all duration-500 transform scale-95 md:scale-100">
+    <div id="productAddedModal"
+        class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300"
+        aria-modal="true" role="dialog">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto p-6 transition-all duration-500 transform scale-95 md:scale-100">
             <!-- Close Button and Status -->
             <div class="flex justify-between items-center pb-4 border-b border-gray-100">
                 <div class="flex items-center text-black-100 font-light text-lg test">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
                     Item added to your cart
                 </div>
-                <button id="closeModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none p-1 rounded-full transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button id="closeModalButton"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none p-1 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
                 </button>
             </div>
 
             <!-- Product Details -->
             <div class="flex items-center space-x-4 py-6">
-                <img id="modalProductImage" src="https://placehold.co/80x80/cccccc/333333?text=Art" alt="Added Product" class="w-20 h-20 object-cover rounded-lg border border-gray-200">
+                <img id="modalProductImage" src="https://placehold.co/80x80/cccccc/333333?text=Art" alt="Added Product"
+                    class="w-20 h-20 object-cover rounded-lg border border-gray-200">
                 <div class="flex-grow">
                     <p id="modalProductTitle" class="font-bold text-gray-800 line-clamp-2">Product Title</p>
                     <p id="modalProductOption" class="text-sm text-gray-500 mt-1">Option: Unframed, Qty: 1</p>
@@ -427,13 +548,16 @@
 
             <!-- Action Buttons -->
             <div class="space-y-3">
-                <a href="cart.html" id="modalViewCartBtn" class="block w-full text-center py-3 border border-orange-600 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition-colors">
+                <a href="cart.html" id="modalViewCartBtn"
+                    class="block w-full text-center py-3 border border-orange-600 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition-colors">
                     View cart (1)
                 </a>
-                <a href="paymant.html" class="block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors">
+                <a href="paymant.html"
+                    class="block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors">
                     Check out
                 </a>
-                <button id="continueShoppingButton" class="block w-full text-center py-3 text-gray-500 font-semibold hover:text-gray-800 transition-colors">
+                <button id="continueShoppingButton"
+                    class="block w-full text-center py-3 text-gray-500 font-semibold hover:text-gray-800 transition-colors">
                     Continue shopping
                 </button>
             </div>
@@ -441,17 +565,17 @@
     </div>
 
     <!-- Header Section -->
-   
-    
+
+
     <!-- Old simple popup removed as the new modal replaces it -->
 
-    <main class="max-w-7xl mx-auto px-4 bg-white rounded-xl shadow-lg my-6 p-6 md:p-10">
+    <main class="max-w-7xl mx-auto px-4 bg-white rounded-xl  my-6 p-6 md:p-10">
         <div class="product-container">
             <!-- Product Layout -->
             <div class="product-layout">
-                
+
                 <!-- Small Images/Thumbnails -->
-                <div class="smallimages order-3 md:order-1">
+                <div class="smallimages order-2 md:order-1">
                     <div class="images small-images-container">
                     </div>
                 </div>
@@ -459,7 +583,8 @@
                 <!-- Main Image Column -->
                 <div class="image-column order-1 md:order-2">
                     <div class="image-wrapper">
-                        <img src="https://placehold.co/500x500/cccccc/333333?text=Main+Product+Image" alt="Main Product Image" class="product-image">
+                        <img src="https://placehold.co/500x500/cccccc/333333?text=Main+Product+Image"
+                            alt="Main Product Image" class="product-image">
                     </div>
                 </div>
 
@@ -472,7 +597,7 @@
                     <p class="summary-text text-gray-600 mt-4 mb-6">
                         Loading product summary...
                     </p>
-                    
+
                     <div class="flex flex-col sm:flex-row gap-4 mb-6">
                         <div class="custom-select-wrapper">
                             <select class="hidden-native-select" id="hidden-native-select">
@@ -540,13 +665,17 @@
                         <h3 class="text-2xl font-bold mb-4 text-gray-900">Protecting Your Investment</h3>
                         <h4 class="font-semibold text-xl mb-2">Display & Care Instructions:</h4>
                         <p class="mb-4">
-                            To ensure the longevity of your artwork, keep it out of **direct sunlight**. Display the artwork in an environment with stable temperature and humidity. Dust gently with a soft, dry lint-free cloth or a very soft brush. **Do not use liquid cleaning agents**
+                            To ensure the longevity of your artwork, keep it out of **direct sunlight**. Display the
+                            artwork in an environment with stable temperature and humidity. Dust gently with a soft, dry
+                            lint-free cloth or a very soft brush. **Do not use liquid cleaning agents**
                             on the canvas or painted surface.
                         </p>
 
                         <h4 class="font-semibold text-xl mb-2">Our Acquisition Guarantee:</h4>
                         <p>
-                            We stand behind the authenticity and condition of every piece of artwork. This painting is covered by a **Lifetime Authenticity Guarantee**. The sale includes professional packaging, insurance, and tracked shipping.
+                            We stand behind the authenticity and condition of every piece of artwork. This painting is
+                            covered by a **Lifetime Authenticity Guarantee**. The sale includes professional packaging,
+                            insurance, and tracked shipping.
                         </p>
                     </div>
                 </div>
@@ -561,9 +690,9 @@
             </div>
         </div>
     </main>
-    
+
     <!-- Footer Section -->
-   
+
 
     <script type="module">
         // ----------------------------------------------------
@@ -572,20 +701,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
+
         setLogLevel('debug');
-        
+
         let db, auth, userId;
         const apiKey = "";
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        
+
         async function initializeFirebase() {
             try {
                 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                
+
                 if (typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -628,7 +757,7 @@
             // --- Modal Event Listeners ---
             closeModalButton.addEventListener('click', () => modal.classList.add('hidden'));
             continueShoppingButton.addEventListener('click', () => modal.classList.add('hidden'));
-            
+
 
             // Helper to get the product ID from the URL
             function getProductIdFromUrl() {
@@ -667,7 +796,7 @@
                         ];
                         const mainProduct = mockData.find(p => String(p._id) === String(productId));
                         if (!mainProduct) throw new Error("Mock product not found.");
-                        
+
                         ALL_PRODUCTS_DATA = mockData.map(product => ({
                             ...product,
                             id: product._id, // Map _id to id
@@ -708,13 +837,13 @@
                     displayErrorMessage('Could not load product details. Check the server connection or console for errors.');
                 }
             }
-            
+
             // --- Error Display Function ---
             function displayErrorMessage(message) {
                 if (productTitle) productTitle.textContent = 'Product Not Available';
                 if (productPrice) productPrice.textContent = '';
                 if (summaryText) summaryText.textContent = message;
-                if (productImage) productImage.src = 'https://placehold.co/500x500/f87171/991b1b?text=Error'; 
+                if (productImage) productImage.src = 'https://placehold.co/500x500/f87171/991b1b?text=Error';
                 if (descriptionPane) descriptionPane.innerHTML = `<p class="text-red-500">${message}</p>`;
                 if (artistPane) artistPane.innerHTML = `<p class="text-red-500">Artist details not available.</p>`;
                 if (relatedProductsGrid) relatedProductsGrid.innerHTML = '<p class="text-center text-gray-500">No related products loaded.</p>';
@@ -724,7 +853,7 @@
             // --- 2. Render Main Product Details ---
             function renderMainProduct(product) {
                 // Fallback image handling
-                productImage.onerror = function() { this.src = 'https://placehold.co/500x500/cccccc/333333?text=Image+Missing'; };
+                productImage.onerror = function () { this.src = 'https://placehold.co/500x500/cccccc/333333?text=Image+Missing'; };
 
                 // --- Product Info Section ---
                 if (productImage) productImage.src = product.image || 'https://placehold.co/500x500/cccccc/333333?text=Main+Product+Image';
@@ -788,10 +917,10 @@
             function renderSmallImages(product) {
                 // Ensure smallImages includes the main image for consistency
                 const allImages = [product.image, ...(product.smallImages || [])].filter((v, i, a) => a.indexOf(v) === i);
-                
+
                 let smallImgsContainer = document.querySelector('.small-images-container');
                 if (!smallImgsContainer) return;
-                
+
                 smallImgsContainer.innerHTML = '';
 
                 allImages.forEach((src, index) => {
@@ -822,11 +951,11 @@
 
                 // Filter out the current product and prioritize related by style/artist
                 const filteredProducts = allProducts.filter(p => p.id !== mainProduct.id);
-                
-                let related = filteredProducts.filter(p => 
+
+                let related = filteredProducts.filter(p =>
                     p.style === mainProduct.style || p.artist === mainProduct.artist
                 );
-                
+
                 // Fill the rest with general products if needed
                 const neededCount = 4 - related.length;
                 if (neededCount > 0) {
@@ -836,7 +965,7 @@
 
                 related.slice(0, 4).forEach(relatedProduct => {
                     const card = document.createElement('a');
-                    card.href = `detail.html?id=${relatedProduct.id}`; 
+                    card.href = `detail.html?id=${relatedProduct.id}`;
                     card.classList.add('product-card');
                     card.setAttribute('aria-label', `View ${relatedProduct.title}`);
 
@@ -863,22 +992,22 @@
                     const qty = parseInt(document.getElementById("quantity").value) || 1;
 
                     if (selectEl.selectedIndex === 0) {
-                         alert('Please select an option first.'); // Use console log instead of alert if possible
-                         console.error('Please select an option first.');
-                         return;
+                        alert('Please select an option first.'); // Use console log instead of alert if possible
+                        console.error('Please select an option first.');
+                        return;
                     }
 
                     const cartItem = {
-                        id: product.id, 
+                        id: product.id,
                         title: product.title,
                         price: product.price,
                         image: product.image,
                         qty: qty,
                         option: selectedOptionText // Use the display text for the option
                     };
-                    
+
                     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-                    
+
                     // Check if the item (by ID and option) already exists and update quantity
                     const existingItemIndex = cart.findIndex(item => item.id === cartItem.id && item.option === cartItem.option);
 
@@ -889,15 +1018,15 @@
                     }
 
                     localStorage.setItem("cart", JSON.stringify(cart));
-                    
+
                     // --- Show New Modal & Update Content ---
                     if (modal) {
                         // Populate modal content
                         modalTitle.textContent = cartItem.title;
                         modalImage.src = cartItem.image;
-                        modalImage.onerror = function() { this.src = 'https://placehold.co/80x80/cccccc/333333?text=Art'; }; // Fallback
+                        modalImage.onerror = function () { this.src = 'https://placehold.co/80x80/cccccc/333333?text=Art'; }; // Fallback
                         modalOption.textContent = `Option: ${cartItem.option}, Qty: ${cartItem.qty}`;
-                        
+
                         // Update cart count in the modal
                         const totalItemsInCart = cart.reduce((total, item) => total + item.qty, 0);
                         modalViewCartBtn.textContent = `View cart (${totalItemsInCart})`;
@@ -905,18 +1034,18 @@
                         // Display the modal
                         modal.classList.remove('hidden');
                     }
-                    
+
                     // Update header cart count display
                     updateCartCountDisplay(cart);
                 });
-                
+
                 // Initial cart count display
                 updateCartCountDisplay(JSON.parse(localStorage.getItem("cart")) || []);
             }
 
             function updateCartCountDisplay(cart) {
                 const cartCountElement = document.getElementById('cart-count');
-                if(cartCountElement) {
+                if (cartCountElement) {
                     cartCountElement.textContent = cart.reduce((total, item) => total + item.qty, 0);
                 }
             }
@@ -943,10 +1072,10 @@
             // --- Quantity Input Validation ---
             const quantityInput = document.getElementById('quantity');
             if (quantityInput) {
-                quantityInput.addEventListener('change', function() {
+                quantityInput.addEventListener('change', function () {
                     const val = parseInt(this.value);
                     if (isNaN(val) || val < 1) this.value = 1;
-                    if (val > 5) this.value = 5; 
+                    if (val > 5) this.value = 5;
                 });
             }
 
@@ -974,7 +1103,7 @@
                         customButton.innerHTML = option.innerHTML.trim() + '<span class="arrow"></span>';
                     }
 
-                    itemDiv.addEventListener('click', function(e) {
+                    itemDiv.addEventListener('click', function (e) {
                         nativeSelect.value = option.value;
                         customButton.innerHTML = this.innerHTML + '<span class="arrow"></span>';
 
@@ -989,7 +1118,7 @@
                 });
 
                 // Toggle dropdown
-                customButton.addEventListener('click', function(e) {
+                customButton.addEventListener('click', function (e) {
                     e.stopPropagation();
                     const isOpen = customItems.classList.contains('select-open');
                     document.querySelectorAll('.select-open').forEach(item => item.classList.remove('select-open'));
@@ -1004,7 +1133,7 @@
                 });
 
                 // Close when clicking outside
-                document.addEventListener('click', function(e) {
+                document.addEventListener('click', function (e) {
                     if (!wrapper.contains(e.target)) {
                         closeAllSelect();
                     }
@@ -1024,4 +1153,5 @@
         });
     </script>
 </body>
+
 </html>

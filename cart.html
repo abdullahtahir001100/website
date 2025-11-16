@@ -7,6 +7,7 @@
     <title>Your Shopping Cart | Art Gallery</title>
     <!-- Load Tailwind CSS for modern, responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         /* Custom styles for the cart item structure */
@@ -15,6 +16,7 @@
             background-color: #fff;
             color: #333;
         }
+
         .text-right {
             text-align: right !important;
         }
@@ -49,7 +51,7 @@
         /* Header and Item Alignment - Using CSS Grid for Structure */
         .cart-list-header {
             /* Desktop Grid: 3 columns for PRODUCT | QUANTITY | TOTAL */
-            display: none;
+            /* display: none; */
             grid-template-columns: minmax(200px, 3fr) 1fr 1fr;
             gap: 1rem;
             text-transform: uppercase;
@@ -81,20 +83,24 @@
             /* Always use flex for the immediate container */
             align-items: flex-start;
             padding: 1.5rem 0;
+            justify-content: space-between;
             padding-bottom: 0;
             border-bottom: 1px solid #e5e7eb;
             gap: 1.5rem;
             position: relative;
         }
-        .text-xl{
+
+        .text-xl {
             font-size: 1rem !important;
-            
+
         }
+
         .cart-product-item:last-child {
             border-bottom: none;
         }
 
         /* Desktop Layout Override: Use Grid to align with headers */
+
         @media (min-width: 768px) {
             .cart-product-item {
                 display: grid;
@@ -118,14 +124,15 @@
             align-items: flex-start;
             gap: 1.5rem;
         }
-        .product-details-group img{
+
+        .product-details-group img {
             width: 85px;
             height: 65px;
+            margin: 0 0 10px 0 ;
         }
+
         /* On desktop, this group takes the first grid column (PRODUCT) */
-        @media (min-width: 768px) {
-            
-        }
+        @media (min-width: 768px) {}
 
         /* On mobile, controls are placed directly under the details */
         .mobile-controls-wrapper {
@@ -135,7 +142,11 @@
             align-items: center;
             margin-top: 1rem;
         }
-
+        #cart-items{
+            height: 300px;
+            overflow-y: scroll;
+             overflow-x: scroll;
+        }
         @media (min-width: 768px) {
             .mobile-controls-wrapper {
                 display: contents;
@@ -144,7 +155,15 @@
         }
 
         /* Quantity Control */
-        .quantity-control {}
+        .quantity-control {
+                display: flex;
+    align-items: center;
+    
+    flex-direction: column;
+        }
+        .quantity-control img{
+            display: none;
+        }
 
         /* Desktop: Center quantity in the 2nd grid column */
         .qty-column {
@@ -161,7 +180,7 @@
         }
 
         .remove-btn {
-            
+
             cursor: pointer;
             opacity: 0.6;
             transition: opacity 0.2s;
@@ -217,7 +236,7 @@
             margin: 0 auto;
         }
 
-       
+
 
         .cart-icon-container {
             position: relative;
@@ -260,16 +279,19 @@
             font-size: 0.875rem;
             color: #9ca3af;
         }
+
         .flex {
             display: flex;
             align-items: center !important;
             justify-content: space-between;
             padding-top: 2rem;
         }
-        .ins{
+
+        .ins {
             width: 30%;
         }
-        .text{
+
+        .text {
             width: 100%;
             border: 0.5px solid #3334355f;
             border-radius: 0.5rem 0.5rem 0rem 0.5rem;
@@ -277,12 +299,49 @@
             font-size: 1rem;
             resize: vertical;
         }
-        .quantity-input{
+
+        .quantity-input {
             text-align: center;
         }
-        .font-extrabold{
+
+        .font-extrabold {
             font-family: st;
-            font-size: 3rem !important;
+            font-size: 3rem;
+
+        }
+
+        @media (max-width: 468px) {
+            .font-extrabold {
+                font-size: 2rem !important;
+            }
+            .quantity-control img{
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 868px) {
+            .cart-content-wrapper .flex {
+                display: block !important;
+            }
+            .cart-list-header{
+                display: none;
+            }
+            .ins {
+                width: 100%;
+            }
+
+            .cart-summary-column {
+                width: 100%;
+            }
+
+            .cart-summary-column a {
+                width: fit-content;
+                float: right;
+                padding: 6px 57px;
+            }
+        }
+        .scroll{
+            overflow-y: scroll;
         }
     </style>
 </head>
@@ -290,7 +349,7 @@
 <body>
 
     <!-- Header Section -->
-  
+
 
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10">
 
@@ -325,7 +384,8 @@
         <div id="fullCartContent" class="cart-content-wrapper" style="display: none;">
 
             <!-- Left Column: Cart Items and Instructions -->
-            <div class="cart-items-container">
+           <div class="scroll">
+             <div class="cart-items-container">
 
                 <!-- Cart Header Row (Grid for alignment) -->
                 <div class="cart-list-header">
@@ -342,48 +402,49 @@
                 <!-- Order Special Instructions -->
 
             </div>
-           <div class="flex border-t border-gray-200">
-             <div class="ins">
-                <h3 class="block text-lg font-semibold text-gray-800 mb-2">Order special instructions</h3>
-                <textarea id="special-instructions" rows="4"
-                    class="text"
-                    ></textarea>
-            </div>
-            <!-- Right Column: Cart Summary -->
-            <div id="cartSummary" class="cart-summary-column">
-                <div class="summary-card">
-                    <!-- Subtotal Row -->
-                    <div class="summary-row font-semibold text-gray-900">
-                        <span class="text-xl">Subtotal</span>
-                        <span id="cartSubtotal" class="font-bold text-xl">0 Rs</span>
+           </div>
+            <div class="flex border-t border-gray-200" id="none">
+                <div class="ins">
+                    <h3 class="block text-lg font-semibold text-gray-800 mb-2">Order special instructions</h3>
+                    <textarea id="special-instructions" rows="4" class="text"></textarea>
+                </div>
+                <!-- Right Column: Cart Summary -->
+                <div id="cartSummary" class="cart-summary-column">
+                    <div class="summary-card">
+                        <!-- Subtotal Row -->
+                        <div class="summary-row font-semibold text-gray-900">
+                            <span class="text-xl">Subtotal</span>
+                            <span id="cartSubtotal" class="font-bold text-xl">0 Rs</span>
+                        </div>
+
+                        <!-- Taxes/Info Row -->
+                        <p class="text-sm text-gray-500 text-right mt-0 mb-4">
+                            Taxes and shipping calculated at checkout
+                        </p>
+
+                        <!-- Checkout Button -->
+                        <a href="paymant.html"
+                            class="mt-2 block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors text-lg">
+                            Check out
+                        </a>
                     </div>
-
-                    <!-- Taxes/Info Row -->
-                    <p class="text-sm text-gray-500 text-right mt-0 mb-4">
-                        Taxes and shipping calculated at checkout
-                    </p>
-
-                    <!-- Checkout Button -->
-                    <a href="paymant.html"
-                        class="mt-2 block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors text-lg">
-                        Check out
-                    </a>
                 </div>
             </div>
-           </div>
         </div>
     </main>
 
     <!-- Footer Section -->
-  <div class="inner">
+    <div class="inner">
         <footer>
             <div class="align">
                 <div class="sec-1">
                     <div class="logo">
-                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png" class="logos" alt="">
+                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
+                            class="logos" alt="">
                     </div>
                     <div class="pera">
-                        InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and expression.
+                        InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
+                        expression.
                     </div>
                 </div>
                 <div class="sec-1">
@@ -412,12 +473,14 @@
                 <div class="sec-1">
                     <ul>
                         <li>Get In Touch</li>
-                        <li >
-                            <a href="" class="flexbox-1"><img src="https://www.javehandmade.store/instagram.png" class="m "> instagram.com / ink_by_hand_12
+                        <li>
+                            <a href="" class="flexbox-1"><img src="https://www.javehandmade.store/instagram.png"
+                                    class="m "> instagram.com / ink_by_hand_12
                             </a>
                         </li>
                         <li class="flexbox-1">
-                            <a href=""  class="flexbox-1"><img src="https://www.javehandmade.store/whatsapp.png" class="m">+92-310-7581250</a>
+                            <a href="" class="flexbox-1"><img src="https://www.javehandmade.store/whatsapp.png"
+                                    class="m">+92-310-7581250</a>
                         </li>
 
                     </ul>
@@ -505,7 +568,14 @@
             async function loadAndRenderCart() {
                 if (cart.length === 0) {
                     // Display empty cart state
-                    if (emptyCartSection) emptyCartSection.style.display = 'block';
+                    if (emptyCartSection) {
+                        emptyCartSection.style.display = 'block';
+                        let cartitemscontainer = document.getElementsByClassName('cart-items-container');
+                        let none = document.getElementById('none');
+                        cartitemscontainer[0].style.display = 'none';
+                        none.style.display = 'none';
+                        console.log(flex)
+                    }
                     if (mainhead) mainhead.style.display = 'none';
                     if (fullCartContent) fullCartContent.style.display = 'none';
                     if (cartCountElement) cartCountElement.textContent = '0';
@@ -585,25 +655,14 @@
                             </div>
 
                             <!-- Mobile Layout for Controls -->
-                            <div class="mobile-controls-wrapper md:hidden">
-                                <!-- Quantity Control -->
-                                <div class="quantity-control">
-                                    
-                                    <input type="number" value="${item.qty}" min="1" max="5" class="quantity-input" data-index="${index}" readonly> 
-                                   
-                                </div>
-                                <!-- Item Total Price (Visible in line with Quantity) -->
-                                <div class="product-total-price">
-                                    ${formatPrice(itemSubtotal)}
-                                </div>
-                            </div>
+                           
                             
                             <!-- 2. QUANTITY COLUMN (2nd grid column on desktop) -->
-                            <div class="qty-column hidden md:flex">
+                            <div class="qty-column  md:flex">
                                 <div class="quantity-control">
                                     
                                     <input type="number" value="${item.qty}" min="1" max="5" class="quantity-input" data-index="${index}" readonly> 
-                                   
+                                    <img src="images/delete.png" class="remove-btn" data-index="${index}" alt="Remove Item">
                                 </div>
                             </div>
                             
@@ -701,6 +760,13 @@
             loadAndRenderCart();
 
         });
+         let dbd = document.getElementById('cart-items');
+         let dd = document.getElementsByClassName('cart-product-item');
+         console.log(dd.length);
+      if (dd.length <= 3){
+       
+        dbd.style.height = '100%';
+      }
     </script>
 </body>
 

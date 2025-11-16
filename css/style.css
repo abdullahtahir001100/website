@@ -1121,3 +1121,36 @@ RESPONSIVENESS (Media Queries)
                 top: 105px !important;
             }
         }
+        body{
+            font-family: light !important;
+        }
+         @media (max-width: 789px)
+        {
+              .active {
+                top: 105px !important;
+            }
+            .hero5{
+                padding: 20px;
+                
+            }
+           .hero5__headline,.hero5__content{
+            display: flex !important;
+            align-items: center;
+            flex-direction: column;
+           }
+            .hero5__copy{
+                text-align: center !important;
+            }
+            .hero5__copy p:last-child{
+                width: 100% !important;
+            }
+        }
+          @media(max-width: 767px) {
+         .product-layout {
+             display: flex;
+             flex-direction: column;
+         }
+         .image-column,.smallimages{
+            position: relative;
+         }
+     }

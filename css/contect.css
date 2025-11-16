@@ -330,9 +330,4 @@
         text-decoration: none;
         color: rgba(0, 0, 0, 0.379);
        }
-         @media (max-width: 789px)
-        {
-              .active {
-                top: 105px !important;
-            }
-        }
+        
