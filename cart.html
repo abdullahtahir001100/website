@@ -4,148 +4,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
-    
-    
+    <title>Your Shopping Cart | Art Gallery</title>
+    <!-- Load Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles for the cart item structure */
+        body {
+            font-family: light;
+            background-color: #fff;
+            color: #333;
+        }
+        .text-right {
+            text-align: right !important;
+        }
 
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/cart.css">
-    <title>cart</title>
-    <link rel="icon" href="images/logo.jpg" />
+        /* Cart Content Wrapper: Side-by-side layout for desktop */
+        .cart-content-wrapper {
+            display: block !important;
+        }
+
+        @media (min-width: 768px) {
+            .cart-content-wrapper {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+        }
+
+        /* Cart Items Container: Left side content */
+        .cart-items-container {
+            width: 100% !important;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .cart-items-container {
+                width: 65%;
+            }
+        }
+
+        /* Header and Item Alignment - Using CSS Grid for Structure */
+        .cart-list-header {
+            /* Desktop Grid: 3 columns for PRODUCT | QUANTITY | TOTAL */
+            display: none;
+            grid-template-columns: minmax(200px, 3fr) 1fr 1fr;
+            gap: 1rem;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .cart-list-header {
+                display: grid;
+            }
+        }
+
+        .header-qty {
+            text-align: center;
+        }
+
+        .header-total {
+            text-align: right;
+        }
+
+        /* Product Item Row */
+        .cart-product-item {
+            display: flex;
+            /* Always use flex for the immediate container */
+            align-items: flex-start;
+            padding: 1.5rem 0;
+            padding-bottom: 0;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 1.5rem;
+            position: relative;
+        }
+        .text-xl{
+            font-size: 1rem !important;
+            
+        }
+        .cart-product-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Desktop Layout Override: Use Grid to align with headers */
+        @media (min-width: 768px) {
+            .cart-product-item {
+                display: grid;
+                grid-template-columns: minmax(200px, 3fr) 1fr 1fr;
+                gap: 1rem;
+                /* Vertically align image and controls */
+            }
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Product Details Group (Image + Name/Price) */
+        .product-details-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        .product-details-group img{
+            width: 85px;
+            height: 65px;
+        }
+        /* On desktop, this group takes the first grid column (PRODUCT) */
+        @media (min-width: 768px) {
+            
+        }
+
+        /* On mobile, controls are placed directly under the details */
+        .mobile-controls-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-controls-wrapper {
+                display: contents;
+                /* Hide this wrapper on desktop, content flows into grid */
+            }
+        }
+
+        /* Quantity Control */
+        .quantity-control {}
+
+        /* Desktop: Center quantity in the 2nd grid column */
+        .qty-column {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Item Total */
+        .total-column {
+            text-align: right;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            width: 15px;
+            height: 20px;
+            margin-top: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .remove-btn {
+                position: static;
+                /* Let it flow with content on desktop, or remove if not desired */
+                grid-column: 3 / 4;
+                /* Place in Total column */
+                justify-self: end;
+                align-self: center;
+            }
+        }
+
+
+        /* Order Summary Card */
+        .cart-summary-column {
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .cart-summary-column {
+                width: 30%;
+            }
+        }
+
+        .summary-card {
+            background-color: #fff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 40px;
+            padding: 0.5rem 0;
+        }
+
+        /* GENERAL STYLES (Kept for navigation/footer consistency) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+       
+
+        .cart-icon-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        #cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #f97316;
+            color: white;
+            border-radius: 50%;
+            padding: 1px 6px;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        footer .align {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            padding: 0 1rem;
+        }
+
+        .copy {
+            text-align: center;
+            padding: 1.5rem 1rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid #374151;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+        .flex {
+            display: flex;
+            align-items: center !important;
+            justify-content: space-between;
+            padding-top: 2rem;
+        }
+        .ins{
+            width: 30%;
+        }
+        .text{
+            width: 100%;
+            border: 0.5px solid #3334355f;
+            border-radius: 0.5rem 0.5rem 0rem 0.5rem;
+            padding: 0.5rem;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .quantity-input{
+            text-align: center;
+        }
+        .font-extrabold{
+            font-family: st;
+            font-size: 3rem !important;
+        }
+    </style>
 </head>
 
 <body>
-    <header class="inner">
-        <div class="navbar">
-            <div class="logo">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                    alt="Logo">
-            </div>
-            <div class="menu-icon">
-                <div class="naver">
-                    <a href="cart.html" class="cart-icon-container">
-                        <img src="images/trolley.png" alt="Cart" class="top">
-                        <span id="cart-count">0</span>
-                    </a>
-                </div>
-                
-                <div class="naver" onclick="toggleNav()">
-                    <img src="images/ui.png" alt="Menu" id="menu-icon">
-                    <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
-                        class="close-icon">
-                </div>
-            </div>
 
-            <nav id="nav-links">
-                <ul>
-                    <li><a href="/">home</a></li>
-                    <li><a href="about.html">about</a></li>
-                    <li><a href="product.html">shop</a></li>
-                    <li><a href="contect.html">contact</a></li>
-                    <li><a href="logout.html">Log Out</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    
-    <section class="main-head" id="cardHead">
-        <div class="container">
-            <h1>Your Shopping Cart</h1>
-        </div>
-    </section>
+    <!-- Header Section -->
+  
 
-    <section class="cart">
-        <div class="container" id="emptyCart" style="display: none;"> 
-            <div class="empty-cart">
-                <img src="images/shopping.png" alt="Shopping Cart Icon" class="empty-cart-section">
-                <h3>Your cart is currently empty.</h3>
-                <p>Before proceeding to checkout you must add some products to your shopping cart. You will find a lot of interesting products on our "Shop" page.</p>
-                <div class="shop-button">
-                    <a href="index.html">return to shop</a>
-                </div>
-            </div>
+    <main class="max-w-7xl mx-auto px-4 py-6 md:py-10">
+
+        <div class="flex justify-between items-end mb-8">
+            <h1 id="cardHead" class="text-3xl md:text-4xl font-extrabold text-gray-900">
+                Your cart
+            </h1>
+            <a href="product.html"
+                class="text-base font-semibold text-gray-700 hover:text-gray-900 transition-colors border-b border-gray-700 pb-0.5">
+                Continue shopping
+            </a>
         </div>
 
-        <div id="fullCartContent" style="display: none;">
-            <div class="container">
-                <div class="cart-table-wrapper" width="100%">
-                    <table width="100%">
-                        <thead width="100%">
-                            <tr width="100%">
-                                <th width="14.28%">image</th>
-                                <th width="14.28%">products</th>
-                                <th width="14.28%">selection </th>
-                                <th width="14.28%">quantity</th>
-                                <th width="14.28%">price</th>
-                                <th width="14.28%">subtotal</th> 
-                                <th width="14.28%">remove</th>
-                            </tr>
-                        </thead>
-                        <tbody width="100%" id="cart-items">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="cart-summary-section" id="cartSummary" style="display: none;">
-        <div class="container ">
-            <div class="flex-justify-center">
-                <div class="summary-contact">
-                    <p>Here contact us on
-                        <a href=" ">whatsapps </a>
-                    </p>
+        <!-- Empty Cart State -->
+        <div id="emptyCart" class="text-center bg-white p-10 rounded-xl shadow-lg" style="display: none;">
+            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                </path>
+            </svg>
+            <h2 class="text-2xl font-bold mt-4">Your cart is empty</h2>
+            <p class="text-gray-500 mt-2">Looks like you haven't added anything to your cart yet.</p>
+            <a href="product.html"
+                class="mt-6 inline-block bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-orange-700 transition-colors">
+                Start Shopping
+            </a>
+        </div>
+
+        <!-- Full Cart Content Wrapper -->
+        <div id="fullCartContent" class="cart-content-wrapper" style="display: none;">
+
+            <!-- Left Column: Cart Items and Instructions -->
+            <div class="cart-items-container">
+
+                <!-- Cart Header Row (Grid for alignment) -->
+                <div class="cart-list-header">
+                    <div class="header-prod">PRODUCT</div>
+                    <div class="header-qty">QUANTITY</div>
+                    <div class="header-total">TOTAL</div>
                 </div>
-                <div class="summary-total-box">
-                    <div class="summary-box">
-                        <div class="summary-heading">
-                            <p>cart total</p>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <p> Cart subtotal</p>
-                                    </th>
-                                    <th>
-                                        <p id="cartSubtotal">0 Rs</p> 
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <p>shipping fee</p>
-                                    </td>
-                                    <td>
-                                        <p id="shippingFee">250 Rs</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="total-row">
-                                        <h5>total</h5>
-                                    </td>
-                                    <td class="total-row">
-                                        <h5 id="cartTotal">0 Rs</h5> 
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="order-action">
-                            <a href="paymant.html" class="order-button">order now</a>
-                        </div>
+
+                <!-- Cart Items Body (Populated by JS) -->
+                <div id="cart-items">
+                    <!-- Items will be inserted here -->
+                </div>
+
+                <!-- Order Special Instructions -->
+
+            </div>
+           <div class="flex border-t border-gray-200">
+             <div class="ins">
+                <h3 class="block text-lg font-semibold text-gray-800 mb-2">Order special instructions</h3>
+                <textarea id="special-instructions" rows="4"
+                    class="text"
+                    ></textarea>
+            </div>
+            <!-- Right Column: Cart Summary -->
+            <div id="cartSummary" class="cart-summary-column">
+                <div class="summary-card">
+                    <!-- Subtotal Row -->
+                    <div class="summary-row font-semibold text-gray-900">
+                        <span class="text-xl">Subtotal</span>
+                        <span id="cartSubtotal" class="font-bold text-xl">0 Rs</span>
                     </div>
 
+                    <!-- Taxes/Info Row -->
+                    <p class="text-sm text-gray-500 text-right mt-0 mb-4">
+                        Taxes and shipping calculated at checkout
+                    </p>
+
+                    <!-- Checkout Button -->
+                    <a href="paymant.html"
+                        class="mt-2 block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors text-lg">
+                        Check out
+                    </a>
                 </div>
             </div>
+           </div>
         </div>
-    </section>
-    
-    <div class="inner">
+    </main>
+
+    <!-- Footer Section -->
+  <div class="inner">
         <footer>
             <div class="align">
                 <div class="sec-1">
@@ -182,12 +412,12 @@
                 <div class="sec-1">
                     <ul>
                         <li>Get In Touch</li>
-                        <li>
-                            <a href=""><img src="https://www.javehandmade.store/instagram.png" class="m"> instagram.com / ink_by_hand_12
+                        <li >
+                            <a href="" class="flexbox-1"><img src="https://www.javehandmade.store/instagram.png" class="m "> instagram.com / ink_by_hand_12
                             </a>
                         </li>
-                        <li>
-                            <a href=""><img src="https://www.javehandmade.store/whatsapp.png" class="n">+92-310-7581250</a>
+                        <li class="flexbox-1">
+                            <a href=""  class="flexbox-1"><img src="https://www.javehandmade.store/whatsapp.png" class="m">+92-310-7581250</a>
                         </li>
 
                     </ul>
@@ -198,11 +428,280 @@
             </div>
         </footer>
     </div>
-    
-    <script src="js/cart.js"></script>
-    <script src="js/dashboadover.js"></script>
+
+    <script type="module">
+        // ----------------------------------------------------
+        // FIREBASE INITIALIZATION BLOCK (As per standard environment setup)
+        // ----------------------------------------------------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        setLogLevel('debug');
+
+        let db, auth, userId;
+        const apiKey = "";
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        async function initializeFirebase() {
+            try {
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                console.log("Firebase initialized and user authenticated:", userId);
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+            }
+        }
+        initializeFirebase();
+        // ----------------------------------------------------
+        // END FIREBASE INITIALIZATION
+        // ----------------------------------------------------
 
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_URL = 'http://localhost:5000/api/products';
+
+            // DOM Elements for cart state management
+            const emptyCartSection = document.getElementById('emptyCart');
+            const fullCartContent = document.getElementById('fullCartContent');
+            const mainhead = document.getElementById('cardHead');
+            const cartContainer = document.getElementById("cart-items");
+            const cartCountElement = document.getElementById('cart-count');
+
+            // DOM Elements for totals
+            const subtotalEl = document.getElementById('cartSubtotal');
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let productLookup = {}; // To store fetched product details globally
+
+            // Helper to format price (ensures "Rs" is added and numbers are clean)
+            function formatPrice(price) {
+                const numPrice = parseFloat(price);
+                if (!isNaN(numPrice)) {
+                    return `${numPrice.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Rs`;
+                }
+                return '0 Rs';
+            }
+
+            /**
+             * Calculates and updates the Cart Subtotal.
+             * @param {number} currentSubTotal - The pre-calculated subtotal amount.
+             */
+            function calculateTotals(currentSubTotal) {
+                // Update Subtotal display
+                if (subtotalEl) subtotalEl.textContent = formatPrice(currentSubTotal) + " PKR";
+            }
+
+            // --- 1. Fetch Product Details and Render Cart ---
+            async function loadAndRenderCart() {
+                if (cart.length === 0) {
+                    // Display empty cart state
+                    if (emptyCartSection) emptyCartSection.style.display = 'block';
+                    if (mainhead) mainhead.style.display = 'none';
+                    if (fullCartContent) fullCartContent.style.display = 'none';
+                    if (cartCountElement) cartCountElement.textContent = '0';
+                    return;
+                }
+
+                try {
+                    // Display full cart content containers
+                    if (emptyCartSection) emptyCartSection.style.display = 'none';
+                    if (fullCartContent) fullCartContent.style.display = 'flex';
+                    if (mainhead) mainhead.style.display = 'flex';
+
+                    // Fetch all products to get details
+                    const response = await fetch(API_URL);
+                    if (!response.ok) {
+                        // Fallback to mock data if API fails
+                        console.warn('API call failed. Using mock data for cart lookup.');
+                        const mockData = [
+                            { "_id": "6659c4701e91307af047545e", "title": "GLOW & WHITE KOREAN GOLD CREAM", "price": 2000.00, "mainImage": "https://placehold.co/100x100/fecaca/991b1b?text=Cream" },
+                            { "_id": "6659c4701e91307af047545f", "title": "Coastal Painting", "price": 280.00, "mainImage": "https://placehold.co/100x100/dbeafe/1e40af?text=Art2" },
+                        ];
+                        if (cart.length > 0 && cart.every(item => !productLookup[item.id])) {
+                            cart = [{ id: "6659c4701e91307af047545e", qty: 1, option: "Standard" }];
+                        }
+                        processCartData(mockData);
+                        return;
+                    }
+                    const rawProducts = await response.json();
+                    processCartData(rawProducts);
+                } catch (error) {
+                    console.error('Error loading cart data:', error);
+                    if (cartContainer) cartContainer.innerHTML = '<div class="text-red-500 text-center py-4">Error loading products. Check API connection.</div>';
+                }
+            }
+
+            function processCartData(rawProducts) {
+                // Map products to an easy lookup dictionary using the unique ID
+                productLookup = {};
+                rawProducts.forEach(product => {
+                    productLookup[String(product._id)] = {
+                        title: product.title || 'Untitled',
+                        image: product.mainImage || 'https://placehold.co/100x100/cccccc/333333?text=Art',
+                        price: parseFloat(product.price) || 0,
+                    };
+                });
+
+                let combinedCartHtml = '';
+                let totalItems = 0;
+                let subTotal = 0; // Final numeric subtotal
+
+                // 2. Combine Local Cart Data with Fetched API Data
+                cart.forEach((item, index) => {
+                    const productDetails = productLookup[item.id];
+
+                    if (!productDetails) {
+                        console.warn(`Details for product ID ${item.id} not found. Skipping item.`);
+                        return;
+                    }
+
+                    const itemPriceValue = productDetails.price; // Numeric Price
+                    const itemSubtotal = itemPriceValue * item.qty; // Numeric Subtotal
+                    subTotal += itemSubtotal;
+                    totalItems += item.qty;
+
+                    // Rendering the streamlined cart item structure
+                    combinedCartHtml += `
+                        <div class="cart-product-item" data-index="${index}">
+                            
+                            <!-- 1. PRODUCT COLUMN (1st grid column on desktop) -->
+                            <div class="product-details-group">
+                                <img src="${productDetails.image}" alt="${productDetails.title}" class="product-image" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/333333?text=Art';">
+                                
+                                <div class="product-info">
+                                    <div class="product-name">${productDetails.title}</div>
+                                    <div class="product-price-inline">${formatPrice(itemPriceValue)}</div>
+                                </div>
+                            </div>
+
+                            <!-- Mobile Layout for Controls -->
+                            <div class="mobile-controls-wrapper md:hidden">
+                                <!-- Quantity Control -->
+                                <div class="quantity-control">
+                                    
+                                    <input type="number" value="${item.qty}" min="1" max="5" class="quantity-input" data-index="${index}" readonly> 
+                                   
+                                </div>
+                                <!-- Item Total Price (Visible in line with Quantity) -->
+                                <div class="product-total-price">
+                                    ${formatPrice(itemSubtotal)}
+                                </div>
+                            </div>
+                            
+                            <!-- 2. QUANTITY COLUMN (2nd grid column on desktop) -->
+                            <div class="qty-column hidden md:flex">
+                                <div class="quantity-control">
+                                    
+                                    <input type="number" value="${item.qty}" min="1" max="5" class="quantity-input" data-index="${index}" readonly> 
+                                   
+                                </div>
+                            </div>
+                            
+                            <!-- 3. TOTAL COLUMN (3rd grid column on desktop) -->
+                            <div class="total-column hidden md:block">
+                                ${formatPrice(itemSubtotal)}
+                                 <!-- Remove Button (Positioned relatively on mobile, inside total column on desktop) -->
+                            <img src="images/delete.png" class="remove-btn" data-index="${index}" alt="Remove Item">
+                            
+                            </div>
+                            
+                           
+
+                        </div> 
+                    `;
+                });
+
+                // 3. Render the full cart content and update item count
+                if (cartContainer) cartContainer.innerHTML = combinedCartHtml;
+                if (cartCountElement) cartCountElement.textContent = totalItems;
+
+                // 4. Calculate and Update Totals
+                calculateTotals(subTotal);
+
+                // 5. Setup Event Listeners
+                setupListeners();
+            }
+
+            // --- 2. Setup All Button Listeners (Remove and Quantity) ---
+            function updateCart(newCart) {
+                localStorage.setItem("cart", JSON.stringify(newCart));
+                // Reload the page to fully re-render and recalculate totals
+                location.reload();
+            }
+
+            function setupListeners() {
+                // 1. Remove Button Listener
+                document.querySelectorAll(".remove-btn").forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        const indexToRemove = parseInt(e.target.getAttribute('data-index'));
+                        let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        if (indexToRemove >= 0 && indexToRemove < currentCart.length) {
+                            currentCart.splice(indexToRemove, 1);
+                            updateCart(currentCart);
+                        } else {
+                            console.error("Attempted to remove item with invalid index.");
+                        }
+                    });
+                });
+
+                // 2. Quantity Change Listeners (Plus/Minus buttons)
+                document.querySelectorAll(".qty-plus").forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        const indexToUpdate = parseInt(e.target.getAttribute('data-index'));
+                        let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+                        if (indexToUpdate >= 0 && indexToUpdate < currentCart.length) {
+                            const item = currentCart[indexToUpdate];
+                            if (item.qty < 5) { // Assuming max quantity is 5
+                                item.qty++;
+                                updateCart(currentCart);
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll(".qty-minus").forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        const indexToUpdate = parseInt(e.target.getAttribute('data-index'));
+                        let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+                        if (indexToUpdate >= 0 && indexToUpdate < currentCart.length) {
+                            const item = currentCart[indexToUpdate];
+                            if (item.qty > 1) {
+                                item.qty--;
+                                updateCart(currentCart);
+                            }
+                        }
+                    });
+                });
+            }
+
+            // --- Mobile Menu Toggle Logic ---
+            const navLinks = document.getElementById('nav-links');
+            const openMenuIcon = document.getElementById('menu-icon');
+            const closeMenuIcon = document.getElementById('close-icon');
+            window.toggleNav = function () {
+                if (!navLinks) return;
+                navLinks.classList.toggle('active');
+                openMenuIcon.style.display = navLinks.classList.contains('active') ? 'none' : 'block';
+                closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
+            };
+
+
+            // --- Initialization ---
+            loadAndRenderCart();
+
+        });
+    </script>
 </body>
 
 </html>

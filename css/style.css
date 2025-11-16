@@ -374,7 +374,7 @@ img {
 }
 
 .inner .m {
-    width: 12px;
+    width: 32px;
 }
 
 .inner .n {
@@ -965,9 +965,14 @@ RESPONSIVENESS (Media Queries)
             flex-direction: column;
             gap: 10px;
         }
-
+        .ad-close-btn:hover{
+             background-color: #ea5a0c !important;
+        }
+        .hero5__cta:hover{
+            color: #fff !important;
+        }
         .scroll-btn {
-            background-color: #f7c5c1; /* Theme Color */
+            background-color: #ea5a0c91; /* Theme Color */
             color: white;
             border: none;
             border-radius: 50%;
@@ -1051,21 +1056,20 @@ RESPONSIVENESS (Media Queries)
         
         /* NEW: Text Overlay Style */
         .ad-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff; /* White text color */
-            font-family: bold, sans-serif;
-            font-size: 1.2em;
-            text-align: center;
-            
-            background: rgba(247, 197, 193, 0.75); /* Semi-transparent background matching theme color */
-            border-radius: 5px;
-            max-width: 80%;
-            line-height: 1.2;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8); /* Shadow for better readability */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+          position: absolute;
+    top: 84%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'regular';
+    font-size: 1.2em;
+    text-align: center;
+    /* background: rgba(247, 197, 193, 0.75); */
+    border-radius: 5px;
+    max-width: 94%;
+    line-height: 1.2;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
 
@@ -1095,3 +1099,19 @@ RESPONSIVENESS (Media Queries)
         .shadow-sm{
             margin-bottom: 3rem !important;
         }
+        .inner footer li .flexbox-1{
+            font-size: 10px !important;
+        }
+      .inner footer li .flexbox-1{
+        display: flex;
+      align-items: center;
+      margin-top: 10px;
+        gap: 0 10px;
+        
+      }  
+      .modal-overlay{
+        z-index: 1000299999999999999999999 !important;
+      }
+      .modal-box{
+        width: 95% !important;
+      }
