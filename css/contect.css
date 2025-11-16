@@ -259,11 +259,17 @@
             margin-bottom: 20px;
         }
         
+        
+      
         @media (max-width: 992px) {
             .main-contents {
-                width: 95%;
+                width: 100%;
+                padding: 30px 15px;
             }
-
+            .active ul{
+                width: 60% !important;
+                height: 100rem;
+            }
             .flexbox {
                 flex-direction: column;
             }
@@ -324,3 +330,9 @@
         text-decoration: none;
         color: rgba(0, 0, 0, 0.379);
        }
+         @media (max-width: 789px)
+        {
+              .active {
+                top: 105px !important;
+            }
+        }

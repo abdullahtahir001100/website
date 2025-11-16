@@ -1115,3 +1115,9 @@ RESPONSIVENESS (Media Queries)
       .modal-box{
         width: 95% !important;
       }
+       @media (max-width: 789px)
+        {
+              .active {
+                top: 105px !important;
+            }
+        }
