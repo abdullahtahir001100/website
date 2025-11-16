@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:5000/api/products';
+    const API_URL = 'https://backend-web-1.vercel.app/api/products';
     let ALL_PRODUCTS_DATA = []; // To store all products for related items
 
     const productImage = document.querySelector('.product-image');

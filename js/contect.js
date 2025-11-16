@@ -2,7 +2,7 @@
 
 // 🚨 IMPORTANT: Apne backend server ka URL yahan set karein
 // Agar aap local development mein hain to yeh localhost URL use hoga:
-const API_BASE_URL = 'http://localhost:5000/api/contact'; 
+const API_BASE_URL = 'https://backend-web-1.vercel.app/api/contact'; 
 
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('form-status');

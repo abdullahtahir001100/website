@@ -291,7 +291,7 @@
 
 
         // New API Endpoint and Data Fetching
-        const API_URL = 'http://localhost:5000/api/products'; 
+        const API_URL = 'https://backend-web-1.vercel.app/api/products'; 
         const PRODUCTS_CONTAINER = document.getElementById('products-container');
 
         // Mock Data updated to use 'mainImage' and 'click_count' fields
