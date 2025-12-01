@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard (User Sessions)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+    <style>
+        /* Custom Font for Modern Look */
+        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+        /* Status Dot Styling */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .status-dot.active { background-color: #10B981; } /* Green */
+        .status-dot.inactive { background-color: #94A3B8; } /* Gray */
+        /* GSAP Initial State Override for Details */
+        #user-detail-view {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: none;
+        }
+        /* Log Tag Styling */
+        .log-type-tag {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .type-PAGE_VIEW { background-color: #DBEAFE; color: #1E40AF; } /* Blue */
+        .type-LOGIN { background-color: #D1FAE5; color: #065F46; } /* Green */
+        .type-EXIT { background-color: #FEE2E2; color: #991B1B; } /* Red */
+        .type-DELETE { background-color: #FCE7F3; color: #9D174D; } /* Pink */
+        .type-HEARTBEAT { background-color: #FEF3C7; color: #92400E; } /* Yellow/Brown */
+        .type-DEFAULT { background-color: #E5E7EB; color: #4B5563; } /* Gray Default */
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased h-screen overflow-hidden flex flex-col">
+
+    <header class="bg-white border-b border-gray-200 py-4 px-8 shadow-sm flex items-center justify-between z-10">
+        <h1 id="page-main-title" class="text-2xl font-semibold text-gray-700">Admin Dashboard</h1>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-8">
+        
+        <div id="user-list-view" class="max-w-7xl mx-auto">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">All Users</h2>
+            
+            <div id="loading-spinner" class="text-center text-gray-500 hidden">
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i> <p class="mt-2">Loading users...</p>
+            </div>
+            <p id="error-message" class="text-center text-red-500 hidden">Error loading users. Please check server.</p>
+
+            <div class="mb-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-gray-400"></i>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by name, email, or IP..." 
+                    class="pl-10 pr-4 py-3 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition">
+            </div>
+
+            <div class="card overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                        <tr>
+                            <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Email</th>
+                            <th class="px-6 py-4">Last Active</th>
+                            <th class="px-6 py-4">Device</th>
+                            <th class="px-6 py-4">Session Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body" class="divide-y divide-gray-100">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="user-detail-view" class="max-w-7xl mx-auto space-y-6 hidden">
+            
+            <button id="back-button" onclick="showUserList()" class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                <i class="fa-solid fa-arrow-left"></i> Back to Users
+            </button>
+
+            <div class="card p-6 flex items-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold">
+                    <img id="detail-profile-pic" class="w-full h-full object-cover rounded-full" src="" alt="Profile Picture">
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800" id="detail-name">User Name</h2>
+                    <p class="text-gray-500 text-sm" id="detail-email">email@example.com</p>
+                    <div class="mt-2 flex items-center gap-2">
+                        <span id="detail-status-badge" class="px-2 py-0.5 rounded-full text-xs font-semibold">Inactive</span>
+                    </div>
+                </div>
+                <div class="ml-auto">
+                    <button id="delete-user-button" onclick="deleteUser(currentUserId)" class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition">
+                        <i class="fa-solid fa-trash"></i> Delete User
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">User Summary</h3>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div class="summary-item">
+                            <p class="text-gray-500">Total Orders</p>
+                            <p class="font-bold text-gray-800" id="summary-total-orders">0</p>
+                        </div>
+                        <div class="summary-item">
+                            <p class="text-gray-500">Total Feedback</p>
+                            <p class="font-bold text-gray-800" id="summary-total-feedback">0</p>
+                        </div>
+                        <div class="summary-item">
+                            <p class="text-gray-500">Registered Date</p>
+                            <p class="font-bold text-gray-800" id="summary-registered-date">N/A</p>
+                        </div>
+                        <div class="summary-item col-span-3 mt-4">
+                            <p class="text-gray-500">Last IP / Device</p>
+                            <p class="font-bold text-gray-800" id="summary-ip-device"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">Top Pages Visited (Time Spent)</h3>
+                    <div id="top-pages-list" class="space-y-2 text-sm">
+                        <p class="text-gray-400 text-center w-full mt-4 text-sm">No page metrics available.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-6">
+                <h3 class="font-semibold text-gray-700 mb-4">Recent Activity Timeline (Page Visits & Durations)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                            <tr>
+                                <th class="px-4 py-3">Time</th>
+                                <th class="px-4 py-3">Event Type</th>
+                                <th class="px-4 py-3">Page / Route</th>
+                                <th class="px-4 py-3">Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-activity-history" class="divide-y divide-gray-100">
+                            <tr><td colspan="4" class="text-center py-4 text-gray-500">No recent activity found.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">Recent Orders (<span id="orders-count">0</span>)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                                <tr>
+                                    <th class="px-4 py-3">Order ID</th>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-orders-list" class="divide-y divide-gray-100">
+                                <tr><td colspan="4" class="text-center py-4 text-gray-500">No recent orders found.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">User Feedback (<span id="feedback-count">0</span>)</h3>
+                    <div class="space-y-4" id="detail-feedback-list">
+                        <p class="text-center py-4 text-gray-500">No recent feedback found.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- CONFIGURATION ---
+        const API_BASE = 'http://localhost:5000/api'; 
+        const HEARTBEAT_INTERVAL_MS = 60000; // 60 seconds interval for heartbeat
+        let allUsersCache = [];
+        let currentUserId = null; 
+        let heartbeatTimer = null; 
+
+        // --- ACTIVITY TRACKING VARIABLES ---
+        let lastPageEnterTime = Date.now();
+        const CURRENT_PAGE_ROUTE = '/admin/dashboard'; 
+
+        // 1. JWT / Token Management (Assuming cookies are used, so headers are simple)
+        const getHeaders = () => ({
+            'Content-Type': 'application/json'
+        });
+
+        // --- UTILITY FUNCTIONS ---
+        
+        const formatDate = (dateString, includeTime = false) => {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            if (isNaN(date)) return 'Invalid Date';
+
+            const options = { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            };
+            if (includeTime) {
+                options.hour = '2-digit';
+                options.minute = '2-digit';
+            }
+            return date.toLocaleDateString('en-US', options);
+        };
+        
+        // Function to fetch the user's public IP
+        async function getIPAddress() {
+            try {
+                // Using a reliable public IP service
+                const response = await fetch('https://api64.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip || 'N/A';
+            } catch (error) {
+                return 'Localhost/N/A'; // Default for local dev or network error
+            }
+        }
+
+        // Convert milliseconds to a human-readable duration string (e.g., 2m 30s)
+        function formatDuration(ms) {
+            if (!ms || ms < 1000) return 'Instant';
+            let seconds = Math.floor(ms / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+
+            seconds %= 60;
+            minutes %= 60;
+
+            let parts = [];
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+            
+            return parts.join(' ');
+        }
+
+        // --- HEARTBEAT FUNCTION ---
+        async function sendHeartbeat() {
+            // Logs a HEARTBEAT event to keep the session alive
+            await trackActivity('HEARTBEAT', CURRENT_PAGE_ROUTE, 0); 
+        }
+
+        // --- HEARTBEAT CONTROL FUNCTIONS ---
+        function startHeartbeat() {
+            if (heartbeatTimer) return;
+            sendHeartbeat(); // First heartbeat immediately
+            heartbeatTimer = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+        }
+
+        function stopHeartbeat() {
+            if (heartbeatTimer) {
+                clearInterval(heartbeatTimer);
+                heartbeatTimer = null;
+            }
+        }
+
+        // --- ACTIVITY TRACKING FUNCTION ---
+        async function trackActivity(type, pageRoute, durationMs) {
+            const ip = await getIPAddress();
+            const device = navigator.userAgent; 
+            const route = pageRoute || CURRENT_PAGE_ROUTE; 
+            
+            try {
+                const response = await fetch(`${API_BASE}/activity`, { 
+                    method: 'POST',
+                    headers: getHeaders(),
+                    // IMPORTANT: 'include' is necessary if you use cookies/sessions for authentication
+                    credentials: 'include', 
+                    body: JSON.stringify({ 
+                        type, 
+                        pageRoute: route, 
+                        durationMs: durationMs || 0,
+                        // Fix/Improvement: Ensure description is always present
+                        description: `Admin event: ${type} on page ${route}${type === 'DELETE' ? ` for user ${currentUserId}` : ''}`, 
+                        ip,
+                        device 
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error("Failed to log activity:", response.status);
+                    if (response.status === 401) {
+                        stopHeartbeat();
+                        alert("Session expired. Please log in again.");
+                        // window.location.href = '/login'; 
+                    }
+                }
+            } catch (error) {
+                console.error("Network error during tracking:", error);
+            }
+        }
+
+
+        // --- DATA FETCHING FUNCTIONS ---
+        
+        async function fetchUserList() {
+            document.getElementById("loading-spinner").classList.remove("hidden");
+            document.getElementById("error-message").classList.add("hidden");
+            
+            try {
+                const response = await fetch(`${API_BASE}/users`, { headers: getHeaders(), credentials: 'include' });
+                
+                if (response.status === 401 || response.status === 403) {
+                     throw new Error("Authentication failed. Please log in as an Admin.");
+                }
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    allUsersCache = data.data.map(user => ({
+                        id: user.id, 
+                        name: `${user.firstName || 'Unknown'} ${user.lastName || 'User'}`,
+                        email: user.email,
+                        lastActive: formatDate(user.lastActivity, true) || 'Never', // Include time for last active
+                        device: user.currentDevice || 'N/A',
+                        sessionStatus: user.sessionStatus || 'Inactive',
+                        profilePic: user.profilePic,
+                    }));
+                    renderUserList(); 
+                } else {
+                    document.getElementById("error-message").innerText = "Failed to fetch users: " + (data.error || "Unknown error");
+                    document.getElementById("error-message").classList.remove("hidden");
+                }
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                document.getElementById("error-message").innerText = `Error loading users: ${error.message}`;
+                document.getElementById("error-message").classList.remove("hidden");
+            } finally {
+                document.getElementById("loading-spinner").classList.add("hidden");
+            }
+        }
+
+        async function fetchUserDetail(userId) {
+            if (!userId || typeof userId !== 'string') {
+                 console.error("Invalid userId received:", userId);
+                 alert("Error: Invalid User ID format. Cannot fetch details.");
+                 return;
+            }
+            
+            currentUserId = userId; // Store ID globally for delete function
+            const detailView = document.getElementById("user-detail-view");
+            detailView.classList.remove("hidden"); 
+            detailView.querySelector('#detail-name').innerText = 'Loading...';
+            detailView.querySelector('#detail-email').innerText = '';
+            
+            try {
+                const response = await fetch(`${API_BASE}/users/${userId}`, { headers: getHeaders(), credentials: 'include' });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server returned ${response.status} ${response.statusText}`);
+                }
+                const responseData = await response.json();
+                
+                if (responseData.success && responseData.data) {
+                    showUserDetail(responseData.data); 
+                } else {
+                    throw new Error(responseData.error || 'Failed to load user details.');
+                }
+            } catch (error) {
+                console.error("Detail Fetch Error:", error);
+                alert(`Could not load user details: ${error.message}`);
+                showUserList(); 
+            }
+        }
+        
+        // --- RENDERING FUNCTIONS ---
+        
+        function renderUserList(filterText = "") {
+            const tbody = document.getElementById("users-table-body");
+            tbody.innerHTML = "";
+            
+            const lowerCaseFilter = filterText.toLowerCase();
+
+            const filteredUsers = allUsersCache.filter(user => 
+                user.name.toLowerCase().includes(lowerCaseFilter) || 
+                user.email.toLowerCase().includes(lowerCaseFilter) ||
+                (user.device && user.device.toLowerCase().includes(lowerCaseFilter))
+            );
+            
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">No users found.</td></tr>';
+                return;
+            }
+
+            filteredUsers.forEach(user => {
+                const statusClass = user.sessionStatus === "Active" ? "active" : "inactive";
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50 transition cursor-pointer";
+                tr.onclick = () => {
+                    document.getElementById("user-list-view").classList.add("hidden");
+                    fetchUserDetail(user.id);
+                };
+
+                // Truncate device name if too long
+                const deviceDisplay = (user.device.split('/')[0] || user.device).trim().substring(0, 30);
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4"><div class="font-medium text-gray-800">${user.name}</div></td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${user.email}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${user.lastActive}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${deviceDisplay || 'N/A'}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="status-dot ${statusClass}"></span>
+                            ${user.sessionStatus}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            gsap.fromTo('#users-table-body tr', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 });
+        }
+        
+        function renderTopPages(topPages) {
+            const listDiv = document.getElementById("top-pages-list");
+            listDiv.innerHTML = '';
+
+            if (!topPages || topPages.length === 0) {
+                 listDiv.innerHTML = '<p class="text-gray-400 text-center w-full mt-4 text-sm">No page metrics available.</p>';
+                 return;
+            }
+
+            topPages.forEach(page => {
+                const pageItem = document.createElement('div');
+                pageItem.className = 'flex justify-between items-center border-b pb-2 last:border-b-0 last:pb-0';
+                pageItem.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-blue-700 truncate">${page.page.length > 35 ? page.page.substring(0, 32) + '...' : page.page || 'Home'}</span>
+                        <span class="text-xs text-gray-500">${page.views} Views</span>
+                    </div>
+                    <span class="text-sm font-bold text-gray-800">${page.timeSpent}</span>
+                `;
+                listDiv.appendChild(pageItem);
+            });
+        }
+        
+        function renderActivityHistory(activities) {
+            const tbody = document.getElementById("detail-activity-history");
+            tbody.innerHTML = '';
+
+            if (!activities || activities.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">No recent activity found.</td></tr>';
+                return;
+            }
+
+            activities.forEach(activity => {
+                const tr = document.createElement("tr");
+                tr.className = 'border-b border-gray-100 last:border-b-0';
+                
+                // Cleans up the type string for CSS class name
+                const type = activity.type || 'DEFAULT';
+                const typeClass = `type-${type.replace(/[^a-zA-Z0-9_]/g, '')}`; 
+                const pageRoute = activity.page || 'System Event';
+                const pageDisplay = pageRoute.length > 50 ? pageRoute.substring(0, 47) + '...' : pageRoute;
+
+                tr.innerHTML = `
+                    <td class="px-4 py-2 text-sm text-gray-600">${formatDate(activity.timestamp, true)}</td>
+                    <td class="px-4 py-2 text-gray-600">
+                        <span class="log-type-tag ${typeClass}">${type}</span>
+                    </td>
+                    <td class="px-4 py-2 text-gray-600">${pageDisplay}</td>
+                    <td class="px-4 py-2 font-medium text-gray-800">${formatDuration(activity.durationMs)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function renderOrders(orders) {
+            const tbody = document.getElementById("detail-orders-list");
+            tbody.innerHTML = '';
+            document.getElementById("orders-count").innerText = orders ? orders.length : 0;
+
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">No recent orders found.</td></tr>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const status = order.status || 'Unknown';
+                const statusClass = status === 'Delivered' ? 'bg-green-100 text-green-700' : 
+                                     status === 'Processing' ? 'bg-yellow-100 text-yellow-700' : 
+                                     status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700';
+                const tr = document.createElement("tr");
+                tr.className = 'border-b border-gray-100 last:border-b-0';
+                tr.innerHTML = `
+                    <td class="px-4 py-2 font-mono text-xs">${(order._id || 'N/A').slice(-6)}</td>
+                    <td class="px-4 py-2 text-gray-600">${formatDate(order.createdAt)}</td>
+                    <td class="px-4 py-2"><span class="px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${status}</span></td>
+                    <td class="px-4 py-2 text-right font-semibold">$${(order.totalAmount || 0).toFixed(2)}</td>
+                `; 
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderFeedback(feedbacks) {
+            const div = document.getElementById("detail-feedback-list");
+            div.innerHTML = '';
+            document.getElementById("feedback-count").innerText = feedbacks ? feedbacks.length : 0;
+
+            if (!feedbacks || feedbacks.length === 0) {
+                div.innerHTML = '<p class="text-center py-4 text-gray-500">No recent feedback found.</p>';
+                return;
+            }
+
+            feedbacks.forEach(msg => {
+                const feedbackDiv = document.createElement("div");
+                feedbackDiv.className = 'border-b pb-4 last:border-b-0 last:pb-0';
+                feedbackDiv.innerHTML = `
+                    <div class="flex justify-between items-center text-xs text-gray-500">
+                        <span class="font-medium text-gray-700">${msg.subject || 'No Subject'}</span>
+                        <span>${formatDate(msg.createdAt)}</span>
+                    </div>
+                    <p class="text-sm mt-1 text-gray-600 line-clamp-2">${msg.message || 'No message content.'}</p>
+                `;
+                div.appendChild(feedbackDiv);
+            });
+        }
+        
+        function showUserDetail(data) {
+            const user = data.profile;
+            const metrics = data.metrics;
+            const logs = data.logs;
+
+            const detailView = document.getElementById("user-detail-view");
+            detailView.classList.remove("hidden");
+
+            // --- Populate Profile Section ---
+            document.getElementById("detail-name").innerText = `${user.firstName || 'Unknown'} ${user.lastName || 'User'}`;
+            document.getElementById("detail-email").innerText = user.email;
+            document.getElementById("detail-profile-pic").src = user.profilePic || 'https://via.placeholder.com/150/E0E7FF/4F46E5?text=U'; 
+            
+            const statusBadge = document.getElementById("detail-status-badge");
+            const statusText = user.sessionStatus || 'Inactive';
+            statusBadge.innerText = statusText;
+            statusBadge.className = `px-2 py-0.5 rounded-full text-xs font-semibold ${statusText === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`;
+
+            // --- Populate Summary ---
+            document.getElementById("summary-total-orders").innerText = metrics.totalOrders || 0;
+            document.getElementById("summary-total-feedback").innerText = metrics.totalFeedback || 0;
+            document.getElementById("summary-registered-date").innerText = formatDate(user.createdAt);
+            document.getElementById("summary-ip-device").innerText = `${user.currentIP || 'N/A'} / ${user.currentDevice || 'N/A'}`;
+            
+            // --- Render Sub-sections ---
+            renderTopPages(metrics.topPages); 
+            renderActivityHistory(logs.activities); 
+            renderOrders(logs.orders);
+            renderFeedback(logs.feedback);
+
+            // --- GSAP Animation ---
+            gsap.fromTo(detailView, 
+                { opacity: 0, y: 20 }, 
+                { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+            );
+
+            gsap.fromTo('#user-detail-view > .card', 
+                { opacity: 0, y: 10 }, 
+                { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, delay: 0.3 }
+            );
+            
+            document.getElementById("page-main-title").innerText = `${user.firstName || 'User'}'s Details`;
+        }
+
+        function showUserList() {
+            const detailView = document.getElementById("user-detail-view");
+            const listView = document.getElementById("user-list-view");
+
+            // Animate out the detail view
+            gsap.to(detailView, { 
+                opacity: 0, 
+                y: 20, 
+                duration: 0.4, 
+                ease: "power2.in",
+                onComplete: () => {
+                    detailView.classList.add("hidden");
+                    listView.classList.remove("hidden");
+                    
+                    // Animate in the list view
+                    gsap.fromTo(listView, 
+                        { opacity: 0 }, 
+                        { opacity: 1, duration: 0.4 }
+                    );
+                    document.getElementById("page-main-title").innerText = "Admin Dashboard";
+                    currentUserId = null; // Clear the current user context
+                }
+            });
+
+            // Animate the back button for a smoother press feel
+             gsap.fromTo('#back-button', { scale: 0.95 }, { scale: 1, duration: 0.2 });
+        }
+        
+        async function deleteUser(userId) {
+            if (!userId) {
+                alert("Error: No user ID specified for deletion.");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to permanently delete user ID: ${userId}? This action is irreversible and deletes all associated data.`)) {
+                return;
+            }
+            
+            try {
+                // Disable the delete button during processing
+                const deleteBtn = document.getElementById("delete-user-button");
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+
+                const response = await fetch(`${API_BASE}/users/${userId}`, { 
+                    method: 'DELETE',
+                    headers: getHeaders(),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Log the admin's action *before* changing views
+                    await trackActivity('DELETE', `/user/${userId}`, 0);
+                    
+                    alert('User deleted successfully!');
+                    
+                    showUserList();
+                    fetchUserList(); // Refresh the list
+                } else {
+                    alert('Failed to delete user: ' + (data.error || 'Server error.'));
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert(`Error deleting user: ${error.message}`);
+            } finally {
+                // Re-enable the button if still visible
+                 if (currentUserId === userId) {
+                    const deleteBtn = document.getElementById("delete-user-button");
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Delete User';
+                }
+            }
+        }
+
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+        
+        // Initial data fetch
+        fetchUserList(); 
+
+        document.getElementById("search-input").addEventListener("input", (e) => {
+            renderUserList(e.target.value);
+        });
+
+        // ⭐ ACTIVITY TRACKING SETUP & HEARTBEAT INTEGRATION ⭐
+        
+        window.addEventListener('load', async () => {
+            // Log the initial access event (simulated login on page load)
+            await trackActivity('LOGIN', CURRENT_PAGE_ROUTE, 0); 
+            lastPageEnterTime = Date.now();
+            
+            // Start the periodic heartbeat
+            startHeartbeat(); 
+        });
+
+        window.addEventListener('beforeunload', async (e) => {
+            // Calculate final duration
+            const finalDurationMs = Date.now() - lastPageEnterTime;
+            
+            // Log the EXIT event with total duration (using synchronous navigator.sendBeacon where available for reliability)
+            const type = 'EXIT';
+            const route = CURRENT_PAGE_ROUTE;
+            const ip = await getIPAddress(); // A synchronous IP fetch is generally not possible here, so we skip it or use a cached IP. For simplicity and demonstration, we pass current best effort.
+            const device = navigator.userAgent;
+            const payload = JSON.stringify({ 
+                type, 
+                pageRoute: route, 
+                durationMs: finalDurationMs,
+                description: `Admin event: ${type} on page ${route}`, 
+                ip: 'unknown_on_unload', 
+                device 
+            });
+
+            // Use sendBeacon for reliable background logging during page closing
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(`${API_BASE}/activity`, payload);
+            } else {
+                // Fallback for older browsers (less reliable)
+                // This request might be blocked/ignored by the browser
+                fetch(`${API_BASE}/activity`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    credentials: 'include', 
+                    body: payload,
+                    keepalive: true // Hint to the browser to finish the request
+                }).catch(e => console.error("Unreliable EXIT log failed:", e));
+            }
+            
+            // Stop the heartbeat to clean up the browser process
+            stopHeartbeat(); 
+            // Note: Preventing synchronous calls inside beforeunload is critical for performance. The use of sendBeacon or keepalive handles this.
+        });
+        
+    </script>
+ 
+</body>
+</html>

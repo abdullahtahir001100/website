@@ -374,7 +374,7 @@ img {
 }
 
 .inner .m {
-    width: 32px;
+    width: 15px;
 }
 
 .inner .n {
@@ -1153,4 +1153,20 @@ RESPONSIVENESS (Media Queries)
          .image-column,.smallimages{
             position: relative;
          }
+     }
+     .ad-text {
+    position: absolute;
+    top: 20%;
+    left: 31%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-family: 'regular';
+    font-size: 1.2em;
+    text-align: center;
+    /* background: rgba(247, 197, 193, 0.75); */
+    border-radius: 5px;
+    max-width: 100%;
+    line-height: 1.2;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
      }

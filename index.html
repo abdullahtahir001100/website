@@ -9,369 +9,388 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/user.css">
 
-    
+    <style>
+        /* Base Header Styles */
+        .main-header {
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-logo .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .main-nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .main-nav a:hover {
+            color: #4f46e5;
+        }
+
+        /* Authentication Container */
+        .auth-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin-left: 20px;
+        }
+
+        /* Login Icon (visible when logged out) */
+        .login-icon {
+            font-size: 24px;
+            color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* User Avatar (visible when logged in) */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            /* Dark text for light background */
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+        }
+
+        /* --- Simple Hover Tooltip (Updated to Light) --- */
+        .user-info-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            min-width: 150px;
+            background-color: #f8f8f8;
+            /* Light background */
+            color: #333;
+            /* Dark text */
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 1;
+            top: 50px;
+            right: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            border: 1px solid #eee;
+        }
+
+        .auth-container:hover .user-info-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .user-info-tooltip p {
+            margin: 2px 0;
+            font-size: 14px;
+        }
+
+        .user-info-tooltip p:first-child {
+            font-weight: bold;
+        }
+
+        /* --- User Menu Pop-up (Google Style) --- */
+        .user-menu-popup {
+            position: absolute;
+            top: 55px;
+            /* Adjust below the header */
+            right: 0px;
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: none;
+            /* Hidden by default */
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        .user-menu-header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-avatar {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .user-menu-header p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .user-menu-header p.user-email {
+            color: #555;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .user-menu-actions {
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-menu-actions button {
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 10px 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-menu-actions button i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-menu-actions button:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .menu-footer {
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .menu-footer a,
+        .menu-footer button {
+            font-size: 13px;
+            color: #4f46e5;
+            text-decoration: none;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .menu-footer button {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+        }
+        
+.ad-popup{
+    left: 20px;
+}
+body{
+    padding-top: 30px;
+}
+    </style>
+
 </head>
 
 <body class="">
-    <section class="inner">
-        <header class="inner">
-            <div class="navbar">
-           
-             <div class="logo">
-                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                        alt="Logo">
+    <header class="main-header">
+        <div class="header-content">
+            <a href="/" class="header-logo">
+                <img src="images/logo2.jpg" alt="INKBYHAND Logo" class="logo-img">
+            </a>
+
+            <nav class="main-nav">
+                <a href="#products-container">Shop</a>
+                <a href="#faqs">FAQ</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+
+            <div id="auth-container" class="auth-container">
                 </div>
-                <div class="menu-icon">
-                
-             <div class="naver">
-                        <a href="cart.html" class="cart-icon-container">
-                            <img src="images/trolley.png" alt="Cart" class="top">
-                            <span id="cart-count">0</span>
-         
-                       </a>
-                    </div>
-                    <div class="naver" id="form1"><img src="images/user.png" alt="User"></div>
-    
-                    <div class="naver" onclick="toggleNav()">
-               
-               <img src="images/ui.png" alt="Menu" id="menu-icon">
-                        <img src="images/close.png" alt="Close Menu" id="close-icon" style="display: none;"
-class="close-icon">
-                    </div>
-                </div>
-
-                <nav id="nav-links">
-                    <ul>
-                        <li><a href="/">home</a></li>
-  
-                        <li><a href="about.html">about</a></li>
-                        <li><a href="product.html">shop</a></li>
-                        <li><a href="contect.html">contact</a></li>
-                        <li><a href="logout.html">Log Out</a></li>
- 
-                    </ul>
-                </nav>
-            </div>
-        </header>
-    </section>
-
-    <div class="modal-overlay">
-        <div class="modal-box">
-
-            <a href="#" class="close-btn">&times;</a>
-
-            <div 
-class="view-container" id="loginView">
-                <h2 class="modal-title">Welcome to INKBYHAND</h2>
-                <button class="facebook-btn">
-                    <i class="fab fa-facebook-f"></i> Log in With Facebook
-                </button>
-                <div class="separator">OR</div>
-    
- 
-                <form class="login-form">
-                    <input type="email" name="email" placeholder="Email Address" required>
-                    <div class="password-group">
-                        <input type="password" name="password" id="loginPasswordInput" placeholder="Password" required>
-        
-     
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
-                            aria-label="Toggle password visibility"></i>
-                    </div>
-                 
-                   <a href="#" class="forgot-password terms-link"
-                        onclick="showView('forgotPasswordView')">FORGOT PASSWORD</a>
-                    <button type="submit" class="log-in-btn">LOG IN</button>
-                </form>
-                <p class="terms-text">
-             
-                This site is protected by reCAPTCHA and the Google
-                    <a href="#">Privacy Policy</a> and
-                    <a href="#">Terms of Service</a> apply.
- </p>
-                <p class="register-text">
-                    Don't have an account?
- <a class="register-link" onclick="showView('registerView')">REGISTER</a>
-                </p>
-            </div>
-
-
-            <div class="view-container" id="registerView" style="display:none;">
-                <h2 class="modal-title">Create Your Account</h2>
-
-                <button class="facebook-btn">
-                   
-                   <i class="fab fa-facebook-f"></i> Sign up With Facebook
-                </button>
-
-                <div class="separator">OR</div>
-
-                <form class="register-form" id="registerForm">
-                    <input type="text" name="full_name" id="registerNameInput" placeholder="Full Name" required>
-                
-             <div id="nameError" class="error-message"></div>
-
-                    <input type="email" name="email" placeholder="Email Address" required autocomplete="nope">
-
-                    <div class="password-group">
-                        <input type="password" name="password" id="registerPasswordInput" placeholder="Password"
-                   
-                         required>
-                        <i class="far fa-eye password-toggle" data-pw-toggle role="button"
-                            aria-label="Toggle password visibility"></i>
-                        </div>
-
-        
- 
-                    <div class="password-group">
-                        <input type="password" name="confirm_password" id="registerConfirmPasswordInput"
-                            placeholder="Confirm Password" required>
-                      
-                           <i class="far fa-eye password-toggle" data-pw-toggle role="button"
-                            aria-label="Toggle password visibility"></i>
-                        <div id="passwordMatchError" class="error-message"></div>
-                    </div>
-
-                 
-                   <div class="captcha-container">
-                        <label class="captcha-label" id="captchaLabel">
-                            <span id="captchaCheckDisplay" class="captcha-checkbox-display" role="checkbox"
-                                aria-checked="false">
-       
-                                 <i class="fas fa-check"></i>
-                            </span>
-                            I'm not a robot
-              
-                        </label>
-                        <input type="hidden" id="captchaVerified" value="false">
-                        <div id="captchaError" class="error-message" style="display:none;">Please verify that you are
-                            not a robot.</div>
-  
-                    </div>
-
-                    <button type="submit" class="register-submit-btn">REGISTER</button>
-                </form>
-
-                <p class="login-prompt">
-                    Already have an account?
- <a class="login-link" onclick="showView('loginView')">LOG IN</a>
-                </p>
-
-                <p class="terms-text">
-                    By registering, you agree to Saatchi Art's
-                    <a href="#">Privacy Policy</a> and
-               
-                         <a href="#">Terms of Service</a>.
-                </p>
-            </div>
-
-            <div class="view-container" id="forgotPasswordView" style="display:none;">
-                <h2 class="modal-title">Forgot Your Password?</h2>
-
-                <p class="terms-text" style="text-align: center; margin-bottom: 25px;">
-                    Enter the email address 
- associated with your account and we'll send you a link to reset your
-                    password.
- </p>
-
-                <form class="forgot-form">
-                    <input type="email" name="email" placeholder="Email Address" required>
-                    <button type="submit" class="reset-btn">RESET PASSWORD</button>
-                </form>
-
-                <div id="resetPasswordView" style="display:none;margin-top:18px">
- 
-                    </div>
-
-                <button class="back-to-login" onclick="showView('loginView')">
-                    <i class="fas fa-arrow-left"></i> Back to Log In
-                </button>
-            </div>
-
         </div>
- 
-       </div>
-
-    <div id="captchaModalOverlay">
-        <div class="captcha-modal-box">
-            <p class="captcha-prompt">Please select the image of the **Surah Kausar**.</p>
-            <div class="captcha-grid" id="captchaGrid">
-                </div>
-            <div id="captchaFailure" class="error-message" style="display:none; text-align:center;">Incorrect selection.
- Please try again.</div>
-        </div>
-    </div>
-
-
+    </header>
     <section class="inner">
         <section class="">
             <div class="content">
                 <div class="main banner">
                     <h2>the beauty of words , the soul of art</h2>
-             
-                       <h1>the art of <br> calligraphy</h1>
+                    <h1>the art of <br> calligraphy</h1>
                 </div>
                 <div class="flex">
                     <div class="video">
                         <video src="images/vid-1.mp4" controls autoplay loop>
-       
-                                 </video>
+                        </video>
                     </div>
                     <div class="pera">
                         <p>Where every stroke of paint , beauty comes alive .
- Calligraphy is <br> not just writing It is
+                            Calligraphy is <br> not just writing It is
                             harmony ,grace,and timeless expression <br> shaped into art.
- <br> InkByHand honors the sacred
-                            art of Quranic calligraphy while <br> inspiring creativity in every hand that writes.</p>
+                            <br> InkByHand honors the sacred
+                            art of Quranic calligraphy while <br> inspiring creativity in every hand that writes.
+                        </p>
                         <button>LEARN MORE</button>
                     </div>
-
-           
-             </div>
+                </div>
             </div>
         </section>
         <section class="banner-2">
             <div class="contain">
                 <div class="heading">
                     <h3>Grace Flows With Every Stroke</h3>
-            
-                  <p>
+                    <p>
                         Every letter carries a rythm , every stroke a meaning .... <br> Calligraphy transform ordinary
                         writing into extraordinary art.
- We bring grace and artistry into every curve <br> and line ,
+                        We bring grace and artistry into every curve <br> and line ,
                         turning
                         simple letters into timeless beauty.
- </p>
+                    </p>
                 </div>
                 <div class="grid">
                     <div class="images">
                         <img src="images/1a.jpg" alt="">
-                    
- </div>
+                    </div>
                     <div class="images">
                         <img src="images/8a.jpg" alt="">
                     </div>
                     <div class="images">
-            
-                          <img src="images/2a.jpg" alt="">
+                        <img src="images/2a.jpg" alt="">
                     </div>
                 </div>
             </div>
         </section>
         <section class="banner-3">
             <div class="heading">
-        
-                  <h3>Purchase Artwork</h3>
+                <h3>Purchase Artwork</h3>
             </div>
             <div class="flexbox" id="products-container">
-                </div>
-
+            </div>
         </section>
         <section class="banner-4">
-         
-           <div class="heading">
+            <div class="heading">
                 <h3>
                     Frequently Asked Questions
                 </h3>
                 <p>Here you’ll find answers to the most common questions about our art, services, and orders.</p>
-            
- </div>
+            </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>Do you create custom calligraphy paintings?</h4>
-
-                    
-                          <div class="arow">
+                        <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
                 </div>
-     
-                     <div class="jsconst" id="p1">
+                <div class="jsconst" id="p1">
                     Yes!
- We take custom orders for Quranic verses, names, wedding gifts, and special occasions.
- You can
+                    We take custom orders for Quranic verses, names, wedding gifts, and special occasions.
+                    You can
                     share
                     your idea, and we will turn it into a unique artwork.
- </div>
+                </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>What materials do you use for your artwork?</h4>
-
-      
-                           <div class="arow">
+                        <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-       
-             </div>
+                </div>
                 <div class="jsconst" id="p1">
                     We use high-quality, archival-grade canvases, premium acrylic and oil paints, and traditional
                     calligraphy inks to ensure longevity and vibrant detail in every piece.
- </div>
+                </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>How long does it take to complete a painting?</h4>
-
-     
-                                     <div class="arow">
+                        <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-      
                 </div>
                 <div class="jsconst" id="p1">
                     Completion time varies depending on the complexity and size of the artwork, typically ranging from 2
                     to 4 weeks.
- Custom orders may take slightly longer.
+                    Custom orders may take slightly longer.
                 </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>Do you deliver worldwide?</h4>
-
-    
-                                             <div class="arow">
+                        <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-     
-                 </div>
+                </div>
                 <div class="jsconst" id="p1">
                     Yes, we offer insured worldwide shipping.
- Shipping costs and delivery times will be calculated at
+                    Shipping costs and delivery times will be calculated at
                     checkout based on your location.
- </div>
+                </div>
             </div>
             <div class="bloker">
                 <div class="block">
                     <div class="question">
                         <h4>How can I place an order?</h4>
-
-        
-                                 <div class="arow">
+                        <div class="arow">
                             <img src="images/arrow.jpg" alt="">
                         </div>
                     </div>
-         
                 </div>
                 <div class="jsconst" id="p1">
                     You can place an order directly through our "Shop" page for existing pieces, or contact us via the
                     "Contact" page to discuss a custom commission.
- </div>
+                </div>
             </div>
-
         </section>
     </section>
     <section class="banner-5">
@@ -379,67 +398,57 @@ class="view-container" id="loginView">
             <div class="align">
                 <div class="sec-1">
                     <div class="logo">
-           
-                       <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
+                        <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
                             class="logos" alt="">
                     </div>
                     <div class="pera">
-                
-                  InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
+                        InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
                         expression.
- </div>
+                    </div>
                 </div>
                 <div class="sec-1">
                     <ul>
                         <li>
-                       
-             Service
+                            Service
                         </li>
                         <li>
                             <a href=""> Supply</a>
-                 
-                       </li>
+                        </li>
                         <li>
                             <a href="">Communities</a>
                         </li>
-                
-                          <li>
+                        <li>
                             <a href="">Equipment</a>
                         </li>
                     </ul>
                 </div>
-   
-                      <div class="sec-1">
+                <div class="sec-1">
                     <ul>
                         <li>Further Links</li>
                         <li><a href="">Term & Condition</a></li>
-              
-                      <li><a href="">News</a></li>
+                        <li><a href="">News</a></li>
                     </ul>
                 </div>
                 <div class="sec-1">
                     <ul>
-                
-                          <li>Get In Touch</li>
+                        <li>Get In Touch</li>
                         <li><a href=""><img src="https://www.javehandmade.store/instagram.png" class="m">
                                 instagram.com/ink_by_hand_12</a></li>
                         <li><a href=""><img src="https://www.javehandmade.store/whatsapp.png"
-     
-                                 class="n">+92-310-7581250</a>
+                                        class="n">+92-310-7581250</a>
                         </li>
-
                     </ul>
                 </div>
             </div>
- 
-           <div class="copy">
+
+            <div class="copy">
                 Copyright © 2025 inkbyhand.com |
- Powered by inkbyhand.com
+                Powered by inkbyhand.com
             </div>
         </footer>
     </section>
 
-    
+
     <div class="scroll-btns">
         <button id="scrollUpBtn" class="scroll-btn up" title="Scroll to Top">
             <i class="fas fa-arrow-up"></i>
@@ -450,25 +459,215 @@ class="view-container" id="loginView">
     </div>
 
     <div class="ad-popup" id="rightAdPopup">
-    
-          <button class="ad-close-btn" id="adCloseBtn">&times;</button>
+
+        <button class="ad-close-btn" id="adCloseBtn">&times;</button>
         <a href="product.html" target="_blank" title="Check out our latest offer">
             <div class="ad-content-wrapper">
                 <img src="images/3.jpg" alt="Special Offer Advertisement" class="ad-image">
                 <div class="ad-text">
                     Limited Time Offer!
- <br>
+                    <br>
                     Save 20%
                 </div>
             </div>
         </a>
     </div>
 
-   <script src="js/script.js"></script>
+   
+    <script src="js/script.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="js/dashboadover.js"></script>
-
     <script src="js/animate.js"></script>
+
+    <script>
+        const AUTH_CONTAINER = document.getElementById('auth-container');
+        const LOGIN_PAGE_URL = 'login.html';
+        const PROFILE_PAGE_URL = 'profile.html'; // Placeholder for profile page
+
+        /**
+         * Generates a random light hex color (high luminosity).
+         */
+        function getRandomColor() {
+            // Generates a color between #A0A0A0 and #FFFFFF
+            const color = (Math.random() * 0x5f5f5f + 0xa0a0a0).toString(16).slice(0, 6);
+            return '#' + color.padStart(6, '0');
+        }
+
+        /**
+         * Fetches user data from local storage.
+         */
+        function getAuthData() {
+            const data = localStorage.getItem('userAuthData');
+            return data ? JSON.parse(data) : null;
+        }
+
+        /**
+         * Toggles the visibility of the user menu pop-up.
+         */
+        function toggleUserMenu(event) {
+            // Stop propagation to prevent document click from closing it immediately
+            if (event) event.stopPropagation();
+
+            const menu = document.getElementById('user-menu-popup');
+            if (!menu) return; // Only run if the menu exists (i.e., user is logged in)
+
+            const isHidden = menu.style.display === 'none' || menu.style.display === '';
+
+            // Close all open menus first (for safety, though only one exists here)
+            document.querySelectorAll('.user-menu-popup').forEach(m => m.style.display = 'none');
+
+            if (isHidden) {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+
+        /**
+         * Handles global clicks to close the pop-up menu.
+         */
+        document.addEventListener('click', (event) => {
+            const menu = document.getElementById('user-menu-popup');
+            const avatar = document.querySelector('.user-avatar');
+
+            if (menu && menu.style.display === 'block') {
+                // If click is outside the menu AND outside the avatar
+                if (!menu.contains(event.target) && !avatar.contains(event.target)) {
+                    menu.style.display = 'none';
+                }
+            }
+        });
+
+
+        /**
+         * Handles the click event on the auth container.
+         */
+        function handleAuthClick(event) {
+            const userData = getAuthData();
+            if (userData && userData.isLoggedIn) {
+                // Logged in: Toggle the custom menu
+                toggleUserMenu(event);
+            } else {
+                // Not logged in: Go to login page
+                window.location.href = LOGIN_PAGE_URL;
+            }
+        }
+
+        /**
+         * Logs out the current user silently.
+         */
+        window.handleLogout = function () {
+            localStorage.removeItem('userAuthData');
+            renderAuthStatus(); // Update header
+            console.log('User logged out successfully.');
+            // window.location.replace('/'); // Optional: Redirect to homepage
+        }
+
+        /**
+         * Simulates switching account by logging out and redirecting to login.
+         */
+        window.handleSwitchAccount = function () {
+            // 1. Close the menu
+            toggleUserMenu(); 
+            
+            // 2. Perform silent logout
+            localStorage.removeItem('userAuthData');
+            renderAuthStatus();
+            console.log('Switch Account initiated: User logged out and redirecting to login page.');
+
+            // 3. Redirect to the login page
+            window.location.href = LOGIN_PAGE_URL;
+        }
+
+        /**
+         * Renders the appropriate element (Login Icon or Avatar) in the header.
+         */
+        function renderAuthStatus() {
+            const userData = getAuthData();
+            AUTH_CONTAINER.innerHTML = ''; // Clear existing content
+
+            if (userData && userData.isLoggedIn) {
+                const fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+                const firstName = userData.firstName || 'U';
+                const firstLetter = firstName.charAt(0).toUpperCase();
+                // Ensure color is available, or generate a new one if missing
+                const avatarColor = userData.avatarColor || getRandomColor(); 
+
+                // 1. Create Avatar structure (Avatar + Simple Hover Tooltip)
+                const avatarHtml = `
+                    <div class="user-avatar" style="background-color: ${avatarColor};" onclick="handleAuthClick(event)">
+                        ${firstLetter}
+                    </div>
+                    <div class="user-info-tooltip">
+                        <p>${fullName}</p>
+                        <p>${userData.email}</p>
+                    </div>
+                `;
+
+                // 2. Create the Pop-up Menu structure (Hidden by default)
+                const menuHtml = `
+                    <div id="user-menu-popup" class="user-menu-popup" style="display: none;">
+                        <div class="user-menu-header">
+                            <div class="menu-avatar" style="background-color: ${avatarColor};">
+                                ${firstLetter}
+                            </div>
+                            <p>${fullName}</p>
+                            <p class="user-email">${userData.email}</p>
+                        </div>
+                        
+                        <div class="user-menu-actions">
+                            <button onclick="window.location.href='${PROFILE_PAGE_URL}'">
+                                <i class="fas fa-user-circle"></i> View Profile
+                            </button>
+                            <button onclick="window.location.href='settings.html'">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                        </div>
+                        
+                        <div class="menu-footer">
+                            <button onclick="handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i> Log Out
+                            </button>
+                            <button onclick="handleSwitchAccount()">
+                                <i class="fas fa-exchange-alt"></i> Switch Account
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                AUTH_CONTAINER.innerHTML = avatarHtml + menuHtml;
+
+            } else {
+                // Not logged in: Show Login Icon
+                AUTH_CONTAINER.innerHTML = `
+                    <a href="${LOGIN_PAGE_URL}" aria-label="Login or Register">
+                        <i class="fas fa-sign-in-alt login-icon" onclick="handleAuthClick(event)"></i>
+                    </a>
+                `;
+            }
+        }
+
+        // --- SIMULATED LOGIN ---
+        function simulateLogin() {
+            const userMock = {
+                isLoggedIn: true,
+                firstName: "Sara",
+                lastName: "Khan",
+                email: "sara.khan@inkbyhand.com",
+                username: "saraink_official",
+                // New random color generated every login
+                avatarColor: getRandomColor()
+            };
+            localStorage.setItem('userAuthData', JSON.stringify(userMock));
+            renderAuthStatus();
+            console.log('Simulated Login Success. Color updated.');
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAuthStatus();
+        });
+    </script>
 </body>
 
 </html>

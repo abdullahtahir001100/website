@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register / Forgot Password - Secure Auth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0e7ff; /* Light indigo background */
+        }
+        
+        /* Base styles for forms */
+        .form-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #login-form-container {
+            opacity: 1;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        #auth-form-wrapper {
+            position: relative;
+            transition: min-height 0.3s ease-in-out;
+            /* Ensures scroll only happens here on smaller screens */
+            overflow-y: auto; 
+            overflow-x: hidden;
+            height: auto; 
+            max-height: 90vh; 
+        }
+
+        .message {
+            padding: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .error-message {
+            color: #ef4444; 
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 1px #ef4444; 
+        }
+
+        .success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .info {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        /* CAPTCHA Styles */
+        #captcha-canvas {
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+        }
+        .captcha-input {
+            text-transform: uppercase; 
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        #register-form-container, #forgot-form-container {
+            padding: 20px 30px;
+        }
+        input {
+            outline: none;
+            border: 0.5px solid rgba(82, 82, 84, 0.541);
+        }
+        input:focus-visible {
+            outline: none;
+            border: 0.5px solid rgba(48, 48, 191, 0.979);
+        }
+        
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="flex max-w-5xl w-full bg-white rounded-2xl shadow-2xl ">
+        
+        <div class="w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-8 flex flex-col justify-between relative hidden md:flex">
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1950&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Desert dunes" class="w-full h-full object-cover opacity-70">
+            </div>
+            <div class="relative z-10">
+                <div class="text-white text-3xl font-bold mb-4">AMU</div>
+                <button class="bg-white bg-opacity-20 text-white text-sm px-4 py-2 rounded-full hover:bg-opacity-30 transition">
+                    Back to website
+                </button>
+            </div>
+            <div class="relative z-10 text-white">
+                <h2 class="text-3xl font-bold mb-2">Capturing Moments,</h2>
+                <p class="text-xl">Creating Memories</p>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-8 " id="auth-form-wrapper">
+
+            <div id="login-form-container" class="form-container">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Login to your account</h2>
+                <p class="text-gray-600 mb-6">Don't have an account? <button id="switch-to-register" type="button" class="text-indigo-600 hover:underline font-medium">Register</button></p>
+                
+                <div id="login-message-container"></div>
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="login-email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('login-password')">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                        </div>
+                        <div class="text-sm">
+                            <button id="forgot-password-link" type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Forgot your password?
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="login-submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Login
+                    </button>
+                </form>
+
+                <div class="relative mt-6"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div><div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">Or continue with</span></div></div>
+                <div class="mt-6 space-y-3">
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <img class="h-5 w-5 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo">Google
+                    </button>
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <img class="h-5 w-5 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Logo">Apple
+                    </button>
+                </div>
+            </div>
+
+            <div id="register-form-container" class="form-container">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Create an account</h2>
+                <p class="text-gray-600 mb-6">Already have an account? <button id="switch-to-login" type="button" class="text-indigo-600 hover:underline font-medium">Login</button></p>
+
+                <div id="register-message-container"></div>
+                <form id="register-form" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" id="first-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" id="last-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="register-username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="register-username" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <span id="register-username-error" class="error-message"></span>
+                        
+                        <div id="username-suggestions" class="mt-1 text-sm text-gray-600 space-x-2 hidden">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="register-phone" class="block text-sm font-medium text-gray-700">Phone Number (e.g., +923001234567)</label>
+                        <input type="text" id="register-phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
+                        <span id="register-phone-error" class="error-message"></span>
+                    </div>
+                    <div>
+                        <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="register-email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="relative">
+                            <input type="password" id="register-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('register-password')">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                        <span id="password-match-error" class="error-message"></span>
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="confirm-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('confirm-password')">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="agree-terms" name="agree-terms" type="checkbox" required class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="agree-terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to the <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <button type="button" id="register-submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Create account
+                    </button>
+                </form>
+
+                <div class="relative mt-6"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div><div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">Or register with</span></div></div>
+                <div class="mt-6 space-y-3">
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <img class="h-5 w-5 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo">Google
+                    </button>
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <img class="h-5 w-5 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Logo">Apple
+                    </button>
+                </div>
+            </div>
+            
+            <div id="forgot-form-container" class="form-container">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h2>
+                <p class="text-gray-600 mb-6">Enter your registered details to receive a reset link/code.</p>
+                
+                <div id="forgot-message-container"></div>
+                <form id="forgot-form" class="space-y-5">
+                    
+                    <div id="forgot-email-field">
+                        <label for="forgot-input" class="block text-sm font-medium text-gray-700">Enter Email Address</label>
+                        <input type="email" id="forgot-input" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                    </div>
+                    
+                    <div id="forgot-phone-field" class="hidden"> 
+                        <label for="forgot-phone" class="block text-sm font-medium text-gray-700">Enter Phone Number (e.g., +923001234567)</label>
+                        <input type="text" id="forgot-phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
+                        <span id="forgot-phone-error" class="error-message"></span>
+                    </div>
+
+                    <div class="text-sm text-right">
+                        <button id="switch-forgot-method" type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            Use Phone Number
+                        </button>
+                    </div>
+
+                    <button type="submit" id="forgot-submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Send Reset Link
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button id="switch-to-login-from-forgot" type="button" class="font-medium text-indigo-600 hover:text-indigo-500 text-sm">
+                        ← Back to Login
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="captcha-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Security Check</h3>
+            <p class="text-sm text-gray-600 mb-4">Please enter the text shown in the image below to proceed.</p>
+            
+            <div class="flex items-center justify-center space-x-2 mb-4">
+                <canvas id="captcha-canvas" width="200" height="50"></canvas>
+                <button id="refresh-captcha" type="button" class="p-2 text-gray-600 hover:text-indigo-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0l2.5-2.5M4.582 9l2.5 2.5m-2.5-2.5v5h.582m15.356-2A8.001 8.001 0 004.582 15m0 0l2.5 2.5M4.582 15l2.5-2.5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="captcha-error-message" class="error-message text-center mb-2 hidden"></div>
+            
+            <input type="text" id="captcha-input" placeholder="Enter the text above" maxlength="6" class="captcha-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 text-center">
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" id="close-captcha-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button type="button" id="verify-captcha-btn" class="px-4 py-2 text-sm font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+                    Verify
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+    // --- Configuration ---
+    const API_BASE_URL = 'http://localhost:5000/api/auth'; 
+    const ACTIVITY_API_URL = 'http://localhost:5000/api/activity'; // New Activity API URL
+    const DASHBOARD_URL = 'index.html'; 
+
+    // --- DOM Elements ---
+    const loginFormContainer = document.getElementById('login-form-container');
+    const registerFormContainer = document.getElementById('register-form-container');
+    const forgotFormContainer = document.getElementById('forgot-form-container');
+    const authFormWrapper = document.getElementById('auth-form-wrapper');
+    
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const forgotForm = document.getElementById('forgot-form');
+
+    // Registration Fields
+    const firstNameInput = document.getElementById('first-name');
+    const lastNameInput = document.getElementById('last-name');
+    const registerUsernameInput = document.getElementById('register-username');
+    const usernameSuggestionsContainer = document.getElementById('username-suggestions');
+    const registerUsernameError = document.getElementById('register-username-error');
+    const registerPhoneInput = document.getElementById('register-phone');
+    const registerPhoneError = document.getElementById('register-phone-error');
+    const registerPasswordInput = document.getElementById('register-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordMatchError = document.getElementById('password-match-error');
+
+    // Forgot Password Fields
+    const forgotEmailField = document.getElementById('forgot-email-field');
+    const forgotEmailInput = document.getElementById('forgot-input'); 
+    const forgotPhoneField = document.getElementById('forgot-phone-field');
+    const forgotPhoneInput = document.getElementById('forgot-phone');
+    const forgotPhoneError = document.getElementById('forgot-phone-error');
+    const switchForgotMethodBtn = document.getElementById('switch-forgot-method');
+    let forgotMethod = 'email'; 
+
+    // Buttons
+    const switchToRegisterBtn = document.getElementById('switch-to-register');
+    const switchToLoginBtn = document.getElementById('switch-to-login');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const switchToLoginFromForgotBtn = document.getElementById('switch-to-login-from-forgot');
+    const loginSubmitBtn = document.getElementById('login-submit-btn');
+    const registerSubmitBtn = document.getElementById('register-submit-btn');
+
+    let activeForm = loginFormContainer; 
+
+
+    // --- CAPTCHA Variables and Elements ---
+    const captchaModal = document.getElementById('captcha-modal');
+    const captchaCanvas = document.getElementById('captcha-canvas');
+    const captchaInput = document.getElementById('captcha-input');
+    const captchaErrorMsg = document.getElementById('captcha-error-message');
+    const verifyCaptchaBtn = document.getElementById('verify-captcha-btn');
+    const refreshCaptchaBtn = document.getElementById('refresh-captcha');
+    const closeCaptchaBtn = document.getElementById('close-captcha-btn');
+
+    let correctCaptchaText = '';
+    let pendingFormHandler = null; // Stores the form submission function to call after validation
+
+
+    // --- CAPTCHA LOGIC ---
+
+    /** Generates a random 6-character alphanumeric CAPTCHA text. */
+    function generateCaptcha() {
+        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let result = '';
+        for (let i = 0; i < 6; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    /** Draws the CAPTCHA text onto the canvas with noise and distortion. */
+    function drawCaptcha(text) {
+        correctCaptchaText = text;
+        const ctx = captchaCanvas.getContext('2d');
+        
+        if (!ctx) {
+            console.error("Canvas context could not be retrieved.");
+            return;
+        }
+
+        const W = captchaCanvas.width;
+        const H = captchaCanvas.height; 
+
+        // Clear canvas
+        ctx.clearRect(0, 0, W, H);
+
+        // Background color
+        ctx.fillStyle = '#f7f7f7';
+        ctx.fillRect(0, 0, W, H);
+        
+        // Add random lines (noise)
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * W, Math.random() * H);
+            ctx.lineTo(Math.random() * W, Math.random() * H);
+            ctx.stroke();
+        }
+
+        // Draw the text
+        ctx.font = 'bold 28px Inter, sans-serif'; 
+        ctx.textAlign = 'center';
+        
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            
+            // Random color
+            ctx.fillStyle = 'rgb(' + Math.floor(Math.random() * 100) + ',' + Math.floor(Math.random() * 100) + ',' + Math.floor(Math.random() * 100) + ')';
+            
+            // Apply distortion (slight rotation and position jitter)
+            ctx.save();
+            const xPos = W / text.length * i + (W / text.length / 2); 
+            const yPos = H / 2 + 10; 
+            
+            ctx.translate(xPos, yPos);
+            ctx.rotate(Math.random() * 0.4 - 0.2); 
+            ctx.fillText(char, 0, 0);
+            ctx.restore();
+        }
+    }
+
+    /** Displays the CAPTCHA modal and sets the pending form handler. */
+    function showCaptcha(formHandler) {
+        captchaInput.value = '';
+        captchaErrorMsg.classList.add('hidden');
+        captchaErrorMsg.textContent = '';
+        captchaInput.classList.remove('input-error');
+
+        pendingFormHandler = formHandler;
+
+        const newText = generateCaptcha();
+        drawCaptcha(newText);
+
+        captchaModal.style.display = 'flex';
+        captchaInput.focus();
+    }
+
+    /** Hides the CAPTCHA modal. */
+    function hideCaptcha() {
+        captchaModal.style.display = 'none';
+        pendingFormHandler = null;
+    }
+
+    /** Validates the user's CAPTCHA input and executes the form handler on success. */
+    function validateCaptcha() {
+        const userInput = captchaInput.value.trim();
+        
+        if (userInput.toUpperCase() === correctCaptchaText.toUpperCase()) {
+            if (pendingFormHandler) {
+                pendingFormHandler(); // Execute the main login/register function
+                // pendingFormHandler is cleared in executeLogin/executeRegister success path, 
+                // but we clear it here too just in case.
+                pendingFormHandler = null; 
+            }
+            captchaModal.style.display = 'none'; 
+            return true;
+        } else {
+            captchaInput.classList.add('input-error');
+            captchaErrorMsg.textContent = 'Invalid CAPTCHA. Please try again.';
+            captchaErrorMsg.classList.remove('hidden');
+            
+            drawCaptcha(generateCaptcha()); // Regenerate CAPTCHA
+            captchaInput.value = ''; 
+            captchaInput.focus();
+            return false;
+        }
+    }
+
+    // --- Utility Functions ---
+
+    /** * Gets the value of a specific cookie name. */
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    /** Displays a temporary message in the specified container. */
+    function displayMessage(containerId, message, type) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `<div class="message ${type}">${message}</div>`;
+        
+        setTimeout(() => {
+            container.innerHTML = '';
+        }, 5000);
+    }
+
+    /** Toggles the visibility of a password field. */
+    window.togglePasswordVisibility = function(id) {
+        const passwordInput = document.getElementById(id);
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+    
+    /** Handles common API response parsing and error extraction. */
+    async function handleApiResponse(response) {
+        if (!response.ok) {
+            const errorBody = await response.text();
+            try {
+                const errorJson = JSON.parse(errorBody);
+                let errorMessage = errorJson.error || errorJson.message || `Request failed with status ${response.status}.`;
+                
+                if (errorBody.includes('duplicate key error')) {
+                     errorMessage = "Registration failed: Email, Phone, or Username already in use.";
+                }
+                
+                throw new Error(errorMessage);
+
+            } catch (e) {
+                if (e instanceof SyntaxError) {
+                    throw new Error(`Server returned status ${response.status} but did not send valid JSON: ${errorBody.substring(0, 50)}...`);
+                }
+                throw e; 
+            }
+        }
+        return response.json();
+    }
+
+    // --- Activity Tracking Logic ---
+
+    /** Sends a user activity log to the backend. */
+    async function sendActivity(type, message) {
+        // Use try/catch because tracking failure should not stop main app flow
+        try {
+            const dataToSend = {
+                type: type,
+                pageRoute: window.location.pathname,
+                ip: 'CLIENT_IP_NOT_AVAILABLE_IN_BROWSER', // IP is better gathered on the server side
+                device: navigator.userAgent,
+                description: message
+            };
+
+            await fetch(ACTIVITY_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend),
+                credentials: 'include' // Ensures the auth cookie is sent
+            });
+        } catch (error) {
+            console.warn("Activity tracking failed:", error.message);
+        }
+    }
+
+
+    // --- VALIDATION FUNCTIONS ---
+    
+    /** Validates the phone number format (+92 followed by 10 digits). */
+    function validatePhoneNumber(input, errorElement) {
+        const phone = input.value.trim();
+        const isValid = /^(\+92)\d{10}$/.test(phone); 
+        
+        if (phone === '+92') {
+             errorElement.classList.add('hidden');
+             input.classList.remove('input-error');
+             return false; 
+        } else if (!isValid) {
+            errorElement.textContent = 'Invalid phone format. Must be +92 followed by 10 digits.';
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
+        } else {
+            errorElement.classList.add('hidden');
+            input.classList.remove('input-error');
+        }
+        return isValid;
+    }
+
+    /** Validates the username format (min 3 chars, specific characters). */
+    function validateUsername(username) {
+        const errorElement = registerUsernameError;
+        const input = registerUsernameInput;
+        const isValid = username.length >= 3 && /^[a-zA-Z0-9._]+$/.test(username);
+        
+        if (!username.trim()) {
+            errorElement.classList.add('hidden');
+            input.classList.remove('input-error');
+            return false;
+        } else if (!isValid) {
+            errorElement.textContent = 'Username must be 3+ characters and contain only letters, numbers, dot, or underscore.';
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
+        } else {
+            errorElement.classList.add('hidden');
+            input.classList.remove('input-error');
+        }
+        return isValid;
+    }
+    
+    /** Validates password length and matching confirmation password. */
+    function validateRegistrationPasswords() {
+        const pass = registerPasswordInput.value;
+        const confPass = confirmPasswordInput.value;
+        const errorElement = passwordMatchError;
+        let isValid = true;
+
+        registerPasswordInput.classList.remove('input-error');
+        confirmPasswordInput.classList.remove('input-error');
+
+        if (pass.length < 8) {
+            errorElement.textContent = 'Password must be at least 8 characters long.';
+            errorElement.classList.remove('hidden');
+            registerPasswordInput.classList.add('input-error');
+            isValid = false;
+        } else if (pass !== confPass) {
+            errorElement.textContent = 'Passwords do not match.';
+            errorElement.classList.remove('hidden');
+            confirmPasswordInput.classList.add('input-error');
+            isValid = false;
+        } else {
+            errorElement.classList.add('hidden');
+        }
+        return isValid;
+    }
+    
+    /** Enforces numeric and '+' input for phone fields. */
+    function enforceNumericInput(e, input) {
+        // Allows + only at the start, digits, and control keys
+        const allowedKeys = [8, 9, 13, 37, 39, 46]; // Backspace, Tab, Enter, Arrows, Delete
+        const isNumeric = (e.key >= '0' && e.key <= '9');
+        const isAllowedKey = allowedKeys.includes(e.keyCode);
+        const isPlus = e.key === '+';
+
+        if (isPlus && input.selectionStart === 0 && input.value.length === 0) {
+            return;
+        }
+
+        // Prevent if not numeric, not allowed key, and not a valid +
+        if (!isNumeric && !isAllowedKey && !isPlus) {
+            e.preventDefault();
+        }
+    }
+    
+    /** Generates dynamic username suggestions based on first/last name. */
+    function generateUsernameSuggestions() {
+        const first = firstNameInput.value.toLowerCase().replace(/\s/g, '');
+        const last = lastNameInput.value.toLowerCase().replace(/\s/g, '');
+        const currentYear = new Date().getFullYear().toString().substring(2); 
+        
+        if (first.length > 0 && last.length > 0) {
+            const suggestions = [
+                `${first}${last}`, 
+                `${first}.${last}`, 
+                `${first}${last}${currentYear}`
+            ];
+            
+            usernameSuggestionsContainer.innerHTML = 'Suggestions: ' + suggestions.map(s => 
+                `<span class="inline-block px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded cursor-pointer hover:bg-indigo-200" onclick="applySuggestion('${s}')">${s}</span>`
+            ).join(' ');
+            usernameSuggestionsContainer.classList.remove('hidden');
+        } else {
+            usernameSuggestionsContainer.classList.add('hidden');
+        }
+    }
+    
+    /** Applies a clicked username suggestion to the input field. */
+    window.applySuggestion = function(suggestion) {
+        registerUsernameInput.value = suggestion;
+        validateUsername(suggestion);
+        usernameSuggestionsContainer.classList.add('hidden');
+    }
+    
+    /** Handles input changes for username validation. */
+    function handleUsernameInput() {
+          validateUsername(registerUsernameInput.value.trim());
+    }
+
+    // --- FORM SWITCHING LOGIC (Uses GSAP for smooth transitions) ---
+
+    /** Smoothly switches the displayed form container. */
+    function switchForm(targetContainer) {
+        if (targetContainer === activeForm) return;
+
+        // Reset messages and errors on form switch
+        displayMessage('login-message-container', '', 'info');
+        displayMessage('register-message-container', '', 'info');
+        displayMessage('forgot-message-container', '', 'info');
+        
+        // Hide CAPTCHA modal if open
+        hideCaptcha();
+
+        // Determine target height for wrapper transition
+        const targetHeight = targetContainer.scrollHeight;
+        const currentHeight = authFormWrapper.offsetHeight;
+        
+        // Safety check: Only run GSAP if needed
+        if (Math.abs(currentHeight - targetHeight) > 5) {
+             gsap.to(authFormWrapper, { 
+                duration: 0.3, 
+                minHeight: targetHeight, 
+                ease: "power2.inOut",
+                overwrite: true 
+            });
+        }
+
+
+        // Animate out the active form
+        gsap.to(activeForm, { 
+            duration: 0.3, 
+            opacity: 0, 
+            y: -10,
+            pointerEvents: 'none',
+            onComplete: () => {
+                activeForm.style.position = 'absolute';
+                activeForm.style.display = 'none';
+                
+                // Prepare the target container
+                targetContainer.style.position = 'relative';
+                targetContainer.style.display = 'block';
+
+                // Animate in the new form
+                gsap.fromTo(targetContainer, 
+                    { opacity: 0, y: 10 }, 
+                    { 
+                        duration: 0.3, 
+                        opacity: 1, 
+                        y: 0, 
+                        pointerEvents: 'auto' 
+                    }
+                );
+                activeForm = targetContainer;
+            }
+        });
+    }
+
+    /** Toggles between Email and Phone recovery method for Forgot Password. */
+    function toggleForgotMethod() {
+        if (forgotMethod === 'email') {
+            forgotMethod = 'phone';
+            forgotEmailField.classList.add('hidden');
+            forgotPhoneField.classList.remove('hidden');
+            switchForgotMethodBtn.textContent = 'Use Email Address';
+            forgotEmailInput.removeAttribute('required');
+            forgotPhoneInput.setAttribute('required', 'required');
+            forgotPhoneInput.focus();
+        } else {
+            forgotMethod = 'email';
+            forgotEmailField.classList.remove('hidden');
+            forgotPhoneField.classList.add('hidden');
+            switchForgotMethodBtn.textContent = 'Use Phone Number';
+            forgotPhoneInput.removeAttribute('required');
+            forgotEmailInput.setAttribute('required', 'required');
+            forgotEmailInput.focus();
+        }
+         // Recalculate wrapper height
+         gsap.to(authFormWrapper, { duration: 0.3, minHeight: forgotFormContainer.scrollHeight, ease: "power2.inOut" });
+    }
+    
+    
+    // --- FORM SUBMISSION HANDLERS ---
+
+    /** Executes the registration API call after successful CAPTCHA validation. */
+    async function executeRegister() {
+        const messageContainerId = 'register-message-container';
+
+        // Assuming CAPTCHA logic is handled purely on the client side for this demo, 
+        // the server-side code you provided does not require it. 
+        // Removing the 'captcha' field from dataToSend for the backend implementation you shared.
+        
+        const username = registerUsernameInput.value.trim();
+        const firstName = firstNameInput.value;
+        const lastName = lastNameInput.value;
+        const email = document.getElementById('register-email').value;
+        const password = registerPasswordInput.value;
+        
+        const dataToSend = {
+            firstName, lastName, username: username, phone: registerPhoneInput.value, email, password: password,
+            device: navigator.userAgent
+        };
+
+        displayMessage(messageContainerId, 'Registering...', 'info');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend),
+                credentials: 'include' 
+            });
+
+            const data = await handleApiResponse(response);
+            console.log("Registration successful. Data received:", data);
+
+            sendActivity('REGISTER', `User ${data.user.email} registered successfully.`);
+
+            displayMessage(messageContainerId, 'Registration successful! Redirecting...', 'success');
+            registerForm.reset();
+            
+            // Redirect immediately after success
+            window.location.replace(DASHBOARD_URL); 
+
+        } catch (err) {
+            console.error('Registration API Error:', err);
+            displayMessage(messageContainerId, `${err.message}`, 'error');
+        }
+    }
+
+    /** Handles client-side validation for Registration before showing CAPTCHA. */
+    function handleRegisterPreSubmit(e) {
+        e.preventDefault(); 
+        
+        // 1. Run local validation checks 
+        const username = registerUsernameInput.value.trim();
+        const isUsernameValid = validateUsername(username);
+        const isPhoneValid = validatePhoneNumber(registerPhoneInput, registerPhoneError);
+        const isPasswordValid = validateRegistrationPasswords();
+        const agreeTerms = document.getElementById('agree-terms').checked;
+        
+        // Check if all required simple fields are filled
+        const requiredFieldsValid = firstNameInput.value.trim() && lastNameInput.value.trim() && username && registerPasswordInput.value.trim() && confirmPasswordInput.value.trim() && document.getElementById('register-email').value.trim() && agreeTerms;
+
+        if (!isUsernameValid || !isPhoneValid || !isPasswordValid || !requiredFieldsValid) {
+             return displayMessage('register-message-container', 'Error: Please fill all fields, correct the marked errors, and agree to terms.', 'error');
+        }
+        
+        // 2. If valid, show CAPTCHA modal and pass the execution function
+        showCaptcha(executeRegister);
+    }
+
+
+    /** Executes the login API call after successful CAPTCHA validation. */
+    async function executeLogin() {
+        const messageContainerId = 'login-message-container';
+        displayMessage(messageContainerId, 'Logging in...', 'info');
+
+        const email = document.getElementById('login-email').value; 
+        const password = document.getElementById('login-password').value;
+        
+        const dataToSend = { 
+            email, 
+            password, 
+            device: navigator.userAgent
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend), 
+                credentials: 'include' 
+            });
+            
+            // Check response status and handle errors
+            if (!response.ok) {
+                 const errorText = await response.text();
+                 let errorMessage = `Login failed. Status: ${response.status}.`;
+                 try {
+                     const errorJson = JSON.parse(errorText);
+                     errorMessage = errorJson.message || errorJson.error || errorMessage;
+                 } catch (e) {} // If parsing fails, use generic message
+                 throw new Error(errorMessage);
+             }
+
+            const data = await response.json();
+            console.log("Login successful. Data received:", data);
+            
+            // Track activity and redirect
+            sendActivity('LOGIN', `User ${data.user.email} logged in.`);
+
+            displayMessage(messageContainerId, 'Login successful!...', 'success');
+            loginForm.reset();
+            
+            // window.location.replace(DASHBOARD_URL); 
+
+             /* --- CRITICAL FIX FOR PREVIOUS ISSUE --- 
+               
+               In the previous turn, the icon was not changing because 
+               the login page was not storing user state (like name/color) 
+               in the browser storage before redirecting.
+               
+               For the avatar icon to work (as fixed in index.html), 
+               you MUST save the necessary user data here before redirecting.
+               
+               The following block simulates saving user data and an avatar color.
+               
+               Since the server response 'data' contains 'user', we can use that.
+               The avatar color generation is defined here, as it was not present 
+               in the original script.
+               
+             */
+
+            function getRandomColor() {
+                const color = (Math.random() * 0x808080 + 0x404040).toString(16).slice(0, 6);
+                return '#' + color;
+            }
+            
+            const userAuthData = {
+                isLoggedIn: true,
+                firstName: data.user.firstName || data.user.username.charAt(0).toUpperCase() + data.user.username.slice(1), 
+                lastName: data.user.lastName || '',
+                email: data.user.email,
+                username: data.user.username,
+                // **This is the key fix:** Generate and save a new random color for the avatar
+                avatarColor: getRandomColor()
+            };
+            
+            localStorage.setItem('userAuthData', JSON.stringify(userAuthData));
+            
+            // Now, redirect
+            window.location.replace(DASHBOARD_URL); 
+            
+            /* --- END CRITICAL FIX --- */
+
+
+        } catch (err) {
+            console.error('Final Login Execution Error:', err);
+            displayMessage(messageContainerId, `Error: ${err.message || 'An unexpected error occurred during login.'}`, 'error');
+        }
+    }
+
+    /** Handles client-side validation for Login before showing CAPTCHA. */
+    function handleLoginPreSubmit(e) {
+        e.preventDefault();
+
+        // 1. Run local validation checks
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+
+        if (!email || !password) {
+             return displayMessage('login-message-container', 'Error: Please enter your credentials before verifying.', 'error');
+        }
+        
+        // 2. If valid, show CAPTCHA modal and pass the execution function
+        showCaptcha(executeLogin);
+        
+    }
+    
+    /** Handles the Forgot Password/Recovery API call. */
+    async function handleForgot(e) {
+        e.preventDefault();
+        const messageContainerId = 'forgot-message-container';
+        
+        const recoveryData = {};
+        let isValid = true;
+        let identifier;
+
+        if (forgotMethod === 'email') {
+            identifier = forgotEmailInput.value.trim();
+            if (!identifier || !identifier.includes('@')) { // Basic email check
+                isValid = false;
+            } else {
+                recoveryData.email = identifier;
+            }
+        } else {
+            identifier = forgotPhoneInput.value;
+            isValid = validatePhoneNumber(forgotPhoneInput, forgotPhoneError);
+            if (isValid) {
+                recoveryData.phone = identifier;
+            }
+        }
+
+        if (!isValid) {
+             return displayMessage(messageContainerId, 'Error: Please provide a valid email or phone number.', 'error');
+        }
+
+        displayMessage(messageContainerId, 'Sending link...', 'info');
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/forgotpassword`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(recoveryData), 
+                credentials: 'include' 
+            });
+
+            await handleApiResponse(response); // Use general error handler
+
+            displayMessage(messageContainerId, 'If your account details are correct, a reset link/code has been sent.', 'success');
+            
+            forgotEmailInput.value = '';
+            forgotPhoneInput.value = '+92';
+
+
+        } catch (err) {
+            console.error('Forgot Password API Error:', err);
+            displayMessage(messageContainerId, `Error: ${err.message}`, 'error');
+        }
+    }
+
+    // --- LOGIN STATUS CHECK ---
+
+    /** Checks for the authentication cookie and redirects if the user is already logged in. */
+    function checkLoginStatus() {
+        const authToken = getCookie('authToken');
+        if (authToken) {
+            console.log("AuthToken found.");
+            if (authFormWrapper) {
+                authFormWrapper.innerHTML = `<div class="message info p-4 rounded-lg bg-blue-100 text-blue-800 text-center">You are already logged in....</div>`;
+            }
+            window.location.replace(DASHBOARD_URL);
+        } else {
+            console.log("No AuthToken found. Displaying login form.");
+        }
+    }
+
+
+    // --- Event Listeners Initialization ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // ⭐ 1. Initial Login Status Check
+        checkLoginStatus(); 
+
+        // 2. CAPTCHA Listeners
+        if(refreshCaptchaBtn) refreshCaptchaBtn.addEventListener('click', () => drawCaptcha(generateCaptcha()));
+        if(closeCaptchaBtn) closeCaptchaBtn.addEventListener('click', hideCaptcha);
+        if(verifyCaptchaBtn) verifyCaptchaBtn.addEventListener('click', validateCaptcha);
+        if(captchaInput) captchaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                validateCaptcha();
+            }
+        });
+
+        // 3. Form Submit Listeners 
+        if(loginForm) loginForm.addEventListener('submit', handleLoginPreSubmit);
+        if(registerForm) registerForm.addEventListener('submit', handleRegisterPreSubmit);
+        if(forgotForm) forgotForm.addEventListener('submit', handleForgot);
+        
+        // 4. Manual Submit Button Listeners 
+        if(loginSubmitBtn) loginSubmitBtn.addEventListener('click', handleLoginPreSubmit);
+        if(registerSubmitBtn) registerSubmitBtn.addEventListener('click', handleRegisterPreSubmit);
+
+
+        // 5. Form Switching and Validation Listeners
+        if(firstNameInput) firstNameInput.addEventListener('input', generateUsernameSuggestions);
+        if(lastNameInput) lastNameInput.addEventListener('input', generateUsernameSuggestions);
+        if(registerUsernameInput) {
+            registerUsernameInput.addEventListener('input', handleUsernameInput); 
+            registerUsernameInput.addEventListener('blur', () => validateUsername(registerUsernameInput.value.trim()));
+        }
+
+        if (registerPhoneInput) {
+            registerPhoneInput.addEventListener('blur', () => validatePhoneNumber(registerPhoneInput, registerPhoneError));
+            registerPhoneInput.addEventListener('keydown', (e) => enforceNumericInput(e, registerPhoneInput));
+            registerPhoneInput.addEventListener('input', () => {
+                validatePhoneNumber(registerPhoneInput, registerPhoneError);
+                if (!registerPhoneInput.value.startsWith('+92')) {
+                    registerPhoneInput.value = '+92';
+                }
+            });
+        }
+
+        if (forgotPhoneInput) {
+            forgotPhoneInput.addEventListener('blur', () => {
+                if (forgotMethod === 'phone') validatePhoneNumber(forgotPhoneInput, forgotPhoneError);
+            });
+            forgotPhoneInput.addEventListener('keydown', (e) => enforceNumericInput(e, forgotPhoneInput));
+            forgotPhoneInput.addEventListener('input', () => {
+                if (forgotMethod === 'phone') validatePhoneNumber(forgotPhoneInput, forgotPhoneError);
+                if (!forgotPhoneInput.value.startsWith('+92')) {
+                    forgotPhoneInput.value = '+92';
+                }
+            });
+             // Ensure initial state for phone input
+             if (!forgotPhoneInput.value) forgotPhoneInput.value = '+92';
+        }
+
+        if (registerPasswordInput && confirmPasswordInput) {
+            registerPasswordInput.addEventListener('input', validateRegistrationPasswords);
+            confirmPasswordInput.addEventListener('input', validateRegistrationPasswords);
+        }
+
+        if(switchToRegisterBtn) switchToRegisterBtn.addEventListener('click', () => switchForm(registerFormContainer));
+        if(switchToLoginBtn) switchToLoginBtn.addEventListener('click', () => switchForm(loginFormContainer));
+        
+        if(forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Reset to email method if switching to forgot form
+            if (forgotMethod !== 'email') toggleForgotMethod(); 
+            switchForm(forgotFormContainer);
+        });
+        if(switchToLoginFromForgotBtn) switchToLoginFromForgotBtn.addEventListener('click', () => switchForm(loginFormContainer));
+        if(switchForgotMethodBtn) switchForgotMethodBtn.addEventListener('click', toggleForgotMethod);
+
+
+        // 6. GSAP Initial Height Setup
+        // This makes the transition smooth on first load if GSAP is available
+        setTimeout(() => {
+            if (authFormWrapper && loginFormContainer && document.getElementById('login-form')) { 
+                gsap.set(authFormWrapper, {
+                    minHeight: loginFormContainer.offsetHeight,
+                });
+                
+                // Hide other forms initially using GSAP's utility functions
+                if(registerFormContainer) gsap.set(registerFormContainer, { opacity: 0, y: 10, position: 'absolute', display: 'none' });
+                if(forgotFormContainer) gsap.set(forgotFormContainer, { opacity: 0, y: 10, position: 'absolute', display: 'none' });
+                
+                // Set initial active form's state
+                if(loginFormContainer) gsap.set(loginFormContainer, { position: 'relative', display: 'block', opacity: 1, y: 0 });
+            }
+        }, 10);
+        
+        // 7. Initial Phone Input Values (Final check)
+        if (registerPhoneInput && !registerPhoneInput.value.startsWith('+92')) registerPhoneInput.value = '+92';
+        if (forgotPhoneInput && !forgotPhoneInput.value.startsWith('+92')) forgotPhoneInput.value = '+92';
+
+        if(usernameSuggestionsContainer) usernameSuggestionsContainer.classList.add('hidden');
+    });
+    
+</script>
+
+</body>
+</html>

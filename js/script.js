@@ -1,324 +1,326 @@
+// activityTracker.js - Comprehensive script for Activity Tracking AND Dashboard Functionality
 
-        // --- CAPTCHA Data and Logic (Existing) ---
-        const CAPTCHA_IMAGES 
- = [
-            { src: 'images/1.jpg', label: 'Modern Calligraphy' },
-            { src: 'images/9.jpg', label: 'Surah Rehman' },
-            { src: 'images/2.jpg', label: 'Surah Kausar', isTarget: true }, // The target image
-            { src: 'images/3.jpg', label: '99 Names of Allah' },
-            { src: 'images/4.jpg', label: 'Surah Ad-Duha' },
- 
-            { src: 'images/5.jpg', label: 'Four Kul' },
-            { src: 'images/6.jpg', label: 'Surah Rehman' },
-            { src: 'images/7.jpg', label: 'Ocean Paintaing' },
-            { src: 'images/11.jpg', label: 'Darood e Ibrhimi' }
-        ];
- const CAPTCHA_MODAL_OVERLAY = document.getElementById('captchaModalOverlay');
-        const CAPTCHA_GRID = document.getElementById('captchaGrid');
-        const CAPTCHA_CHECK_DISPLAY = document.getElementById('captchaCheckDisplay');
-        const CAPTCHA_VERIFIED_INPUT = document.getElementById('captchaVerified');
-        const CAPTCHA_LABEL = document.getElementById('captchaLabel');
- const CAPTCHA_ERROR = document.getElementById('captchaError');
-        const CAPTCHA_FAILURE_MESSAGE = document.getElementById('captchaFailure');
+// --- CONFIGURATION ---
+const API_BASE = 'http://localhost:5000/api'; 
+const HEARTBEAT_INTERVAL_MS = 60000; // 60 seconds interval
+let heartbeatTimer = null; 
+let lastPageEnterTime = Date.now();
+const CURRENT_PAGE_ROUTE = window.location.pathname; 
 
+// Dashboard State Variables
+let allUsersCache = [];
+let currentUserId = null; 
 
-        // Function to shuffle an array
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
- [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
- }
+// 1. Authentication Headers 
+const getHeaders = () => ({
+    'Content-Type': 'application/json'
+});
 
-        // 1. Generate and display the CAPTCHA grid
-        function generateCaptchaGrid() {
-            CAPTCHA_GRID.innerHTML = '';
- CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
+// --- UTILITY FUNCTIONS ---
+// Function to fetch the user's public IP
+async function getIPAddress() {
+    try {
+        const response = await fetch('https://api64.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip || 'N/A';
+    } catch (error) {
+        return 'Localhost/N/A';
+    }
+}
 
-            const targetImage = CAPTCHA_IMAGES.find(img => img.isTarget);
-            let nonTargetImages = CAPTCHA_IMAGES.filter(img => !img.isTarget);
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
 
-            const imagesForGrid = shuffleArray(nonTargetImages).slice(0, 8);
- imagesForGrid.push(targetImage);
-
-            const shuffledGridImages = shuffleArray(imagesForGrid);
-
-            shuffledGridImages.forEach((img, index) => {
-                const item = document.createElement('div');
-                item.className = 'captcha-image-item';
-                item.setAttribute('data-index', index);
-                item.setAttribute('data-target', img.isTarget ? 'true' : 'false');
-
-                const 
- imageTag = document.createElement('img');
-                imageTag.src = img.src;
-                imageTag.alt = img.label;
-
-                item.appendChild(imageTag);
-                CAPTCHA_GRID.appendChild(item);
-
-                item.addEventListener('click', () => {
-           
-                         handleImageSelection(item);
-                });
-            });
- }
-
-        // 2. Handle image selection validation
-        function handleImageSelection(selectedItem) {
-            document.querySelectorAll('.captcha-image-item').forEach(item => {
-                item.classList.remove('selected');
-            });
- selectedItem.classList.add('selected');
-
-            if (selectedItem.getAttribute('data-target') === 'true') {
-                CAPTCHA_VERIFIED_INPUT.value = 'true';
- CAPTCHA_CHECK_DISPLAY.classList.add('checked');
-                CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'true');
-                CAPTCHA_ERROR.style.display = 'none';
-                setTimeout(() => {
-                    CAPTCHA_MODAL_OVERLAY.style.display = 'none';
-                }, 300);
- CAPTCHA_FAILURE_MESSAGE.style.display = 'none';
-            } else {
-                CAPTCHA_VERIFIED_INPUT.value = 'false';
- CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
-                CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
-                CAPTCHA_FAILURE_MESSAGE.textContent = 'Incorrect selection. Please try again.';
-                CAPTCHA_FAILURE_MESSAGE.style.display = 'block';
- }
-        }
-
-        CAPTCHA_LABEL.addEventListener('click', () => {
-            if (CAPTCHA_VERIFIED_INPUT.value === 'false') {
-                generateCaptchaGrid();
-                CAPTCHA_MODAL_OVERLAY.style.display = 'flex';
-                CAPTCHA_ERROR.style.display = 'none';
-            }
- 
-        });
-
-        CAPTCHA_MODAL_OVERLAY.addEventListener('click', (e) => {
-            if (e.target === CAPTCHA_MODAL_OVERLAY) {
-                CAPTCHA_MODAL_OVERLAY.style.display = 'none';
-            }
-        });
- // --- Core Modal/Navigation Logic (Existing) ---
-        let blocks = document.getElementsByClassName('block');
- let answer = document.getElementsByClassName('jsconst');
-        for (let i = 0; i < blocks.length; i++) {
-            blocks[i].onclick = function () {
-                answer[i].classList.toggle('blocker');
- };
-        }
-
-        const userBtn = document.getElementById('form1');
-        const modalOverlay = document.querySelector('.modal-overlay');
- const closeBtn = document.querySelector('.modal-box .close-btn');
-        const views = document.querySelectorAll('.view-container');
-        const passwordToggles = document.querySelectorAll('.password-toggle');
-        const navLinks = document.getElementById('nav-links');
- const openMenuIcon = document.getElementById('menu-icon');
-        const closeMenuIcon = document.getElementById('close-icon');
-
-        function hideModal() {
-            modalOverlay.style.display = 'none';
- }
-
-        window.showView = function (viewId) {
-            views.forEach(view => {
-                view.style.display = 'none';
-            });
- const viewToShow = document.getElementById(viewId);
-            if (viewToShow) {
-                viewToShow.style.display = 'block';
- }
-        };
-
-        function showModal(e) {
-            e.preventDefault();
- modalOverlay.style.display = 'flex';
-            showView('loginView');
-        }
-
-        function togglePassword(e) {
-            const icon = e.currentTarget;
- const input = icon.previousElementSibling;
-            input.type = input.type === 'password' ? 'text' : 'password';
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
- }
-
-        window.toggleNav = function () {
-            navLinks.classList.toggle('active');
-            closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
-        };
- if (userBtn) {
-            userBtn.addEventListener('click', showModal);
- }
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            hideModal();
-        });
- modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                hideModal();
-            }
-        });
- passwordToggles.forEach(icon => {
-            icon.addEventListener('click', togglePassword);
-        });
- modalOverlay.style.display = 'none';
-
-
-        // --- VALIDATION LOGIC FOR REGISTRATION FORM (Existing) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const registerForm = document.getElementById('registerForm');
-            const nameInput = document.getElementById('registerNameInput');
-            const passwordInput = document.getElementById('registerPasswordInput');
-            const confirmPasswordInput = document.getElementById('registerConfirmPasswordInput');
-            const passwordMatchError = document.getElementById('passwordMatchError');
-   
-                 const nameError = document.getElementById('nameError');
-
-            const passwordLengthError = document.createElement('div');
-            passwordLengthError.id = 'passwordLengthError';
-            passwordLengthError.className = 'error-message';
-
-            if (passwordInput && passwordInput.parentNode) {
-                passwordInput.parentNode.insertBefore(passwordLengthError, passwordInput.nextSibling.nextSibling);
-            
- }
-
-            const validatePasswordMatch = () => {
-                const password = passwordInput.value;
- const confirmPassword = confirmPasswordInput.value;
-                let isValid = true;
-
-                if (password.length > 0 && password.length < 8) {
-                    passwordLengthError.textContent = "Password must be at least 8 characters long.";
- passwordInput.classList.add('input-error');
-                    isValid = false;
-                } else {
-                    passwordLengthError.textContent = "";
- passwordInput.classList.remove('input-error');
-                }
-
-                if (confirmPassword.length > 0 && password !== confirmPassword) {
-                    passwordMatchError.textContent = "Passwords do not match.";
- confirmPasswordInput.classList.add('input-error');
-                    if (isValid) isValid = false;
-                } else if (confirmPassword.length > 0) {
-                    passwordMatchError.textContent = "";
- confirmPasswordInput.classList.remove('input-error');
-                } else if (confirmPassword.length === 0) {
-                    passwordMatchError.textContent = "";
- confirmPasswordInput.classList.remove('input-error');
-                }
-
-                if (passwordLengthError.textContent) {
-                    passwordMatchError.textContent = "";
- confirmPasswordInput.classList.remove('input-error');
-                }
-
-                return isValid;
-            };
- if (passwordInput && confirmPasswordInput) {
-                passwordInput.addEventListener('input', validatePasswordMatch);
- confirmPasswordInput.addEventListener('input', validatePasswordMatch);
-            }
-
-
-            const validateName = () => {
-                const name = nameInput.value.trim();
- const forbiddenName = "admin";
-                let isValid = true;
-
-                if (name.toLowerCase() === forbiddenName) {
-                    nameError.textContent = `The name "${name}" is reserved and cannot be used.`;
- nameInput.classList.add('input-error');
-                    isValid = false;
-                } else {
-                    nameError.textContent = "";
- nameInput.classList.remove('input-error');
-                }
-                return isValid;
-            };
- if (nameInput) {
-                nameInput.addEventListener('input', validateName);
- }
-
-
-            if (registerForm) {
-                registerForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-
-                    const isNameValid = validateName();
-                    const isPasswordValid = validatePasswordMatch();
- 
-                    const isCaptchaCorrect = CAPTCHA_VERIFIED_INPUT.value === 'true';
-
-                    if (!isCaptchaCorrect) {
-                        CAPTCHA_ERROR.style.display = 'block';
-                    } else {
-      
-                                     CAPTCHA_ERROR.style.display = 'none';
-                    }
-
-                    if (isNameValid && isPasswordValid && isCaptchaCorrect) {
-                        // Registration successful 
-                        registerForm.reset();
-                        CAPTCHA_VERIFIED_INPUT.value = 'false';
-                        CAPTCHA_CHECK_DISPLAY.classList.remove('checked');
-                        CAPTCHA_CHECK_DISPLAY.setAttribute('aria-checked', 'false');
-                        CAPTCHA_ERROR.style.display = 'none';
-                    }
-                });
- }
-
-            showView('loginView');
+// --- ACTIVITY TRACKING CORE FUNCTION ---
+/**
+ * Logs a user activity event to the server.
+ */
+async function trackActivity(type, pageRoute, durationMs) {
+    const ip = await getIPAddress();
+    const device = navigator.userAgent; 
+    const route = pageRoute || CURRENT_PAGE_ROUTE;
+    
+    try {
+        const response = await fetch(`${API_BASE}/activity`, { 
+            method: 'POST',
+            headers: getHeaders(),
+            credentials: 'include', 
+            body: JSON.stringify({ 
+                type, 
+                pageRoute: route, 
+                durationMs: durationMs || 0,
+                description: `User event: ${type} on page ${route}`, 
+                ip,
+                device 
+            })
         });
         
-        // ===========================================
-        // === API FETCH, SORTING, AND DETAIL REDIRECTION LOGIC ===
-        // ===========================================
+        if (!response.ok) {
+            console.error(`Failed to log activity: ${response.status}`, response.statusText);
+            
+            if (response.status === 401) {
+                 stopHeartbeat();
+                 console.warn("Session expired. Stopping heartbeat.");
+                 // window.location.href = '/login'; 
+            }
+        }
+    } catch (error) {
+        console.error("Network error during tracking:", error);
+    }
+}
 
-        const scrollUpBtn = document.getElementById('scrollUpBtn');
-        const scrollDownBtn = document.getElementById('scrollDownBtn');
-        const rightAdPopup = document.getElementById('rightAdPopup');
-        const adCloseBtn = document.getElementById('adCloseBtn');
+// --- HEARTBEAT LOGIC ---
+async function sendHeartbeat() {
+    await trackActivity('HEARTBEAT', CURRENT_PAGE_ROUTE, 0); 
+}
+
+function startHeartbeat() {
+    if (heartbeatTimer) return;
+    sendHeartbeat(); // Immediate first heartbeat
+    heartbeatTimer = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+}
+
+function stopHeartbeat() {
+    if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+    }
+}
+
+// ========================================================
+// === DASHBOARD DATA FETCHING AND RENDERING LOGIC ===
+// ========================================================
+
+async function fetchUserList() {
+    const loadingSpinner = document.getElementById("loading-spinner");
+    const errorMessage = document.getElementById("error-message");
+    
+    if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+    if (errorMessage) errorMessage.classList.add("hidden");
+    
+    try {
+        const response = await fetch(`${API_BASE}/users`, { headers: getHeaders(), credentials: 'include' });
+        
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                 throw new Error("Authentication failed. Please log in as an Admin.");
+            }
+            const errorData = await response.json();
+            throw new Error(`Server returned ${response.status}: ${errorData.error || 'Unknown error'}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            allUsersCache = data.data; // Store full data
+            renderUserList(); 
+        } else {
+            throw new Error(data.error || "Failed to fetch users.");
+        }
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+        if (errorMessage) {
+            errorMessage.innerText = `Error loading users: ${error.message}`;
+            errorMessage.classList.remove("hidden");
+        }
+    } finally {
+        if (loadingSpinner) loadingSpinner.classList.add("hidden");
+    }
+}
+
+async function fetchUserDetail(userId) {
+    if (!userId) return; // Basic check
+    
+    currentUserId = userId; 
+    
+    // Logic to show detail view and hide list view (requires corresponding HTML IDs)
+    const detailView = document.getElementById("user-detail-view");
+    const listView = document.getElementById("user-list-view");
+    const mainTitle = document.getElementById("page-main-title");
+    
+    if (listView) listView.classList.add("hidden");
+    if (detailView) {
+        detailView.classList.remove("hidden");
+        // Simple loading state
+        document.getElementById("detail-name").innerText = 'Loading...';
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/users/${userId}`, { headers: getHeaders(), credentials: 'include' });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Server returned ${response.status} ${response.statusText}`);
+        }
+        const responseData = await response.json();
+        
+        if (responseData.success && responseData.data) {
+            showUserDetail(responseData.data); 
+        } else {
+            throw new Error(responseData.error || 'Failed to load user details.');
+        }
+    } catch (error) {
+        console.error("Detail Fetch Error:", error);
+        alert(`Could not load user details: ${error.message}`);
+        showUserList(); 
+    }
+}
+
+function showUserList() {
+    const detailView = document.getElementById("user-detail-view");
+    const listView = document.getElementById("user-list-view");
+    const mainTitle = document.getElementById("page-main-title");
+
+    if (detailView) detailView.classList.add("hidden");
+    if (listView) listView.classList.remove("hidden");
+    if (mainTitle) mainTitle.innerText = "Admin Dashboard";
+    
+    currentUserId = null; // Clear the current user context
+}
+
+// --- Placeholder Rendering Functions (Need HTML Elements with matching IDs) ---
+
+function renderUserList(filterText = "") {
+    const tbody = document.getElementById("users-table-body");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+    
+    const filteredUsers = allUsersCache.filter(user => 
+        (user.firstName || '').toLowerCase().includes(filterText.toLowerCase()) || 
+        (user.lastName || '').toLowerCase().includes(filterText.toLowerCase()) || 
+        (user.email || '').toLowerCase().includes(filterText.toLowerCase())
+    );
+    
+    if (filteredUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">No users found.</td></tr>';
+        return;
+    }
+
+    filteredUsers.forEach(user => {
+        const statusClass = user.sessionStatus === "Active" ? "active" : "inactive";
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 transition cursor-pointer";
+        tr.onclick = () => fetchUserDetail(user.id);
+
+        tr.innerHTML = `
+            <td class="px-6 py-4"><div class="font-medium text-gray-800">${user.firstName || ''} ${user.lastName || ''}</div></td>
+            <td class="px-6 py-4 text-sm text-gray-600">${user.email}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">${user.lastActivity}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">${user.currentDevice || 'N/A'}</td>
+            <td class="px-6 py-4">
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="status-dot ${statusClass}"></span>
+                    ${user.sessionStatus}
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function showUserDetail(data) {
+    const user = data.profile;
+    const mainTitle = document.getElementById("page-main-title");
+    
+    // Populate Profile Section
+    if (mainTitle) mainTitle.innerText = `${user.firstName} ${user.lastName}'s Details`;
+    document.getElementById("detail-name").innerText = `${user.firstName} ${user.lastName}`;
+    document.getElementById("detail-email").innerText = user.email;
+    document.getElementById("detail-profile-pic").src = user.profilePic || 'https://via.placeholder.com/150/E0E7FF/4F46E5?text=U'; 
+
+    // Note: Other rendering functions (renderTopPages, renderActivityHistory, etc.) 
+    // must be defined separately if needed, using the 'data' structure.
+    
+    // Placeholders for other details
+    document.getElementById("summary-total-orders").innerText = data.metrics.totalOrders || 0;
+    document.getElementById("summary-total-feedback").innerText = data.metrics.totalFeedback || 0;
+    
+    // ... add logic for rendering logs, orders, and metrics here ...
+}
+
+// --- INITIALIZATION AND EVENT LISTENERS ---
+function initActivityTracker() {
+    // 1. Log Activity Setup
+    window.addEventListener('load', async () => {
+        const eventType = (CURRENT_PAGE_ROUTE.includes('/login') || CURRENT_PAGE_ROUTE === '/') ? 'LOGIN' : 'PAGE_VIEW';
+
+        await trackActivity(eventType, CURRENT_PAGE_ROUTE, 0); 
+        lastPageEnterTime = Date.now();
+        
+        startHeartbeat(); 
+        
+        // 2. DASHBOARD DATA LOADING: Start fetching user data only on the admin dashboard
+        if (CURRENT_PAGE_ROUTE.includes('/dashboard')) {
+            fetchUserList();
+            
+            // Setup search listener
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) {
+                searchInput.addEventListener("input", (e) => {
+                    renderUserList(e.target.value);
+                });
+            }
+        }
+    });
+
+    // 3. Log the EXIT event when the user leaves the page
+    window.addEventListener('beforeunload', async () => {
+        stopHeartbeat(); 
+        const finalDurationMs = Date.now() - lastPageEnterTime;
+        await trackActivity('EXIT', CURRENT_PAGE_ROUTE, finalDurationMs); 
+    });
+    
+    // Make sure the global functions required by the HTML (like showUserList) are exposed
+    window.showUserList = showUserList;
+    window.fetchUserDetail = fetchUserDetail;
+    // window.deleteUser = deleteUser; // If deleteUser is defined elsewhere, expose it here too.
+}
+
+// Execute the initialization function
+initActivityTracker();
 
 
-        // New API Endpoint and Data Fetching
-        const API_URL = 'https://backend-web-1.vercel.app/api/products'; 
-        const PRODUCTS_CONTAINER = document.getElementById('products-container');
 
-        // Mock Data updated to use 'mainImage' and 'click_count' fields
-        const MOCK_PRODUCTS = [
-            { _id: '6916650f47f1087d3467f1f3', title: 'Modern Calligraphy', price: '2600.00', mainImage: 'images/1.jpg', click_count: 150 },
-            { _id: 'a8b7c6d5e4f3g2h1i0j9k8l7', title: 'Ayat al Kursi', price: '1400.00', mainImage: 'images/9.jpg', click_count: 120 },
-            { _id: 'f2d4c6b8a0e9d7c5b3a1f0e2', title: 'Surah Rehman', price: '1200.00', mainImage: 'images/9.jpg', click_count: 180 },
-            { _id: '103', title: 'Surah Kausar', price: '1600.00', mainImage: 'images/2.jpg', click_count: 90 },
-            { _id: '104', title: '99 Nams of Allah', price: '2500.00', mainImage: 'images/3.jpg', click_count: 110 },
-            { _id: '105', title: 'Surah Ad-Duha', price: '1200.00', mainImage: 'images/4.jpg', click_count: 80 },
-            { _id: '106', title: 'Four Kul', price: '2600.00', mainImage: 'images/5.jpg', click_count: 160 },
-            { _id: '107', title: 'Surah Rehman (Large)', price: '1700.00', mainImage: 'images/6.jpg', click_count: 130 },
-            { _id: '108', title: 'Ocean Paintaing', price: '200.00', mainImage: 'images/7.jpg', click_count: 50 },
-            { _id: '109', title: 'Beauty Of Quran', price: '1400.00', mainImage: 'images/1.jpg', click_count: 140 },
-            { _id: '110', title: 'Ayat al Kursi (Set)', price: '1400.00', mainImage: 'images/9.jpg', click_count: 100 },
-            { _id: '111', title: 'Darood e Ibrhimi', price: '2600.00', mainImage: 'images/11.jpg', click_count: 170 },
-            { _id: '112', title: 'Kaswa Paintaing', price: '3000.00', mainImage: 'images/10.jpg', click_count: 70 },
-        ];
+const scrollUpBtn = document.getElementById('scrollUpBtn');
+const scrollDownBtn = document.getElementById('scrollDownBtn');
+const rightAdPopup = document.getElementById('rightAdPopup');
+const adCloseBtn = document.getElementById('adCloseBtn');
 
 
-        function generateProductHtml(product) {
-            // detail.html?id=...
-            const detailUrl = `detail.html?id=${product._id}`;
-            // Use product.mainImage for the image source
-            const imageUrl = product.mainImage || 'images/default.jpg'; 
+// New API Endpoint and Data Fetching
+const API_URL = 'https://backend-web-1.vercel.app/api/products';
+const PRODUCTS_CONTAINER = document.getElementById('products-container');
 
-            return `
+// Mock Data updated to use 'mainImage' and 'click_count' fields
+const MOCK_PRODUCTS = [
+    { _id: '6916650f47f1087d3467f1f3', title: 'Modern Calligraphy', price: '2600.00', mainImage: 'images/1.jpg', click_count: 150 },
+    { _id: 'a8b7c6d5e4f3g2h1i0j9k8l7', title: 'Ayat al Kursi', price: '1400.00', mainImage: 'images/9.jpg', click_count: 120 },
+    { _id: 'f2d4c6b8a0e9d7c5b3a1f0e2', title: 'Surah Rehman', price: '1200.00', mainImage: 'images/9.jpg', click_count: 180 },
+    { _id: '103', title: 'Surah Kausar', price: '1600.00', mainImage: 'images/2.jpg', click_count: 90 },
+    { _id: '104', title: '99 Nams of Allah', price: '2500.00', mainImage: 'images/3.jpg', click_count: 110 },
+    { _id: '105', title: 'Surah Ad-Duha', price: '1200.00', mainImage: 'images/4.jpg', click_count: 80 },
+    { _id: '106', title: 'Four Kul', price: '2600.00', mainImage: 'images/5.jpg', click_count: 160 },
+    { _id: '107', title: 'Surah Rehman (Large)', price: '1700.00', mainImage: 'images/6.jpg', click_count: 130 },
+    { _id: '108', title: 'Ocean Paintaing', price: '200.00', mainImage: 'images/7.jpg', click_count: 50 },
+    { _id: '109', title: 'Beauty Of Quran', price: '1400.00', mainImage: 'images/1.jpg', click_count: 140 },
+    { _id: '110', title: 'Ayat al Kursi (Set)', price: '1400.00', mainImage: 'images/9.jpg', click_count: 100 },
+    { _id: '111', title: 'Darood e Ibrhimi', price: '2600.00', mainImage: 'images/11.jpg', click_count: 170 },
+    { _id: '112', title: 'Kaswa Paintaing', price: '3000.00', mainImage: 'images/10.jpg', click_count: 70 },
+];
+
+
+function generateProductHtml(product) {
+    // detail.html?id=...
+    const detailUrl = `detail.html?id=${product._id}`;
+    // Use product.mainImage for the image source
+    const imageUrl = product.mainImage || 'images/default.jpg';
+
+    return `
                 <div class="product" data-id="${product._id}">
                     <div class="image">
                         <img src="${imageUrl}" alt="${product.title}">
@@ -330,135 +332,135 @@
                     </div>
                 </div>
             `;
+}
+
+async function fetchProductsAndRender() {
+    let products = [];
+
+    try {
+        const response = await fetch(API_URL);
+
+        if (response.ok) {
+            products = await response.json();
+        } else {
+            // API fetch failed, using mock data
+            products = MOCK_PRODUCTS;
+        }
+    } catch (error) {
+        // Network error, using mock data
+        products = MOCK_PRODUCTS;
+    }
+
+    // 1. Sort products based on 'click_count' (descending) 
+    products.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
+
+    // 2. Limit to the top 9 products
+    products = products.slice(0, 9);
+
+
+    // 3. Render the sorted and limited products
+    if (PRODUCTS_CONTAINER) {
+        PRODUCTS_CONTAINER.innerHTML = ''; // Clear existing content
+
+        if (products.length === 0) {
+            PRODUCTS_CONTAINER.innerHTML = '<p style="text-align: center; width: 100%;">No artwork found.</p>';
+            return;
         }
 
-        async function fetchProductsAndRender() {
-            let products = [];
-            
-            try {
-                const response = await fetch(API_URL); 
+        let productsHtml = '';
+        products.forEach(product => {
+            productsHtml += generateProductHtml(product);
+        });
 
-                if (response.ok) {
-                    products = await response.json();
-                } else {
-                    // API fetch failed, using mock data
-                    products = MOCK_PRODUCTS;
-                }
-            } catch (error) {
-                // Network error, using mock data
-                products = MOCK_PRODUCTS;
-            }
+        PRODUCTS_CONTAINER.innerHTML = productsHtml;
+    }
+}
 
-            // 1. Sort products based on 'click_count' (descending) 
-            products.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
+// ===========================================
+// === PAGE SCROLLING LOGIC (Existing) ===
+// ===========================================
 
-            // 2. Limit to the top 9 products
-            products = products.slice(0, 9);
+// Function to scroll to the top
+function scrollToTop() {
+    window.scrollTo({
 
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 
-            // 3. Render the sorted and limited products
-            if (PRODUCTS_CONTAINER) {
-                PRODUCTS_CONTAINER.innerHTML = ''; // Clear existing content
+// Function to scroll down by a calculated amount
+function scrollToNextSection() {
+    // Scroll down by 80% of the viewport height for a noticeable jump
+    const scrollDistance = window.innerHeight * 0.8;
+    window.scrollBy({
+        top: scrollDistance,
+        behavior: 'smooth'
+    });
+}
 
-                if (products.length === 0) {
-                    PRODUCTS_CONTAINER.innerHTML = '<p style="text-align: center; width: 100%;">No artwork found.</p>';
-                    return;
-                }
-                
-                let productsHtml = '';
-                products.forEach(product => {
-                    productsHtml += generateProductHtml(product);
-                });
+// Function to show/hide the 'Scroll Up' button
+function toggleScrollUpButton() {
+    // Show button if user has scrolled down more than 300px
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollUpBtn.classList.add('show');
+    } else {
+        scrollUpBtn.classList.remove('show');
+    }
+}
 
-                PRODUCTS_CONTAINER.innerHTML = productsHtml;
-            }
-        }
-        
-        // ===========================================
-        // === PAGE SCROLLING LOGIC (Existing) ===
-        // ===========================================
-        
-        // Function to scroll to the top
-        function scrollToTop() {
-            window.scrollTo({
-         
-                       top: 0,
-                behavior: 'smooth'
-            });
- }
+// ===========================================
+// === ADVERTISEMENT POPUP LOGIC (Prevents Re-show if already visible) ===
+// ===========================================
 
-        // Function to scroll down by a calculated amount
-        function scrollToNextSection() {
-            // Scroll down by 80% of the viewport height for a noticeable jump
-            const scrollDistance = window.innerHeight * 0.8;
- window.scrollBy({
-                top: scrollDistance,
-                behavior: 'smooth'
-            });
- }
+function showAdPopup() {
+    if (!rightAdPopup) return;
+    // Check if ad is already visible 
+    if (rightAdPopup.classList.contains('show') && rightAdPopup.style.display !== 'none') {
+        setTimeout(showAdPopup, 5000);
+        return;
+    }
 
-        // Function to show/hide the 'Scroll Up' button
-        function toggleScrollUpButton() {
-            // Show button if user has scrolled down more than 300px
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                scrollUpBtn.classList.add('show');
- } else {
-                scrollUpBtn.classList.remove('show');
- }
-        }
+    // If not visible, show it
+    rightAdPopup.style.display = 'block';
+    setTimeout(() => {
+        rightAdPopup.classList.add('show');
+    }, 50);
+    // Set the next timer to re-check after 5 seconds
+    setTimeout(showAdPopup, 5000);
+}
 
-        // ===========================================
-        // === ADVERTISEMENT POPUP LOGIC (Prevents Re-show if already visible) ===
-        // ===========================================
-        
-        function showAdPopup() {
-            if (!rightAdPopup) return;
-            // Check if ad is already visible 
-            if (rightAdPopup.classList.contains('show') && rightAdPopup.style.display !== 'none') {
-                setTimeout(showAdPopup, 5000); 
- return; 
-            }
-
-            // If not visible, show it
-            rightAdPopup.style.display = 'block';
- setTimeout(() => {
-                rightAdPopup.classList.add('show');
-            }, 50);
-            // Set the next timer to re-check after 5 seconds
+function hideAdPopup() {
+    if (rightAdPopup) {
+        rightAdPopup.classList.remove('show');
+        // Wait for the transition to finish before hiding display
+        setTimeout(() => {
+            rightAdPopup.style.display = 'none';
+            // Immediately set a new timer so it reappears after 5 seconds
             setTimeout(showAdPopup, 5000);
- }
+        }, 300);
+    }
+}
 
-        function hideAdPopup() {
-            if (rightAdPopup) {
-                rightAdPopup.classList.remove('show');
-                // Wait for the transition to finish before hiding display
-                setTimeout(() => {
-                    rightAdPopup.style.display = 'none';
-                    // Immediately set a new timer so it reappears after 5 seconds
-                    setTimeout(showAdPopup, 5000); 
-                }, 300);
- }
-        }
-        
-        // Attach close event listener
-        if (adCloseBtn) {
-            adCloseBtn.addEventListener('click', hideAdPopup);
- }
-        
-        // --- Initialization on Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Fetch products and render them sorted by click count
-            fetchProductsAndRender();
-            
-            // Scroll button listeners
-            if (scrollUpBtn && scrollDownBtn) {
-                
-                scrollUpBtn.addEventListener('click', scrollToTop);
-                scrollDownBtn.addEventListener('click', scrollToNextSection);
-                window.addEventListener('scroll', toggleScrollUpButton);
-                toggleScrollUpButton(); // Run once on load to check initial position
-            }
-            
-            // Start the advertising loop 3 seconds after the page loads
-            setTimeout(showAdPopup, 3000);
- });
+// Attach close event listener
+if (adCloseBtn) {
+    adCloseBtn.addEventListener('click', hideAdPopup);
+}
+
+// --- Initialization on Load ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Fetch products and render them sorted by click count
+    fetchProductsAndRender();
+
+    // Scroll button listeners
+    if (scrollUpBtn && scrollDownBtn) {
+
+        scrollUpBtn.addEventListener('click', scrollToTop);
+        scrollDownBtn.addEventListener('click', scrollToNextSection);
+        window.addEventListener('scroll', toggleScrollUpButton);
+        toggleScrollUpButton(); // Run once on load to check initial position
+    }
+
+    // Start the advertising loop 3 seconds after the page loads
+    setTimeout(showAdPopup, 3000);
+});

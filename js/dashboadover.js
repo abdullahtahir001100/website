@@ -261,3 +261,125 @@ function initializeDashboard() {
 
 // 🌐 Start the process when the document is fully loaded
 document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --- Tracking System Integration Script ---
+// Yeh script aapke backend tracking routes ko call karne ke liye zaroori hai.
+
+// API ka base path. Assuming aapka frontend aur backend same domain par hain.
+const API_BASE = '/api/tracking'; 
+let currentPage = window.location.pathname; // Current page ka URL path
+
+/**
+ * 1. API Call Wrapper (API calls ko asaan aur error-free banane ke liye)
+ * @param {string} endpoint - Jaise '/track-visitor'
+ * @param {string} method - 'GET' ya 'POST'
+ * @param {object} body - POST request ka data
+ */
+async function makeRequest(endpoint, method = 'GET', body = null) {
+    try {
+        const options = {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : null
+        };
+        
+        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status} at ${endpoint}`);
+            return null; 
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching ${endpoint}:`, error);
+        return null;
+    }
+}
+
+/**
+ * 2. Initialize Tracking (Zaroori: Visitor ID aur session shuru karne ke liye)
+ * ⭐ Zaroori Kadam: Isse har page load par sabse pehle call karein.
+ */
+async function initializeTracking() {
+    const data = await makeRequest('/track-visitor');
+    if (data) {
+        console.log(`Tracking Initialized. Visitor ID: ${data.visitorID}. First Time: ${data.firstTime}`);
+        
+        // Initialization ke baad, pehle page visit ko turant track karein
+        trackPageVisit(currentPage);
+    }
+}
+
+/**
+ * 3. Track Page Visit (Har naye page view ko record karne ke liye)
+ * ⭐ Zaroori Kadam: Isse har page load par ya SPA mein route change par call karein.
+ * @param {string} page - Current page ka naam ya URL path
+ */
+async function trackPageVisit(page) {
+    console.log(`Tracking page view: ${page}`);
+    // Backend route /add-page-visit ko call karega
+    await makeRequest('/add-page-visit', 'POST', { page: page });
+}
+
+/**
+ * 4. Custom Preference/Cookie Update (Jaise Dark Mode ya Category)
+ * ⭐ Zaroori Kadam: Ise button click ya user setting change par call karein.
+ * * Udaharan (Dark Mode ON set karne ke liye): setPreference('set-dark-mode', 'on')
+ * Udaharan (Category set karne ke liye): setPreference('set-category-cookie', 'Sports')
+ * @param {string} endpointPath - Jaise 'set-dark-mode' ya 'set-category-cookie'
+ * @param {string} value - Cookie ki value
+ */
+async function setPreference(endpointPath, value) {
+    const data = await makeRequest(`/${endpointPath}/${value}`, 'POST');
+    if (data) {
+        console.log(`Preference Updated: ${data.message}`);
+    }
+}
+
+/**
+ * 5. Update Cart Reminder Cookie (Cart mein items ki sankhaya track karne ke liye)
+ * ⭐ Zaroori Kadam: Ise tab call karein jab cart mein items ki sankhaya badle.
+ * * Udaharan: updateCartReminder(5);
+ * @param {number} count - Cart mein items ki total sankhya
+ */
+async function updateCartReminder(count) {
+    if (count < 0 || isNaN(count)) return;
+    
+    const data = await makeRequest(`/set-cart-reminder/${count}`, 'POST');
+    if (data) {
+        console.log(`Cart Reminder Updated: ${data.message}`);
+    }
+}
+
+// ----------------------------------------------------------------------
+// APNI WEBSITE MEIN KAHAAN AUR KAISE USE KAREIN:
+// ----------------------------------------------------------------------
+
+// 1. Visitor Tracking shuru karein (Website load hone par)
+// Jab aapki website load ho jaye, toh is function ko call karein:
+// initializeTracking();
+
+// 2. Button Action ka Udaharan
+// document.getElementById('dark-mode-toggle-button').addEventListener('click', () => {
+//     setPreference('set-dark-mode', 'on');
+// });
+
+// 3. Cart Update ka Udaharan
+// function onAddItemToCart(itemCount) {
+//     updateCartReminder(itemCount);
+// }

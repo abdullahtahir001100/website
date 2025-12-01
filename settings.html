@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Account Settings - Real App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --gf-blue: #1a73e8;
+            --gf-green: #34a853;
+            --gf-red: #d93025;
+            --gf-bg-body: #fff;
+            --gf-bg-hover: #f5f5f5;
+            --gf-bg-active-nav: #e8f0fe;
+            --gf-text-primary: #202124;
+            --gf-text-secondary: #5f6368;
+            --gf-border-color: #dadce0;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--gf-bg-body);
+            color: var(--gf-text-primary);
+            height: 100vh;
+            overflow: hidden; 
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- LAYOUT & MAIN STYLES (Kept Google-style) --- */
+        #main-settings-view { display: flex; height: 100%; width: 100%; }
+        .g-sidebar {
+            width: var(--sidebar-width); flex-shrink: 0; padding: 12px; box-sizing: border-box; overflow-y: auto;
+        }
+        @media (max-width: 800px) { .g-sidebar { display: none; } }
+        .g-nav-item {
+            display: flex; align-items: center; padding: 0 12px 0 26px; height: 48px;
+            border-radius: 0 24px 24px 0; 
+            color: var(--gf-text-secondary); text-decoration: none; font-weight: 500; font-size: 14px;
+            margin-bottom: 4px; cursor: pointer; transition: background-color 0.2s;
+        }
+        .g-nav-item:hover { background-color: var(--gf-bg-hover); }
+        .g-nav-item.active { background-color: var(--gf-bg-active-nav); color: var(--gf-blue); }
+        .g-nav-item .material-icons-outlined { margin-right: 20px; color: inherit; }
+        .g-main-content-area { flex-grow: 1; padding: 24px 48px; overflow-y: auto; }
+        .g-page-title { font-size: 28px; font-weight: 400; margin-bottom: 24px; padding-top: 12px; }
+        .g-section-header { font-size: 20px; font-weight: 400; margin-top: 32px; margin-bottom: 12px;}
+        .g-section-description { color: var(--gf-text-secondary); margin-bottom: 24px; max-width: 600px; line-height: 1.5; }
+        .g-card { border: 1px solid var(--gf-border-color); border-radius: 8px; overflow: hidden; margin-bottom: 24px; max-width: 800px; }
+        .g-card-padding { padding: 24px; }
+        .g-card-row {
+            display: flex; align-items: center; padding: 16px 24px;
+            border-bottom: 1px solid var(--gf-border-color);
+            cursor: pointer; transition: background-color 0.1s;
+        }
+        .g-card-row:last-child { border-bottom: none; }
+        .g-card-row:hover { background-color: var(--gf-bg-hover); }
+        .g-row-main { flex-grow: 1; display: flex; flex-direction: column; }
+        .g-row-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+        .g-row-subtitle { color: var(--gf-text-secondary); font-size: 14px; }
+        .g-chevron { color: var(--gf-text-secondary); font-size: 24px; }
+        .g-avatar-demo {
+            width: 60px; height: 60px; border-radius: 50%; background-color: #a0cfff; color: #1a73e8;
+            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; margin-right: 24px;
+        }
+        .blue-link { color: var(--gf-blue); text-decoration: none; font-weight: 500; cursor: pointer; }
+        .blue-link:hover { text-decoration: underline; }
+
+        /* --- DETAIL VIEW & FORM STYLES --- */
+        #detail-edit-view { height: 100%; width: 100%; background: #fff; display: flex; flex-direction: column; }
+        .detail-header { display: flex; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--gf-border-color); }
+        .back-button { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; margin-right: 16px; color: var(--gf-text-secondary); }
+        .back-button:hover { background-color: var(--gf-bg-hover); color: var(--gf-text-primary); }
+        .detail-title { font-size: 22px; font-weight: 400; }
+        .detail-content { padding: 48px; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .fake-input-label { display: block; font-size: 14px; color: var(--gf-text-secondary); margin-bottom: 8px;}
+        .fake-input-field { 
+            width: 100%; padding: 12px; border: 1px solid var(--gf-border-color); border-radius: 4px; font-size: 16px; 
+            margin-bottom: 24px; box-sizing: border-box; 
+        }
+        .fake-save-btn { background-color: var(--gf-blue); color: white; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; }
+        .fake-save-btn:hover { background-color: #1669d6; }
+
+        /* --- MODAL Styles --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); display: none; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 24px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            width: 90%; max-width: 450px;
+        }
+        .modal-header {
+            font-size: 20px; font-weight: 500; margin-bottom: 16px;
+        }
+        .modal-footer {
+            display: flex; justify-content: flex-end; margin-top: 20px;
+        }
+        .modal-btn {
+            padding: 8px 20px; border-radius: 4px; font-weight: 500; cursor: pointer; margin-left: 10px;
+        }
+        .cancel-btn { background: none; border: none; color: var(--gf-text-secondary); }
+        .action-btn { background-color: var(--gf-blue); color: white; border: none; }
+        .delete-btn { background-color: var(--gf-red); color: white; border: none; }
+
+        /* Device Management Dropdown */
+        .dropdown-menu {
+            position: absolute; right: 0; top: 30px; background: white; border: 1px solid var(--gf-border-color);
+            border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;
+        }
+        .dropdown-item {
+            padding: 8px 16px; font-size: 14px; cursor: pointer; width: 100%; white-space: nowrap;
+        }
+        .dropdown-item:hover { background-color: var(--gf-bg-hover); }
+
+        /* Device Item Styling */
+        .device-item {
+            display: flex; align-items: center; margin-bottom: 16px; position: relative;
+            padding: 8px 0;
+        }
+        .device-item:last-child { margin-bottom: 0; }
+        .device-item .g-chevron { margin-left: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="main-settings-view">
+        
+        <nav class="g-sidebar">
+            <div class="g-nav-item active" data-target="personal-info-section">
+                <span class="material-icons-outlined">account_circle</span>
+                Personal info
+            </div>
+            <div class="g-nav-item" data-target="security-section">
+                <span class="material-icons-outlined">security</span>
+                Security
+            </div>
+            <div class="g-nav-item" data-target="data-privacy-section">
+                <span class="material-icons-outlined">palette</span>
+                Data & privacy
+            </div>
+             <div style="height: 1px; background: #dadce0; margin: 8px 0;"></div>
+            <a href="/login.html" class="g-nav-item" onclick="handleLogout(event)">
+                <span class="material-icons-outlined">logout</span>
+                Logout
+            </a>
+        </nav>
+
+        <main class="g-main-content-area">
+
+            <div id="personal-info-section">
+                <h1 class="g-page-title">Personal info</h1>
+                <div class="g-section-description">
+                    Info about you and your preferences across InkByHand services.
+                </div>
+
+                <div class="g-section-header">Basic info</div>
+                <div class="g-card">
+                    <div class="g-card-row" data-edit-type="profile-pic">
+                        <div class="g-avatar-demo" id="profile-pic-initials">S</div>
+                        <div class="g-row-main">
+                            <div class="g-row-title">Profile picture</div>
+                            <div class="g-row-subtitle">Add a photo to personalize your account</div>
+                        </div>
+                        <span class="material-icons-outlined g-chevron">chevron_right</span>
+                    </div>
+                    <div class="g-card-row" data-edit-type="name">
+                         <div class="g-row-main">
+                            <div class="g-row-title">Name</div>
+                            <div class="g-row-subtitle" id="user-name-display">Loading...</div>
+                        </div>
+                        <span class="material-icons-outlined g-chevron">chevron_right</span>
+                    </div>
+                    <div class="g-card-row" data-edit-type="username">
+                        <div class="g-row-main">
+                            <div class="g-row-title">Username</div>
+                            <div class="g-row-subtitle" id="user-username-display">Loading...</div>
+                        </div>
+                        <span class="material-icons-outlined g-chevron">chevron_right</span>
+                    </div>
+                </div>
+
+                <div class="g-section-header">Contact info</div>
+                <div class="g-card">
+                    <div class="g-card-row" data-edit-type="email">
+                        <div class="g-row-main">
+                           <div class="g-row-title">Email</div>
+                           <div class="g-row-subtitle" id="user-email-display">Loading...</div>
+                       </div>
+                       <span class="material-icons-outlined g-chevron">chevron_right</span>
+                   </div>
+                   <div class="g-card-row" data-edit-type="phone">
+                        <div class="g-row-main">
+                        <div class="g-row-title">Phone</div>
+                        <div class="g-row-subtitle" id="user-phone-display">Loading...</div>
+                    </div>
+                    <span class="material-icons-outlined g-chevron">chevron_right</span>
+                </div>
+                </div>
+            </div>
+
+            <div id="security-section" class="hidden">
+                <h1 class="g-page-title">Security</h1>
+                <div class="g-section-description">
+                    Settings and recommendations to help keep your account secure.
+                </div>
+                
+                <div class="g-section-header">Sign-in to InkByHand</div>
+                <div class="g-card">
+                   <div class="g-card-row" data-edit-type="password">
+                        <div class="g-row-main">
+                        <div class="g-row-title">Password</div>
+                        <div class="g-row-subtitle">•••••••• (Change your password)</div>
+                    </div>
+                    <span class="material-icons-outlined g-chevron">chevron_right</span>
+                </div>
+                <div class="g-card-row" data-edit-type="2fa">
+                    <div class="g-row-main">
+                    <div class="g-row-title">2-Step Verification</div>
+                    <div class="g-row-subtitle" style="color: var(--gf-text-secondary); font-weight: 500;">Coming Soon</div>
+                </div>
+                <span class="material-icons-outlined g-chevron">chevron_right</span>
+                </div>
+                </div>
+                
+                <div class="g-section-header">Your devices</div>
+                <div class="g-card g-card-padding">
+                    <p class="g-row-subtitle" style="margin-bottom: 12px;">Manage the devices currently signed in to your InkByHand account.</p>
+                    <div id="devices-list">
+                        <div style="text-align: center; color: var(--gf-text-secondary);">Loading devices...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="data-privacy-section" class="hidden">
+                <h1 class="g-page-title">Data & privacy</h1>
+                <div class="g-section-description">
+                    Key privacy options to control your data.
+                </div>
+                
+                <div class="g-section-header">Privacy options</div>
+                <div class="g-card g-card-padding">
+                   <h3 style="font-weight: 500; margin-top: 0; font-size: 18px;">Privacy suggestions</h3>
+                   <p style="color: var(--gf-text-secondary); margin-bottom: 20px;">
+                       Take the Privacy Checkup, a step-by-step guide that helps you choose the privacy settings that are right for you.
+                   </p>
+                   <a href="#" class="blue-link">Review suggestions (Take action)</a>
+                </div>
+                
+                <div class="g-section-header">Data from apps and services you use</div>
+                <div class="g-card">
+                    <div class="g-card-row" data-edit-type="activity-controls">
+                        <div class="g-row-main">
+                           <div class="g-row-title">Activity controls</div>
+                           <div class="g-row-subtitle">Manage which activities are saved in your account.</div>
+                       </div>
+                       <span class="material-icons-outlined g-chevron">chevron_right</span>
+                   </div>
+                    <div class="g-card-row" data-edit-type="delete-data">
+                        <div class="g-row-main">
+                           <div class="g-row-title" style="color: var(--gf-red);">Delete your InkByHand account</div>
+                           <div class="g-row-subtitle">Permanently remove your account and all associated data.</div>
+                       </div>
+                       <span class="material-icons-outlined g-chevron">chevron_right</span>
+                   </div>
+                </div>
+
+                <div class="g-section-header">Links to other privacy features</div>
+                <div class="g-card g-card-padding">
+                    <a href="#" class="blue-link" style="display: block; margin-bottom: 12px;">Manage third-party access</a>
+                    <a href="#" class="blue-link" style="display: block; margin-bottom: 12px;">Read the Privacy Policy</a>
+                    <a href="#" class="blue-link" style="display: block;">Manage your contact info for others</a>
+                 </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="detail-edit-view" class="hidden">
+        <div class="detail-header">
+            <button class="back-button" onclick="closeDetailView()">
+                <span class="material-icons-outlined" style="font-size: 24px;">arrow_back</span>
+            </button>
+            <div class="detail-title" id="detail-title-text">Edit Info</div>
+        </div>
+        
+        <div class="detail-content" id="detail-content-area">
+            </div>
+    </div>
+    
+    <div id="password-confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Confirm your identity</div>
+            <p style="color: var(--gf-text-secondary);">
+                Please enter your password to confirm your identity before making changes.
+            </p>
+            <label class="fake-input-label" style="margin-top: 20px;">Password</label>
+            <input type="password" class="fake-input-field" id="confirm-password-input" placeholder="Enter your password" style="margin-bottom: 0;">
+            <div id="password-error" style="color: var(--gf-red); font-size: 13px; margin-top: 5px;" class="hidden"></div>
+            
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" onclick="closePasswordConfirmModal(true)">Cancel</button>
+                <button class="modal-btn action-btn" id="confirm-password-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="delete-account-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="color: var(--gf-red);">Permanently Delete Account?</div>
+            <p style="color: var(--gf-text-secondary); margin-bottom: 15px;">
+                This action cannot be undone. All your data, orders, and activity logs will be permanently deleted.
+            </p>
+            <label class="fake-input-label" style="font-size: 14px; display: flex; align-items: center;">
+                <input type="checkbox" id="delete-confirm-checkbox" style="margin-right: 8px;">
+                I understand and want to proceed with permanent deletion.
+            </label>
+            <label class="fake-input-label" style="margin-top: 20px;">Enter your password to confirm</label>
+            <input type="password" class="fake-input-field" id="delete-confirm-password" placeholder="Password" style="margin-bottom: 0;">
+            <div id="delete-error" style="color: var(--gf-red); font-size: 13px; margin-top: 5px;" class="hidden"></div>
+            
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" onclick="closeDeleteAccountModal()">Cancel</button>
+                <button class="modal-btn delete-btn" id="final-delete-btn" disabled>Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 0. GLOBAL STATE & BASE CONFIG ---
+        let CURRENT_USER_DATA = {};
+       const API_BASE_URL = 'http://localhost:5000/api/auth'; // Assumes your Express server runs on the same origin
+        let updateActionCallback = null; // Stores the function to execute after password confirmation
+        let currentEditType = null;
+        
+        // --- UTILITY FUNCTIONS ---
+        // Utility to mimic a simple UserAgent parser
+        function parseUserAgent(userAgent) {
+            if (!userAgent) return 'Unknown Device';
+            if (userAgent.includes('Windows')) return 'Windows PC';
+            if (userAgent.includes('Macintosh')) return 'MacBook / iMac';
+            if (userAgent.includes('Android')) return 'Android Phone';
+            if (userAgent.includes('iPhone')) return 'iPhone';
+            if (userAgent.includes('iPad')) return 'iPad';
+            if (userAgent.includes('Linux')) return 'Linux Device';
+            return 'Unknown Device';
+        }
+
+        // Utility for API Calls
+        async function apiFetch(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include' // Important for sending cookies
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                // If 401 Unauthorized, redirect user to login
+                if (response.status === 401) {
+                    alert('Session expired. Please log in again.');
+                    window.location.href = '/login.html'; 
+                }
+                throw new Error(data.error || 'API request failed');
+            }
+            return data;
+        }
+
+        // --- 1. INITIAL DATA FETCH & DISPLAY ---
+        async function fetchUserProfile() {
+            try {
+                const response = await apiFetch('/users/me');
+                CURRENT_USER_DATA = response.data;
+                populateSettingsPage();
+            } catch (error) {
+                console.error("Error fetching user profile:", error.message);
+                document.getElementById('user-name-display').textContent = 'Error loading profile. Log in?';
+            }
+        }
+
+        function populateSettingsPage() {
+            const user = CURRENT_USER_DATA;
+            const firstName = user.firstName || "User";
+            const lastName = user.lastName || "Name";
+            const fullName = `${firstName} ${lastName}`;
+            const initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+            
+            // Personal Info
+            document.getElementById('profile-pic-initials').textContent = initials;
+            document.getElementById('user-name-display').textContent = fullName;
+            document.getElementById('user-username-display').textContent = user.username || 'Not set';
+            document.getElementById('user-email-display').textContent = user.email;
+            document.getElementById('user-phone-display').textContent = user.phone;
+
+            // Re-apply event listeners to clickable rows
+            const detailRows = document.querySelectorAll('.g-card-row[data-edit-type]');
+            detailRows.forEach(row => {
+                row.removeEventListener('click', handleRowClick);
+                row.addEventListener('click', handleRowClick); 
+            });
+        }
+        
+        // --- 2. SIDEBAR LOGIC ---
+        const navItems = document.querySelectorAll('.g-sidebar .g-nav-item[data-target]');
+        const sections = document.querySelectorAll('.g-main-content-area > div');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                sections.forEach(section => section.classList.add('hidden'));
+                const targetId = item.getAttribute('data-target');
+                document.getElementById(targetId).classList.remove('hidden');
+
+                if (targetId === 'security-section') {
+                    fetchDeviceSessions();
+                }
+            });
+        });
+
+        // --- 3. DETAIL VIEW & PASSWORD CONFIRMATION LOGIC ---
+        const mainView = document.getElementById('main-settings-view');
+        const detailView = document.getElementById('detail-edit-view');
+        const detailTitle = document.getElementById('detail-title-text');
+        const detailContent = document.getElementById('detail-content-area');
+        
+        function handleRowClick() {
+            const editType = this.getAttribute('data-edit-type');
+            openDetailView(editType);
+        }
+
+        function openDetailView(type) {
+            // Check for immediate redirects/modals
+            if (type === 'delete-data') {
+                openDeleteAccountModal();
+                return;
+            }
+            if (type === '2fa') {
+                // Keep the detail view open but show the message (as implemented below)
+            }
+            
+            mainView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            currentEditType = type;
+
+            let titleText = '';
+            let contentHtml = '';
+            const user = CURRENT_USER_DATA;
+
+            switch(type) {
+                case 'profile-pic':
+                    titleText = 'Profile picture';
+                    // ... (Profile Picture HTML and JS remains simplified for this demo)
+                    contentHtml = `
+                        <div style="text-align: center; margin-bottom: 32px;">
+                            <p style="color: #5f6368; line-height: 1.5;">A picture helps people recognize you.</p>
+                        </div>
+                        <div class="upload-drop-zone" id="drop-zone" style="border: 2px dashed var(--gf-border-color); padding: 60px 20px;">
+                            <span class="material-icons-outlined upload-icon" style="font-size: 64px;">cloud_upload</span>
+                            <div style="font-size: 18px; color: #202124; margin-bottom: 8px;">Drag profile photo here</div>
+                            <div style="color: #5f6368; font-size: 14px;">— or —</div>
+                            <button class="browse-btn" onclick="document.getElementById('file-upload').click()">Choose photo to upload</button>
+                            <input type="file" id="file-upload" hidden onchange="handleFileSelect(this)">
+                        </div>
+                    `;
+                    break;
+                case 'name':
+                    titleText = 'Name';
+                    contentHtml = `
+                        <p style="margin-bottom: 24px; color: #5f6368;">Changes to your name will be reflected across your account.</p>
+                        <label class="fake-input-label">First name</label>
+                        <input type="text" class="fake-input-field" id="edit-first-name" value="${user.firstName || ''}">
+                        <label class="fake-input-label">Last name</label>
+                        <input type="text" class="fake-input-field" id="edit-last-name" value="${user.lastName || ''}">
+                        <div style="text-align: right;"><button class="fake-save-btn" onclick="handleUpdate('name')">Save</button></div>
+                    `;
+                    break;
+                case 'username':
+                    titleText = 'Username';
+                    contentHtml = `
+                        <p style="margin-bottom: 24px; color: #5f6368;">This is the public handle used to identify you on InkByHand.</p>
+                        <label class="fake-input-label">Username</label>
+                        <input type="text" class="fake-input-field" id="edit-username" value="${user.username || ''}">
+                        <div style="text-align: right;"><button class="fake-save-btn" onclick="handleUpdate('username')">Save</button></div>
+                    `;
+                    break;
+                case 'email':
+                    titleText = 'Email address';
+                    contentHtml = `
+                        <p style="margin-bottom: 24px; color: #5f6368;">Primary email can only be changed by verifying your identity.</p>
+                        <label class="fake-input-label">Primary Email</label>
+                        <input type="email" class="fake-input-field" id="edit-email" value="${user.email || ''}">
+                        <div style="text-align: right;"><button class="fake-save-btn" onclick="handleUpdate('email')">Save</button></div>
+                    `;
+                    break;
+                case 'phone':
+                    titleText = 'Phone';
+                    contentHtml = `
+                        <p style="margin-bottom: 24px; color: #5f6368;">Use your phone number to sign in, receive security codes, and reset your password. Format must be numeric (e.g., +923001234567).</p>
+                        <label class="fake-input-label">Phone number</label>
+                        <input type="tel" class="fake-input-field" id="edit-phone" value="${user.phone || ''}">
+                        <div style="text-align: right;"><button class="fake-save-btn" onclick="handleUpdate('phone')">Save</button></div>
+                    `;
+                    break;
+                case 'password':
+                    titleText = 'Password';
+                    contentHtml = `
+                        <p style="margin-bottom: 24px; color: #5f6368;">A new password must be at least 6 characters long and should be unique.</p>
+                        <label class="fake-input-label">Enter new password</label>
+                        <input type="password" class="fake-input-field" id="edit-new-password" placeholder="New password">
+                        <label class="fake-input-label">Confirm new password</label>
+                        <input type="password" class="fake-input-field" id="edit-confirm-password" placeholder="Confirm new password">
+                        <div style="text-align: right;"><button class="fake-save-btn" onclick="handleUpdate('password')">Change Password</button></div>
+                    `;
+                    break;
+                case '2fa':
+                    titleText = '2-Step Verification';
+                    contentHtml = `
+                        <h2 style="font-weight: 500; font-size: 20px; margin-bottom: 12px;">Protect your account with 2FA</h2>
+                        <p style="margin-bottom: 32px; color: var(--gf-text-secondary); font-weight: 500; padding: 15px; background: #fffde7; border: 1px solid #fcefa8; border-radius: 4px;">
+                            <span class="material-icons-outlined" style="vertical-align: middle; margin-right: 8px;">schedule</span>
+                            2-Step Verification is **COMING SOON**. We are actively working to implement this security feature for your protection.
+                        </p>
+                        <p style="color: #5f6368;">
+                            Once available, 2-Step Verification will require both your password and a code from your phone to sign in.
+                        </p>
+                    `;
+                    break;
+                default:
+                    titleText = 'Activity controls';
+                    contentHtml = `
+                        <h2 style="font-weight: 500; font-size: 20px; margin-bottom: 12px;">Web & App Activity</h2>
+                        <p style="margin-bottom: 20px; color: #5f6368;">
+                            This setting controls whether your usage data, like products viewed and searches, are saved to personalize your experience.
+                        </p>
+                        <label class="fake-input-label" style="font-size: 16px; display: flex; align-items: center;">
+                            <input type="checkbox" checked style="margin-right: 12px; transform: scale(1.2);">
+                            Saving Web & App Activity (Enabled)
+                        </label>
+                        <div style="text-align: right; margin-top: 32px;"><button class="fake-save-btn" onclick="closeDetailView()">Done</button></div>
+                    `;
+            }
+
+            detailTitle.textContent = titleText;
+            detailContent.innerHTML = contentHtml;
+        }
+
+        function closeDetailView() {
+            detailView.classList.add('hidden');
+            mainView.classList.remove('hidden');
+            detailContent.innerHTML = '';
+            currentEditType = null;
+        }
+        
+        // --- 4. DATA UPDATE HANDLERS (Integration with Password Modal) ---
+        
+        async function handleUpdate(type) {
+            let updateFields = {};
+            let successMessage = 'Information updated successfully.';
+
+            // 1. Prepare data based on the update type
+            switch (type) {
+                case 'name':
+                    updateFields = { 
+                        firstName: document.getElementById('edit-first-name').value,
+                        lastName: document.getElementById('edit-last-name').value
+                    };
+                    break;
+                case 'username':
+                    updateFields = { username: document.getElementById('edit-username').value };
+                    break;
+                case 'email':
+                    updateFields = { email: document.getElementById('edit-email').value };
+                    break;
+                case 'phone':
+                    updateFields = { phone: document.getElementById('edit-phone').value.replace(/\s/g, '') };
+                    break;
+                case 'password':
+                    const newPass = document.getElementById('edit-new-password').value;
+                    const confPass = document.getElementById('edit-confirm-password').value;
+                    if (newPass.length < 6) {
+                         alert("Password must be at least 6 characters long."); return;
+                    }
+                    if (newPass !== confPass) {
+                        alert("New passwords do not match."); return;
+                    }
+                    updateFields = { newPassword: newPass }; // Use newPassword as key for backend logic
+                    successMessage = 'Password changed successfully.';
+                    break;
+                default:
+                    console.error('Unknown update type:', type);
+                    return;
+            }
+
+            // 2. Define the callback function that performs the actual API call
+            updateActionCallback = async (password) => {
+                const body = {
+                    password: password,
+                    updateFields: updateFields
+                };
+
+                try {
+                    const response = await apiFetch('/users/me', 'PUT', body);
+                    // The backend should return the updated user data
+                    CURRENT_USER_DATA = response.data;
+                    populateSettingsPage();
+                    closeDetailView();
+                    alert(`SUCCESS: ${successMessage}`); 
+                } catch (error) {
+                    // Show error in the password modal and re-open it
+                    document.getElementById('password-error').textContent = error.message;
+                    document.getElementById('password-error').classList.remove('hidden');
+                    openPasswordConfirmModal(false); // Re-open without closing detail view
+                }
+            };
+
+            // 3. Open the password confirmation modal
+            openPasswordConfirmModal(true); // Open, allowing it to close detail view implicitly
+        }
+
+        // --- 5. MODAL CONTROL (Password) ---
+        
+        const passwordModal = document.getElementById('password-confirm-modal');
+        const confirmBtn = document.getElementById('confirm-password-btn');
+
+        function openPasswordConfirmModal(closeDetail = true) {
+            passwordModal.style.display = 'flex';
+            document.getElementById('confirm-password-input').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            
+            if (closeDetail) closeDetailView(); // Hide the edit view first time
+            
+            confirmBtn.onclick = async () => {
+                const password = document.getElementById('confirm-password-input').value;
+                if (!password) {
+                    document.getElementById('password-error').textContent = 'Please enter your password.';
+                    document.getElementById('password-error').classList.remove('hidden');
+                    return;
+                }
+                
+                // Close modal before executing callback (UI responsiveness)
+                passwordModal.style.display = 'none'; 
+                
+                if (updateActionCallback) {
+                    // The callback itself handles showing an error and reopening the modal if needed
+                    await updateActionCallback(password);
+                }
+            };
+        }
+
+        function closePasswordConfirmModal(reopenDetail = true) {
+            passwordModal.style.display = 'none';
+            document.getElementById('confirm-password-input').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            if (reopenDetail && currentEditType) {
+                openDetailView(currentEditType);
+            }
+        }
+        
+        // --- 6. MODAL CONTROL (Delete Account) ---
+        
+        const deleteAccountModal = document.getElementById('delete-account-modal');
+        const finalDeleteBtn = document.getElementById('final-delete-btn');
+        const deleteConfirmCheckbox = document.getElementById('delete-confirm-checkbox');
+        const deletePasswordInput = document.getElementById('delete-confirm-password');
+
+        deleteConfirmCheckbox.addEventListener('change', () => {
+            finalDeleteBtn.disabled = !(deleteConfirmCheckbox.checked && deletePasswordInput.value.length > 0);
+        });
+        deletePasswordInput.addEventListener('input', () => {
+            finalDeleteBtn.disabled = !(deleteConfirmCheckbox.checked && deletePasswordInput.value.length > 0);
+            document.getElementById('delete-error').classList.add('hidden');
+        });
+        finalDeleteBtn.addEventListener('click', handleDeleteAccount);
+
+        function openDeleteAccountModal() {
+            deleteAccountModal.style.display = 'flex';
+            deleteConfirmCheckbox.checked = false;
+            deletePasswordInput.value = '';
+            finalDeleteBtn.disabled = true;
+            document.getElementById('delete-error').classList.add('hidden');
+        }
+        
+        function closeDeleteAccountModal() {
+            deleteAccountModal.style.display = 'none';
+        }
+        
+        async function handleDeleteAccount() {
+            const password = deletePasswordInput.value;
+            if (!deleteConfirmCheckbox.checked || !password || finalDeleteBtn.disabled) return; 
+
+            try {
+                // 1. Send password and an empty object to PUT /users/me for server-side verification only
+                await apiFetch('/users/me', 'PUT', { password: password, updateFields: {} });
+
+                // 2. If verification passes, proceed with account deletion
+                await apiFetch(`/users/${CURRENT_USER_DATA._id}`, 'DELETE');
+                
+                closeDeleteAccountModal();
+                alert('Your account has been permanently deleted.');
+                window.location.href = '/login.html'; 
+                
+            } catch (error) {
+                document.getElementById('delete-error').textContent = `Deletion failed: ${error.message}.`;
+                document.getElementById('delete-error').classList.remove('hidden');
+            }
+        }
+
+
+        // --- 7. DEVICE SESSIONS MANAGEMENT ---
+
+        async function fetchDeviceSessions() {
+            const listContainer = document.getElementById('devices-list');
+            listContainer.innerHTML = '<div style="text-align: center; color: var(--gf-text-secondary); padding: 10px;">Loading devices...</div>';
+            
+            try {
+                const response = await apiFetch('/users/sessions');
+                listContainer.innerHTML = '';
+                
+                if (response.data.length === 0) {
+                    listContainer.innerHTML = '<div style="text-align: center; color: var(--gf-text-secondary); padding: 10px;">No active sessions found.</div>';
+                    return;
+                }
+
+                // Sort current session to the top
+                response.data.sort((a, b) => (b.isCurrent - a.isCurrent));
+                
+                response.data.forEach(session => {
+                    const isCurrent = session.isCurrent;
+                    const deviceName = parseUserAgent(session.deviceName);
+                    const deviceIcon = deviceName.includes('Phone') || deviceName.includes('iPad') || deviceName.includes('Android') ? 'phone_android' : 'laptop_mac';
+                    
+                    const deviceHtml = `
+                        <div class="device-item" data-session-id="${session.id}">
+                            <span class="material-icons-outlined" style="font-size: 20px; margin-right: 12px; color: ${isCurrent ? 'var(--gf-blue)' : 'var(--gf-text-secondary)'};">${deviceIcon}</span>
+                            <div class="g-row-main">
+                                <div class="g-row-title" style="margin: 0; display: flex; align-items: center;">
+                                    ${deviceName} ${isCurrent ? '<span style="font-size: 11px; font-weight: 700; color: var(--gf-green); background: #e6f5e6; padding: 2px 6px; border-radius: 12px; margin-left: 8px;">CURRENT SESSION</span>' : ''}
+                                </div>
+                                <div class="g-row-subtitle" style="margin: 0; font-size: 13px;">
+                                    ${session.location.includes('::1') || session.location.includes('127.0.0.1') ? 'Localhost' : session.location} &bull; Logged in ${session.loginTime}
+                                </div>
+                            </div>
+                            <div style="position: relative;">
+                                <span class="material-icons-outlined g-chevron" style="cursor: pointer; padding: 4px; border-radius: 50%;" 
+                                    onclick="event.stopPropagation(); toggleDeviceDropdown(this, '${session.id}', ${isCurrent})">more_vert</span>
+                            </div>
+                        </div>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', deviceHtml);
+                });
+
+            } catch (error) {
+                listContainer.innerHTML = `<div style="text-align: center; color: var(--gf-red); padding: 10px;">Failed to load devices: ${error.message}</div>`;
+            }
+        }
+        
+        function toggleDeviceDropdown(element, sessionId, isCurrent) {
+            // Close any open dropdowns first
+            document.querySelectorAll('.dropdown-menu').forEach(d => d.remove());
+
+            if (isCurrent) return; // Cannot log out current session
+
+            const dropdownHtml = `
+                <div class="dropdown-menu">
+                    <div class="dropdown-item" onclick="logOutDevice('${sessionId}')" style="color: var(--gf-red);">
+                        Log out device
+                    </div>
+                </div>
+            `;
+            
+            element.parentElement.insertAdjacentHTML('beforeend', dropdownHtml);
+
+            // Click listener to close the dropdown when clicking outside
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!element.parentElement.contains(e.target)) {
+                    document.querySelectorAll('.dropdown-menu').forEach(d => d.remove());
+                    document.removeEventListener('click', closeDropdown);
+                }
+            }, { once: true });
+        }
+        
+        async function logOutDevice(sessionId) {
+            try {
+                // Remove the dropdown instantly
+                document.querySelectorAll('.dropdown-menu').forEach(d => d.remove());
+                
+                await apiFetch(`/users/sessions/${sessionId}`, 'DELETE');
+                alert("Device successfully logged out.");
+                fetchDeviceSessions(); // Refresh list
+                
+            } catch (error) {
+                alert(`Failed to log out device: ${error.message}`);
+                fetchDeviceSessions(); // Refresh list even on error
+            }
+        }
+        
+        // --- 8. LOGOUT HANDLER ---
+        function handleLogout(event) {
+            event.preventDefault(); 
+            
+            apiFetch('/auth/logout', 'POST')
+                .then(() => {
+                    // Redirect to login page after successful server-side logout (clears cookies)
+                    window.location.href = event.target.href;
+                })
+                .catch(error => {
+                    alert(`Logout failed: ${error.message}. Redirecting you to login.`);
+                    window.location.href = event.target.href;
+                });
+        }
+        
+        // --- 9. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchUserProfile(); 
+        });
+        
+        // --- DUMMY FUNCTION FOR PROFILE PICTURE (Simplified for Demo) ---
+        function handleFileSelect(input) {
+            if (input.files.length > 0) {
+                alert(`Selected file: ${input.files[0].name}\n(This would trigger password confirmation and then upload the file.)`);
+                closeDetailView();
+            }
+        }
+        
+    </script>
+</body>
+</html>

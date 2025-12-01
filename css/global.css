@@ -11,3 +11,27 @@
 body{
     background: #fff !important;
 }
+@font-face {
+    font-family: style;
+    src: url("../fonts/Agbalumo/Agbalumo-Regular.ttf");
+}
+
+@font-face {
+    font-family: fogala;
+    src: url("../fonts/Fjalla_One/FjallaOne-Regular.ttf");
+}
+
+@font-face {
+    font-family: regular;
+    src: url("../fonts/ArefRuqaa-Regular.ttf");
+}
+
+@font-face {
+    font-family: st;
+    src: url("../fonts/ADLaM_Display/ADLaMDisplay-Regular.ttf");
+}
+
+@font-face {
+    font-family: light;
+    src: url("../fonts/Poppins/Poppins-Light.ttf");
+}
