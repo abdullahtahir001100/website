@@ -484,3 +484,6 @@ textarea {
     color: var(--color-error);
     font-size: 0.85em;
 }
+header{
+    margin-bottom: 3rem;
+}

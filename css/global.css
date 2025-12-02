@@ -35,3 +35,273 @@ body{
     font-family: light;
     src: url("../fonts/Poppins/Poppins-Light.ttf");
 }
+
+body {
+    padding-top: 30px;
+}
+
+/* Ad Popup Position (Adjusted from inline style) */
+.ad-popup {
+    left: 20px;
+}
+
+/* Base Header Styles */
+.main-header {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px 20px;
+}
+
+.header-logo .logo-img {
+    height: 50px;
+    width: auto;
+}
+
+/* --- Navigation Changes: Icon-based layout --- */
+
+/* Removed/Hidden the old .main-nav link container */
+.main-nav {
+    display: none; 
+}
+
+/* New: Icon Container on the right, ordered right-to-left */
+.icon-nav-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Spacing between icons */
+    /* No need for 'order: 3' if it's the last element after the logo */
+}
+
+/* Cart Icon & Burger Menu Icon Styles */
+.cart-icon-container, .menu-icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative; /* Needed for burger menu dropdown positioning */
+}
+
+.cart-icon-container i, .menu-icon-container i {
+    font-size: 24px;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.cart-icon-container i:hover, .menu-icon-container i:hover {
+    color: #4f46e5;
+}
+
+/* Burger Menu Dropdown */
+.burger-menu-dropdown {
+    position: absolute;
+    top: 55px; /* Below the header */
+    right: 0;
+    width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    display: none; /* Hidden by default */
+    border: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.burger-menu-dropdown a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.burger-menu-dropdown a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Authentication Container (Login/Avatar) */
+.auth-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    /* Removed margin-left for spacing handled by gap in .icon-nav-container */
+}
+
+/* Login Icon (visible when logged out) */
+.login-icon {
+    font-size: 24px;
+    color: #333;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* User Avatar (visible when logged in) */
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+}
+
+/* --- Simple Hover Tooltip (User Info) --- */
+.user-info-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    min-width: 150px;
+    background-color: #f8f8f8;
+    color: #333;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 10px;
+    position: absolute;
+    z-index: 1;
+    top: 50px;
+    right: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    border: 1px solid #eee;
+}
+
+.auth-container:hover .user-info-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.user-info-tooltip p {
+    margin: 2px 0;
+    font-size: 14px;
+}
+
+.user-info-tooltip p:first-child {
+    font-weight: bold;
+}
+
+/* --- User Menu Pop-up (Google Style) --- */
+.user-menu-popup {
+    position: absolute;
+    top: 55px;
+    right: 0px;
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    display: none;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.user-menu-header {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-avatar {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.user-menu-header p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.user-menu-header p.user-email {
+    color: #555;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.user-menu-actions {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-menu-actions button {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.user-menu-actions button i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.user-menu-actions button:hover {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.menu-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.menu-footer a,
+.menu-footer button {
+    font-size: 13px;
+    color: #4f46e5;
+    text-decoration: none;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.menu-footer button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+}
+   

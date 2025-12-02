@@ -339,3 +339,6 @@
     overflow: scroll;
     height: 50vh;
 }
+ .icon-nav-container .cart-icon-container{
+    display: flex !important;
+  }

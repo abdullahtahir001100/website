@@ -1,7 +1,7 @@
 // activityTracker.js - Comprehensive script for Activity Tracking AND Dashboard Functionality
 
 // --- CONFIGURATION ---
-const API_BASE = 'https://backend-web-1.vercel.app/api'; 
+const API_BASE = 'http://localhost:5000/api'; 
 const HEARTBEAT_INTERVAL_MS = 60000; // 60 seconds interval
 let heartbeatTimer = null; 
 let lastPageEnterTime = Date.now();
@@ -283,9 +283,6 @@ function initActivityTracker() {
 
 // Execute the initialization function
 initActivityTracker();
-
-
-
 const scrollUpBtn = document.getElementById('scrollUpBtn');
 const scrollDownBtn = document.getElementById('scrollDownBtn');
 const rightAdPopup = document.getElementById('rightAdPopup');

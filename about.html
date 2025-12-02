@@ -10,13 +10,42 @@
     
     <link rel="stylesheet" href="css/global.css">
    
+    <link rel="stylesheet" href="css/header.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="icon" href="images/logo.jpg" />
 
 </head>
 
 <body>
-  
+     <header class="main-header">
+        <div class="header-content">
+            <a href="/" class="header-logo">
+                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="INKBYHAND Logo" class="logo-img">
+            </a>
+
+            <div class="icon-nav-container">
+                
+                <div id="menu-icon-container" class="menu-icon-container" onclick="toggleBurgerMenu(event)">
+                    <i class="fas fa-bars"></i>
+                    <div id="burger-menu-dropdown" class="burger-menu-dropdown">
+                        <a href="product.html">Shop</a>
+                        <a href="about.html">About Us</a>
+                        <a href="contect.html">Contact</a>
+                        <a href="login.html">Sign In</a>
+                    </div>
+                </div>
+
+                <div class="cart-icon-container" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                
+                <div id="auth-container" class="auth-container">
+                    </div>
+                
+            </div>
+        </div>
+    </header>
     <section class="hero5">
         <div class="hero5__media">
             <img alt="Pile of golden and green handmade decorative pieces" src="images/5.jpg" class="hero5__img" />
@@ -50,6 +79,7 @@
     
    
     <script src="js/dashboadover.js"></script>
+    <script src="js/cockees.js"></script>
 </body>
 
 </html>

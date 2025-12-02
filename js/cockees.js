@@ -175,3 +175,249 @@
     }, 10);
     
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --- IGNORE ---
+ 
+        const AUTH_CONTAINER = document.getElementById('auth-container');
+const LOGIN_PAGE_URL = 'login.html';
+const PROFILE_PAGE_URL = 'profile.html'; // Placeholder for profile page
+const BURGER_MENU_DROPDOWN = document.getElementById('burger-menu-dropdown');
+const MENU_ICON_CONTAINER = document.getElementById('menu-icon-container');
+
+/**
+ * Generates a random light hex color (high luminosity).
+ */
+function getRandomColor() {
+    // Generates a color between #A0A0A0 and #FFFFFF
+    const color = (Math.random() * 0x5f5f5f + 0xa0a0a0).toString(16).slice(0, 6);
+    return '#' + color.padStart(6, '0');
+}
+
+/**
+ * Fetches user data from local storage.
+ */
+function getAuthData() {
+    const data = localStorage.getItem('userAuthData');
+    return data ? JSON.parse(data) : null;
+}
+
+/**
+ * Toggles the visibility of the user menu pop-up.
+ */
+function toggleUserMenu(event) {
+    if (event) event.stopPropagation();
+
+    const menu = document.getElementById('user-menu-popup');
+    if (!menu) return;
+
+    const isHidden = menu.style.display === 'none' || menu.style.display === '';
+
+    // Close all other menus (Burger Menu)
+    if (BURGER_MENU_DROPDOWN) BURGER_MENU_DROPDOWN.style.display = 'none';
+
+    if (isHidden) {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+}
+
+/**
+ * Toggles the visibility of the Burger Menu pop-up.
+ */
+window.toggleBurgerMenu = function (event) {
+    if (event) event.stopPropagation();
+
+    if (BURGER_MENU_DROPDOWN.style.display === 'block') {
+        BURGER_MENU_DROPDOWN.style.display = 'none';
+    } else {
+        // Close user profile menu if open
+        const userMenu = document.getElementById('user-menu-popup');
+        if (userMenu) userMenu.style.display = 'none';
+        
+        BURGER_MENU_DROPDOWN.style.display = 'block';
+    }
+}
+
+/**
+ * Handles global clicks to close pop-up menus.
+ */
+document.addEventListener('click', (event) => {
+    const userMenu = document.getElementById('user-menu-popup');
+
+    // 1. Close User Menu if open and click is outside
+    if (userMenu && userMenu.style.display === 'block') {
+        const authContainer = document.getElementById('auth-container');
+        if (!userMenu.contains(event.target) && !authContainer.contains(event.target)) {
+            userMenu.style.display = 'none';
+        }
+    }
+    
+    // 2. Close Burger Menu if open and click is outside
+    if (BURGER_MENU_DROPDOWN && BURGER_MENU_DROPDOWN.style.display === 'block') {
+        if (!BURGER_MENU_DROPDOWN.contains(event.target) && !MENU_ICON_CONTAINER.contains(event.target)) {
+            BURGER_MENU_DROPDOWN.style.display = 'none';
+        }
+    }
+});
+
+
+/**
+ * Handles the click event on the auth container.
+ */
+function handleAuthClick(event) {
+    const userData = getAuthData();
+    if (userData && userData.isLoggedIn) {
+        // Logged in: Toggle the custom menu
+        toggleUserMenu(event);
+    } else {
+        // Not logged in: Go to login page
+        window.location.href = LOGIN_PAGE_URL;
+    }
+}
+
+/**
+ * Logs out the current user silently.
+ */
+window.handleLogout = function () {
+    localStorage.removeItem('userAuthData');
+    renderAuthStatus(); // Update header
+    console.log('User logged out successfully.');
+}
+
+/**
+ * Simulates switching account by logging out and redirecting to login.
+ */
+window.handleSwitchAccount = function () {
+    // 1. Close the menu
+    toggleUserMenu(); 
+    
+    // 2. Perform silent logout
+    localStorage.removeItem('userAuthData');
+    renderAuthStatus();
+    console.log('Switch Account initiated: User logged out and redirecting to login page.');
+
+    // 3. Redirect to the login page
+    window.location.href = LOGIN_PAGE_URL;
+}
+
+/**
+ * Renders the appropriate element (Login Icon or Avatar) in the header.
+ */
+function renderAuthStatus() {
+    const userData = getAuthData();
+    AUTH_CONTAINER.innerHTML = ''; // Clear existing content
+
+    if (userData && userData.isLoggedIn) {
+        const fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+        const firstName = userData.firstName || 'U';
+        const firstLetter = firstName.charAt(0).toUpperCase();
+        const avatarColor = userData.avatarColor || getRandomColor(); 
+
+        // 1. Create Avatar structure (Avatar + Simple Hover Tooltip)
+        const avatarHtml = `
+            <div class="user-avatar" style="background-color: ${avatarColor};" onclick="handleAuthClick(event)">
+                ${firstLetter}
+            </div>
+            <div class="user-info-tooltip">
+                <p>${fullName}</p>
+                <p>${userData.email}</p>
+            </div>
+        `;
+
+        // 2. Create the Pop-up Menu structure (Hidden by default)
+        const menuHtml = `
+            <div id="user-menu-popup" class="user-menu-popup" style="display: none;">
+                <div class="user-menu-header">
+                    <div class="menu-avatar" style="background-color: ${avatarColor};">
+                        ${firstLetter}
+                    </div>
+                    <p>${fullName}</p>
+                    <p class="user-email">${userData.email}</p>
+                </div>
+                
+                <div class="user-menu-actions">
+                    <button onclick="window.location.href='${PROFILE_PAGE_URL}'">
+                        <i class="fas fa-user-circle"></i> View Profile
+                    </button>
+                    <button onclick="window.location.href='settings.html'">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+                
+                <div class="menu-footer">
+                    <button onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </button>
+                    <button onclick="handleSwitchAccount()">
+                        <i class="fas fa-exchange-alt"></i> Switch Account
+                    </button>
+                </div>
+            </div>
+        `;
+
+        AUTH_CONTAINER.innerHTML = avatarHtml + menuHtml;
+
+    } else {
+        // Not logged in: Show Login Icon
+        AUTH_CONTAINER.innerHTML = `
+            <a href="${LOGIN_PAGE_URL}" aria-label="Login or Register">
+                <i class="fas fa-sign-in-alt login-icon" onclick="handleAuthClick(event)"></i>
+            </a>
+        `;
+    }
+}
+
+// --- SIMULATED LOGIN (for testing) ---
+function simulateLogin() {
+    const userMock = {
+        isLoggedIn: true,
+        firstName: "Sara",
+        lastName: "Khan",
+        email: "sara.khan@inkbyhand.com",
+        username: "saraink_official",
+        avatarColor: getRandomColor()
+    };
+    localStorage.setItem('userAuthData', JSON.stringify(userMock));
+    renderAuthStatus();
+    console.log('Simulated Login Success. Color updated.');
+}
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    renderAuthStatus();
+    // To simulate a logged-in user on every page load, uncomment the line below:
+    // simulateLogin(); 
+});
+   

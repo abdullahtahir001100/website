@@ -496,4 +496,9 @@
             justify-content: center;
             flex-wrap: wrap;
         }
-  
+  .icon-nav-container .cart-icon-container{
+    display: flex !important;
+  }
+  #productAddedModal{
+    z-index: 999999999999999999999999999999999;
+  }
