@@ -1170,3 +1170,10 @@ RESPONSIVENESS (Media Queries)
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
      }
+     #cookie-consent-banner{
+        padding: 45px 30px !important;
+        width: 35% !important;
+     }
+      #cookie-consent-banner p{
+        margin: 10px 0 30px 0 !important;
+      }
