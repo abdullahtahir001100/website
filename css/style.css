@@ -1177,3 +1177,6 @@ RESPONSIVENESS (Media Queries)
       #cookie-consent-banner p{
         margin: 10px 0 30px 0 !important;
       }
+       .activeate{
+    display: block !important;
+   }

@@ -6,6 +6,7 @@
     <title>Login / Register / Forgot Password - Secure Auth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="stylesheet" href="css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -101,7 +102,7 @@
             max-width: 400px;
         }
         #register-form-container, #forgot-form-container {
-            padding: 20px 30px;
+            
         }
         input {
             outline: none;
@@ -145,12 +146,12 @@
                 <form id="login-form" class="space-y-5">
                     <div>
                         <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input type="email" id="login-email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <input type="email" id="login-email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                     </div>
                     <div>
                         <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
                         <div class="relative">
-                            <input type="password" id="login-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <input type="password" id="login-password"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('login-password')">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </button>
@@ -192,17 +193,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
-                            <input type="text" id="first-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                            <input type="text" id="first-name"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                         </div>
                         <div>
                             <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                            <input type="text" id="last-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                            <input type="text" id="last-name"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                         </div>
                     </div>
                     
                     <div>
                         <label for="register-username" class="block text-sm font-medium text-gray-700">Username</label>
-                        <input type="text" id="register-username" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <input type="text" id="register-username"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                         <span id="register-username-error" class="error-message"></span>
                         
                         <div id="username-suggestions" class="mt-1 text-sm text-gray-600 space-x-2 hidden">
@@ -211,17 +212,17 @@
 
                     <div>
                         <label for="register-phone" class="block text-sm font-medium text-gray-700">Phone Number (e.g., +923001234567)</label>
-                        <input type="text" id="register-phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
+                        <input type="text" id="register-phone"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
                         <span id="register-phone-error" class="error-message"></span>
                     </div>
                     <div>
                         <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" id="register-email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <input type="email" id="register-email"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                     </div>
                     <div>
                         <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
                         <div class="relative">
-                            <input type="password" id="register-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <input type="password" id="register-password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('register-password')">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </button>
@@ -231,14 +232,14 @@
                     <div>
                         <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <div class="relative">
-                            <input type="password" id="confirm-password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
+                            <input type="password" id="confirm-password"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('confirm-password')">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </button>
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <input id="agree-terms" name="agree-terms" type="checkbox" required class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <input id="agree-terms" name="agree-terms" type="checkbox"  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                         <label for="agree-terms" class="ml-2 block text-sm text-gray-900">
                             I agree to the <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Terms & Conditions</a>
                         </label>
@@ -268,12 +269,12 @@
                     
                     <div id="forgot-email-field">
                         <label for="forgot-input" class="block text-sm font-medium text-gray-700">Enter Email Address</label>
-                        <input type="email" id="forgot-input" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <input type="email" id="forgot-input" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
                     </div>
                     
                     <div id="forgot-phone-field" class="hidden"> 
                         <label for="forgot-phone" class="block text-sm font-medium text-gray-700">Enter Phone Number (e.g., +923001234567)</label>
-                        <input type="text" id="forgot-phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
+                        <input type="text" id="forgot-phone"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" value="+92" maxlength="14">
                         <span id="forgot-phone-error" class="error-message"></span>
                     </div>
 

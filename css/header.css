@@ -5,12 +5,12 @@ body {
 
 /* Ad Popup Position (Adjusted from inline style) */
 .ad-popup {
-    left: 20px;
+  
 }
 
 /* Base Header Styles */
 .main-header {
-    width: 100%;
+    
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: sticky;
@@ -29,7 +29,7 @@ body {
 }
 
 .header-logo .logo-img {
-    height: 50px;
+    height: 80px;
     width: auto;
 }
 
@@ -123,6 +123,7 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    color: #fff !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -198,6 +199,7 @@ body {
     width: 60px;
     height: 60px;
     line-height: 60px;
+    color: #fff !important;
     font-size: 24px;
     font-weight: bold;
     margin: 0 auto 10px;
@@ -267,4 +269,12 @@ body {
     border-radius: 4px;
     background: #fff;
 }
+   header{
    
+   position: fixed !important;
+   margin-bottom: 8rem;
+   }
+   .inner{
+    margin-top: 50px;
+   }
+  

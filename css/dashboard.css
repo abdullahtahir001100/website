@@ -527,3 +527,6 @@
     .shadow-sm{
             margin-bottom: 3rem !important;
         }
+        .product-management{
+            overflow: scroll;
+        }

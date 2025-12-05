@@ -114,6 +114,26 @@
             .product-grid a {
                 width: 46%;
             }
+               .product-layout {
+               display: flex;
+               align-items: flex-start;
+               flex-direction: column;
+
+            }
+            .small-images-container{
+                  display: flex;
+                  flex-direction: row !important;
+            }
+            .smallimages,.image-column{
+                position: static !important;
+             
+            }
+            .details-column,.image-column {
+                width: 100% !important;
+            }
+            .md\:order-1{
+                order: 3 !important;
+            }
         }
 
         @media (max-width: 468px) {
@@ -502,3 +522,66 @@
   #productAddedModal{
     z-index: 999999999999999999999999999999999;
   }
+  /* Reviews Section Styling */
+.review-card {
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #fff;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.review-author {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: #1f2937;
+}
+
+.review-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.review-rating .star {
+    color: gold;
+    font-size: 1.25rem;
+    margin-right: 2px;
+}
+
+.review-body {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+}
+
+/* Star Rating for Form */
+#star-rating .star {
+    font-size: 1.75rem;
+    transition: color 0.1s;
+}
+
+#star-rating .star:hover,
+#star-rating .star.hover-star {
+    color: orange;
+}
+
+#star-rating .star.rated {
+    color: #f97316; /* Orange-600 */
+}
+#reviews-list{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+#reviews-list .review-card{
+    width: 49%;
+    margin: 0;
+}

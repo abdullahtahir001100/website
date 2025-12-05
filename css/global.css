@@ -42,12 +42,12 @@ body {
 
 /* Ad Popup Position (Adjusted from inline style) */
 .ad-popup {
-    left: 20px;
+   z-index: -1;
 }
 
 /* Base Header Styles */
 .main-header {
-    width: 100%;
+   
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: sticky;
@@ -66,7 +66,7 @@ body {
 }
 
 .header-logo .logo-img {
-    height: 50px;
+    height: 80px;
     width: auto;
 }
 
@@ -160,6 +160,7 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    color: #fff !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,6 +235,7 @@ body {
 .menu-avatar {
     width: 60px;
     height: 60px;
+    color:  #fff !important;
     line-height: 60px;
     font-size: 24px;
     font-weight: bold;
@@ -304,4 +306,7 @@ body {
     border-radius: 4px;
     background: #fff;
 }
-   
+   header{
+    margin: 30px;
+    
+   }

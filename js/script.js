@@ -461,3 +461,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start the advertising loop 3 seconds after the page loads
     setTimeout(showAdPopup, 3000);
 });
+let que = document.getElementsByClassName('question');
+let ans = document.getElementsByClassName('jsconst');
+
+for (let i = 0; i < que.length; i++) {
+    que[i].addEventListener('click', () => {
+        ans[i].classList.toggle('activeate');
+        
+    });
+}
