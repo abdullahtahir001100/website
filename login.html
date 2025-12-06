@@ -331,6 +331,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/auth.js"></script>
 <script>
     // --- Configuration ---
     const API_BASE_URL = 'http://localhost:5000/api/auth'; 
@@ -542,7 +543,7 @@
                 let errorMessage = errorJson.error || errorJson.message || `Request failed with status ${response.status}.`;
                 
                 if (errorBody.includes('duplicate key error')) {
-                     errorMessage = "Registration failed: Email, Phone, or Username already in use.";
+                    errorMessage = "Registration failed: Email, Phone, or Username already in use.";
                 }
                 
                 throw new Error(errorMessage);
@@ -725,11 +726,11 @@
         // Safety check: Only run GSAP if needed
         if (Math.abs(currentHeight - targetHeight) > 5) {
              gsap.to(authFormWrapper, { 
-                duration: 0.3, 
-                minHeight: targetHeight, 
-                ease: "power2.inOut",
-                overwrite: true 
-            });
+                 duration: 0.3, 
+                 minHeight: targetHeight, 
+                 ease: "power2.inOut",
+                 overwrite: true 
+             });
         }
 
 
@@ -826,7 +827,7 @@
             registerForm.reset();
             
             // Redirect immediately after success
-            window.location.replace(DASHBOARD_URL); 
+            // window.location.replace(DASHBOARD_URL); 
 
         } catch (err) {
             console.error('Registration API Error:', err);
@@ -899,44 +900,29 @@
             displayMessage(messageContainerId, 'Login successful!...', 'success');
             loginForm.reset();
             
-            // window.location.replace(DASHBOARD_URL); 
-
-             /* --- CRITICAL FIX FOR PREVIOUS ISSUE --- 
-               
-               In the previous turn, the icon was not changing because 
-               the login page was not storing user state (like name/color) 
-               in the browser storage before redirecting.
-               
-               For the avatar icon to work (as fixed in index.html), 
-               you MUST save the necessary user data here before redirecting.
-               
-               The following block simulates saving user data and an avatar color.
-               
-               Since the server response 'data' contains 'user', we can use that.
-               The avatar color generation is defined here, as it was not present 
-               in the original script.
-               
-             */
-
+            /* --- CRITICAL FIX FOR PREVIOUS ISSUE: Storing user state for the avatar --- */
+            
             function getRandomColor() {
+                // Generates a nice, random, non-too-bright color
                 const color = (Math.random() * 0x808080 + 0x404040).toString(16).slice(0, 6);
                 return '#' + color;
             }
             
             const userAuthData = {
                 isLoggedIn: true,
-                firstName: data.user.firstName || data.user.username.charAt(0).toUpperCase() + data.user.username.slice(1), 
+                // Use first name, falling back to capitalized username if names are missing
+                firstName: data.user.firstName || (data.user.username ? data.user.username.charAt(0).toUpperCase() + data.user.username.slice(1) : 'User'), 
                 lastName: data.user.lastName || '',
                 email: data.user.email,
                 username: data.user.username,
-                // **This is the key fix:** Generate and save a new random color for the avatar
+                // **The Key Fix:** Generate and save a random color for the avatar
                 avatarColor: getRandomColor()
             };
             
             localStorage.setItem('userAuthData', JSON.stringify(userAuthData));
             
             // Now, redirect
-            window.location.replace(DASHBOARD_URL); 
+            // window.location.replace(DASHBOARD_URL); 
             
             /* --- END CRITICAL FIX --- */
 
@@ -1026,7 +1012,7 @@
             if (authFormWrapper) {
                 authFormWrapper.innerHTML = `<div class="message info p-4 rounded-lg bg-blue-100 text-blue-800 text-center">You are already logged in....</div>`;
             }
-            window.location.replace(DASHBOARD_URL);
+            // window.location.replace(DASHBOARD_URL);
         } else {
             console.log("No AuthToken found. Displaying login form.");
         }
@@ -1099,21 +1085,14 @@
             confirmPasswordInput.addEventListener('input', validateRegistrationPasswords);
         }
 
+        // 6. Form Switch Buttons (Completing the cut-off section)
         if(switchToRegisterBtn) switchToRegisterBtn.addEventListener('click', () => switchForm(registerFormContainer));
         if(switchToLoginBtn) switchToLoginBtn.addEventListener('click', () => switchForm(loginFormContainer));
-        
-        if(forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Reset to email method if switching to forgot form
-            if (forgotMethod !== 'email') toggleForgotMethod(); 
-            switchForm(forgotFormContainer);
-        });
+        if(forgotPasswordLink) forgotPasswordLink.addEventListener('click', () => switchForm(forgotFormContainer));
         if(switchToLoginFromForgotBtn) switchToLoginFromForgotBtn.addEventListener('click', () => switchForm(loginFormContainer));
         if(switchForgotMethodBtn) switchForgotMethodBtn.addEventListener('click', toggleForgotMethod);
-
-
-        // 6. GSAP Initial Height Setup
-        // This makes the transition smooth on first load if GSAP is available
+        
+        // 7. GSAP Initial Height Setup (Ensuring smooth transition on first load)
         setTimeout(() => {
             if (authFormWrapper && loginFormContainer && document.getElementById('login-form')) { 
                 gsap.set(authFormWrapper, {
@@ -1129,7 +1108,7 @@
             }
         }, 10);
         
-        // 7. Initial Phone Input Values (Final check)
+        // 8. Initial Phone Input Values (Final check)
         if (registerPhoneInput && !registerPhoneInput.value.startsWith('+92')) registerPhoneInput.value = '+92';
         if (forgotPhoneInput && !forgotPhoneInput.value.startsWith('+92')) forgotPhoneInput.value = '+92';
 
