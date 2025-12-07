@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    }
+  ],
+  "error": {
+    "500": "errors/500.html",
+    "404": "errors/404.html",
+    "offline": "errors/offline.html"
+  }
+}
