@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
 (function () {
     // --- CONFIGURATION ---
     // ⚠️ CRITICAL: Ensure this is the correct API base URL for your backend.
-    const API_1 = 'http://localhost:5000/api'; 
+    const API_1 = 'https://backend-web-1-yb6q.vercel.app/api'; 
     const HEARTBEAT_INTERVAL_MS = 60000; // 60 seconds interval for heartbeat
     
     // --- ACTIVITY TRACKING VARIABLES ---

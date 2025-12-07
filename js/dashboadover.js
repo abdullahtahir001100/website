@@ -7,7 +7,7 @@
  */
 
 // FIX APPLIED HERE: Changed from /api/dashboard to /api/v1
-const API_PREFIX = 'https://backend-web-1.vercel.app/api/v1'; 
+const API_PREFIX = 'https://backend-web-1-yb6q.vercel.app/api/v1'; 
 
 // --- Part 1: Traffic Recording Logic ---
 

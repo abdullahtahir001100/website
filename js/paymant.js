@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------------
     // --- API & HELPER FUNCTIONS ---
     // ----------------------------------------------------------------------------------
-    const API_BASE_URL = 'https://backend-web-1.vercel.app/api'; 
+    const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api'; 
     
     /**
      * Cleans a string by removing non-numeric characters (except period and minus sign)

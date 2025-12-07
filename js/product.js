@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.querySelector('.search-icon');
     const searchBar = document.getElementById('searchBar');
     // Is page ke liye, hum saare products click count descending mein laate hain.
-    const API_URL = 'https://backend-web-1.vercel.app/api/products'; 
+    const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products'; 
     const filtersWrapper = document.querySelector('.filters-wrapper');
 
     // ⭐ NEW: Mapping palette names to actual CSS colors for display

@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // API Endpoints
     // ----------------------------------------------------
-    const API_URL = 'https://backend-web-1.vercel.app/api/products'; 
-    const REVIEWS_API_URL = 'https://backend-web-1.vercel.app/api/reviews';     // Local Reviews API
+    const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products'; 
+    const REVIEWS_API_URL = 'https://backend-web-1-yb6q.vercel.app/api/reviews';     // Local Reviews API
 
     let ALL_PRODUCTS_DATA = [];
 

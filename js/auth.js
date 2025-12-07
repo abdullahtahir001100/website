@@ -5,7 +5,7 @@
 // ====================================================================
 
 // Configuration: The base URL for your Express API
-const API_BASE = 'http://localhost:5000/api'; // Ensure this matches your backend API base URL
+const API_BASE = 'https://backend-web-1-yb6q.vercel.app/api'; // Ensure this matches your backend API base URL
 
 /**
  * Check if the 'loggedIn' cookie exists for client-side status check.
