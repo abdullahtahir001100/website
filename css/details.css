@@ -132,7 +132,7 @@
                 width: 100% !important;
             }
             .md\:order-1{
-                order: 3 !important;
+                order: 2 !important;
             }
         }
 
@@ -140,6 +140,12 @@
             .product-grid a {
                 width: 100%;
             }
+           .search-bar{
+            width: 100% !important;
+           }
+           .card-image-container{
+            height: 260px !important;
+           }
         }
 
         @media (min-width: 768px) {
@@ -584,4 +590,7 @@
 #reviews-list .review-card{
     width: 49%;
     margin: 0;
+}
+header{
+    position: relative !important;
 }

@@ -211,7 +211,7 @@
  
         const AUTH_CONTAINER = document.getElementById('auth-container');
 const LOGIN_PAGE_URL = 'login.html';
-const PROFILE_PAGE_URL = 'profile.html'; // Placeholder for profile page
+const PROFILE_PAGE_URL = 'settings.html'; // Placeholder for profile page
 const BURGER_MENU_DROPDOWN = document.getElementById('burger-menu-dropdown');
 const MENU_ICON_CONTAINER = document.getElementById('menu-icon-container');
 
