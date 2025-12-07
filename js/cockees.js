@@ -393,7 +393,7 @@ function renderAuthStatus() {
         // Not logged in: Show Login Icon
         AUTH_CONTAINER.innerHTML = `
             <a href="${LOGIN_PAGE_URL}" aria-label="Login or Register">
-                <i class="fas fa-sign-in-alt login-icon" onclick="handleAuthClick(event)"></i>
+                <img src="images/avatar.png" class="imgee" onclick="handleAuthClick(event)"></i>
             </a>
         `;
     }

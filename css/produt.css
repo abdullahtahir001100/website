@@ -24,78 +24,23 @@ body {
     background-color: #fff;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 70px;
+    transition: all 0.3s ease;
 }
 
 .logo img {
     width: 80px;
+    display: block;
 }
 
-/* --- REVISED SEARCH BAR STYLES --- */
-.search-bar-container {
-    /* Container to center the bar or align it */
-    flex-grow: 0.5;
-    display: flex;
-    justify-content: center;
-    max-width: 400px;
-    margin-left: 30px;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 6px;
-    background-color: #fefefe;
-    transition: width 0.3s ease, padding 0.3s ease;
-    /* Initially set to just hold the button */
-    width: 40px; 
-    overflow: hidden;
-}
-
-.search-bar.active {
-    /* Expanded state */
-    width: 100%;
-    max-width: 400px;
-    padding: 6px 12px;
-}
-
-.search-bar input {
-    border: none;
-    outline: none;
-    padding: 0;
-    width: 100%;
-    background-color: transparent;
-    font-size: 14px;
-    /* Hide input by making its text transparent initially, 
-       then letting it be visible in the active state */
-    opacity: 0;
-    transition: opacity 0.2s ease 0.1s; /* Slight delay for input fade-in */
-}
-
-.search-bar.active input {
-    opacity: 1;
-    padding-right: 8px; /* Add padding when visible */
-}
-
-.search-bar .search-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #888;
-    padding: 0; /* Adjusted padding */
-    flex-shrink: 0; /* Prevent the button from shrinking */
-}
-/* --- END REVISED SEARCH BAR STYLES --- */
-
-
+/* --- NAV LINKS (Desktop) --- */
 .nav-links {
     display: flex;
     align-items: center;
     margin-left: auto;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .nav-links a {
@@ -111,14 +56,15 @@ body {
     color: #000;
 }
 
+/* --- USER ACTIONS --- */
 .user-actions {
     display: flex;
     align-items: center;
-   
 }
-.user-actions img{
+
+.user-actions img {
     width: 33px;
-        position: relative;
+    position: relative;
     top: 4px;
 }
 
@@ -136,15 +82,159 @@ body {
     color: #000;
 }
 
-.menu-toggle {
-    display: none;
+/* --- SEARCH BAR STYLES (The Takeover Logic) --- */
+.search-bar-container {
+    /* Initially positioned for desktop, centered or to the right */
+    flex-grow: 0.5; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    margin-left: 30px;
+    transition: all 0.3s ease;
 }
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px;
+    width: 40px; /* Collapsed state */
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    padding: 0;
+    opacity: 0; /* Hidden state */
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.search-bar.active {
+    width: 100%;
+    max-width: 400px;
+    padding: 6px 12px;
+}
+
+.search-bar.active input {
+    opacity: 1;
+    padding-right: 8px;
+}
+
+.search-bar .search-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #888;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* The Close Button (Hidden by default) */
+.close-search-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #555;
+    margin-left: 10px;
+    line-height: 1;
+}
+
+/* --- SEARCH ACTIVE STATE (TAKEOVER) --- */
+.navbar.search-active {
+    padding: 10px;
+    justify-content: center;
+}
+
+/* Hide logo, nav links, and other buttons when search is active */
+.navbar.search-active .logo,
+.navbar.search-active .nav-links,
+.navbar.search-active .icon-btn:not(#searchIconBtn):not(#closeSearchBtn):not(#menuToggle) {
+    display: none !important;
+    opacity: 0;
+}
+
+/* Expand the search container */
+.navbar.search-active .search-bar-container {
+    width: 100%;
+    max-width: 800px; /* Use more width for the takeover */
+    margin: 0;
+    justify-content: center;
+}
+
+.navbar.search-active .search-bar {
+    width: 100%;
+    /* Keep the border/padding style of the active search bar */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 15px;
+    background-color: #fefefe;
+}
+
+.navbar.search-active .search-bar input {
+    opacity: 1;
+}
+
+.navbar.search-active .close-search-btn {
+    display: block; /* Show the close button */
+}
+
+/* --- Mobile Menu Toggle --- */
+.menu-toggle {
+    display: none; /* Default hidden on desktop */
+}
+
+/* --- MOBILE NAV OVERLAY --- */
+.mobile-nav-overlay {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+    position: absolute;
+    top: 100%; /* Pushes it below header */
+    left: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 999; /* Below the header but above content */
+}
+
+.mobile-nav-overlay.active {
+    display: flex;
+}
+
+.mobile-nav-overlay a {
+    text-decoration: none;
+    color: #333;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #f9f9f9;
+    font-weight: 500;
+}
+
 
 /* --- Main Content Layout --- */
 .content-container {
     display: flex;
     padding: 20px 40px;
     align-items: flex-start;
+}
+
+/* Product View Wrapper */
+.product-view {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- Sidebar (Filters) --- */
@@ -161,9 +251,7 @@ body {
     overflow-y: auto;
 }
 
-.filter-group {
-    margin-bottom: 20px;
-}
+.filter-group { margin-bottom: 20px; }
 
 .filter-header {
     font-size: 15px;
@@ -186,7 +274,7 @@ body {
 
 .filter-header.collapsed::after {
     content: '▼';
-    transform: rotate(180deg);
+    transform: rotate(180deg); /* Use the same icon and rotate it for collapse */
 }
 
 .filter-options-container {
@@ -202,33 +290,16 @@ body {
 }
 
 .filter-item {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 13px;
-    color: #555;
-    cursor: pointer;
+    display: block; margin-bottom: 8px; font-size: 13px; color: #555; cursor: pointer;
     user-select: none;
 }
-
-.filter-item input[type="checkbox"] {
-    margin-right: 8px;
-    accent-color: #000;
-}
+.filter-item input[type="checkbox"] { margin-right: 8px; accent-color: #000; }
 
 /* --- Color Swatches --- */
-.color-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-top: 10px;
-}
+.color-options { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
 
 .color-swatch {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    cursor: pointer;
+    width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ccc; cursor: pointer;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -241,17 +312,66 @@ body {
     border: 3px solid #000;
 }
 
-/* Swatch Colors */
-.swatch-black { background-color: #000; }
-.swatch-white { background-color: #fff; }
-.swatch-red { background-color: #f44336; }
-.swatch-blue { background-color: #2196f3; }
-.swatch-green { background-color: #4caf50; }
-.swatch-yellow { background-color: #ffeb3b; }
-.swatch-purple { background-color: #9c27b0; }
-.swatch-orange { background-color: #ff9800; }
-.swatch-brown { background-color: #795548; }
-.swatch-grey { background-color: #9e9e9e; }
+
+/* ⭐ UPDATED: Sort Controls Styling (New Button/Pill style) */
+.sort-controls {
+    display: flex;
+    justify-content: flex-end; /* Align to the right */
+    align-items: center;
+    margin-bottom: 20px;
+    padding-right: 10px;
+    font-size: 14px;
+    color: #555;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 15px; /* Spacing between label and options */
+}
+
+.sort-controls > label {
+    font-weight: 600;
+    color: #333;
+    /* Ensure label aligns nicely with the pills */
+    align-self: flex-start;
+    padding-top: 6px; 
+}
+
+.sort-options {
+    display: flex;
+    gap: 10px; /* Spacing between pills */
+    flex-wrap: wrap;
+}
+
+/* Hide the actual radio buttons */
+.sort-options input[type="radio"] {
+    display: none;
+}
+
+.sort-pill {
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px; /* Pill shape */
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.2s ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.sort-pill:hover {
+    border-color: #aaa;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Style for the selected pill */
+.sort-options input[type="radio"]:checked + .sort-pill {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 
 /* --- Art Gallery Grid --- */
@@ -273,9 +393,6 @@ body {
     flex-direction: column;
     text-decoration: none;
     color: inherit;
-}
-.product-grid a{
-    width: 30%;
 }
 
 .art-card:hover {
@@ -366,14 +483,10 @@ body {
     color: #000;
     margin-top: 5px;
 }
-
-.dimensions {
-    margin: 0;
-    font-size: 11px;
-    color: #999;
-    margin-top: 2px;
-    font-weight: 400;
+.product-grid {
+    width: 100%;
 }
+
 
 /* --- Footer --- */
 footer {
@@ -422,11 +535,7 @@ footer a {
 footer a:hover {
     color: #fff;
 }
-footer img.m, footer img.n {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-}
+
 .copy {
     text-align: center;
     border-top: 1px solid #333;
@@ -441,147 +550,79 @@ footer img.m, footer img.n {
     .navbar {
         padding: 15px 20px;
     }
-    .search-bar-container {
-        /* On smaller screens, allow it to take more space */
-        max-width: 300px;
-        
-        flex-grow: 1;
-    }
-    .content-container {
-        padding: 20px;
-    }
     .sidebar {
         flex: 0 0 200px;
         margin-right: 20px;
     }
-    .art-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-    }
 }
 
 @media (max-width: 768px) {
-   
     .navbar {
+        flex-wrap: nowrap; /* Keep header elements in a single row */
+        justify-content: space-between;
+        padding: 10px 15px;
+    }
+
+    /* Hide desktop nav links and show menu toggle */
+    .nav-links {
+        display: none;
+    }
+    .menu-toggle {
+        display: block; 
+        margin-left: 10px;
+    }
+    
+    /* Modify search bar for mobile default state */
+    .search-bar-container {
+        /* Ensure search bar stays small and on the right */
+        flex-grow: 0;
+        margin-left: 0;
+        max-width: 40px; /* Only visible icon */
+    }
+    .search-bar {
+        width: 40px;
+        padding: 6px;
+    }
+
+    /* Adjust takeover for mobile */
+    .navbar.search-active {
+        padding: 10px; /* Reset padding for full width takeover */
+    }
+    .navbar.search-active .search-bar-container {
+        /* Take full width minus the close button */
+        max-width: calc(100% - 40px);
+    }
+    
+    .content-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+    .sidebar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+        position: static; /* Remove sticky on mobile */
+        max-height: 400px;
+    }
+
+    /* ⭐ UPDATED: Mobile Sort Controls */
+    .sort-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 10px;
+        padding-right: 0;
+    }
+    .sort-controls > label {
+        align-self: flex-start;
+        padding: 0;
+    }
+
+    .sort-options {
         flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 15px;
-    }
-    .search-bar-container {
-        /* Move search bar below logo/actions */
-       
-        max-width: 100%;
-        justify-content: flex-end; /* Align icon to the right when collapsed */
-    }
-    .search-bar {
-        width: 18%; /* Default width when expanded on mobile */
-        justify-content: flex-end; /* Push button to the end when collapsed */
-    }
-    .search-bar.active {
-        justify-content: space-between;
-        padding-left: 12px;
-    }
-    .nav-links {
-        display: none;
-        flex-basis: 100%;
-        flex-direction: column;
-        margin-top: 10px;
-        padding-bottom: 10px;
-        border-top: 1px solid #eee;
-    }
-    .nav-links.active {
-        display: flex;
-    }
-    .nav-links a {
-        margin: 8px 0;
-        text-align: center;
-    }
-    .menu-toggle {
-        display: block;
-        margin-left: 10px;
-    }
-    .content-container {
-        flex-direction: column;
-        padding: 15px;
-    }
-    .sidebar {
         width: 100%;
-        margin-right: 0;
-        margin-bottom: 20px;
-        position: static;
-        max-height: 400px;
     }
-    .art-gallery {
-        
-        gap: 15px;
-    }
-    footer .align {
-        flex-direction: column;
-    }
-    footer .sec-1 {
-        flex: 1 1 100%;
-    }
-}
 
-@media (max-width: 768px) {
-    .search-bar-container a{
-        margin: 0 auto;
-    }
-    .navbar {
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 15px;
-    }
-   
-    .search-bar-container {
-        /* Move search bar below logo/actions */
-        
-        max-width: 100%;
-        justify-content: flex-end; /* Align icon to the right when collapsed */
-    }
-    .search-bar {
-        width: 18%; /* Default width when expanded on mobile */
-        justify-content: flex-end; /* Push button to the end when collapsed */
-    }
-    .search-bar.active {
-        justify-content: space-between;
-        padding-left: 12px;
-    }
-    .nav-links {
-        display: none;
-        flex-basis: 100%;
-        flex-direction: column;
-        margin-top: 10px;
-        padding-bottom: 10px;
-        border-top: 1px solid #eee;
-    }
-    .nav-links.active {
-        display: flex;
-    }
-    .nav-links a {
-        margin: 8px 0;
-        text-align: center;
-    }
-    .menu-toggle {
-        display: block;
-        margin-left: 10px;
-    }
-    .content-container {
-        flex-direction: column;
-        padding: 15px;
-    }
-    .product-grid a{
-    width: 43%;
-}
-    .sidebar {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 20px;
-        position: static;
-        max-height: 400px;
-    }
     .art-gallery {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 15px;
@@ -589,19 +630,6 @@ footer img.m, footer img.n {
     footer .align {
         flex-direction: column;
     }
-    footer .sec-1 {
-        flex: 1 1 100%;
-    }
-}
-.none{
-    display: none;
-}
-.product-grid{
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
 }
 
 @media (max-width: 480px) {
@@ -611,10 +639,4 @@ footer img.m, footer img.n {
     .card-image-container {
         height: 160px;
     }
-     .product-grid a{
-    width: 93%;
-}
-}
-.product-grid{
-    width: 100%;
 }

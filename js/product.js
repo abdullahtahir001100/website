@@ -5,9 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const productGrid = document.getElementById('artGallery');
     const searchInput = document.getElementById('searchInput');
-    const searchButton = document.querySelector('.search-icon');
     const searchBar = document.getElementById('searchBar');
-    // Is page ke liye, hum saare products click count descending mein laate hain.
+    
+    // UI Elements for fixes
+    const searchIconBtn = document.getElementById('searchIconBtn');
+    const closeSearchBtn = document.getElementById('closeSearchBtn');
+    const mainHeader = document.getElementById('mainHeader');
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    
+    // ⭐ UPDATED: Target the container div instead of a select element
+    const sortOptionsContainer = document.getElementById('sortOptions'); 
+    
     const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products'; 
     const filtersWrapper = document.querySelector('.filters-wrapper');
 
@@ -20,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'earthy': '#8B4513', // Example brown
         'cool': '#00BFFF', // Example deep sky blue
         'warm': '#FFA500', // Example orange
-        // Add more mappings as per your palette values in the backend
     };
 
     // Helper to prevent XSS issues
@@ -42,19 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ⭐ NEW FUNCTION: Send API call to increment click_count
+    // Send API call to increment click_count on card click
     async function increaseClickCount(productId) {
         try {
-            // Hum detail page ke API ko call kar rahe hain, jo count ko increment karta hai.
-            // Hum sirf GET request bhejenge, aur response ko ignore kar denge.
             await fetch(`${API_URL}/${productId}`, {
                 method: 'GET'
             });
-            // Console mein success message
             console.log(`Click count incremented for product ID: ${productId}`);
         } catch (error) {
             console.error('Failed to increment click count:', error);
-            // Error hone par bhi navigation hone denge.
         }
     }
 
@@ -63,23 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function extractUniqueFilters(products) {
         const filters = {
-            category: new Set(),
-            style: new Set(),
-            subject: new Set(),
-            medium: new Set(),
-            size: new Set(),
-            orientation: new Set(),
-            palette: new Set(), // Using 'palette'
-            priceRange: [
-                'under-500', '500-1000', '1000-2000', '2000-5000'
-            ]
+            category: new Set(), style: new Set(), subject: new Set(), medium: new Set(),
+            size: new Set(), orientation: new Set(), palette: new Set(), 
+            priceRange: ['under-500', '500-1000', '1000-2000', '2000-5000']
         };
         const priceDisplayMap = {
-            'under-500': 'Under $500',
-            '500-1000': '$500 - $1,000',
-            '1000-2000': '$1,000 - $2,000',
-            '2000-5000': '$2,000 - $5,000'
+            'under-500': 'Under $500', '500-1000': '$500 - $1,000',
+            '1000-2000': '$1,000 - $2,000', '2000-5000': '$2,000 - $5,000'
         };
+        
         products.forEach(product => {
             if (product.category) filters.category.add(product.category);
             if (product.medium) filters.medium.add(product.medium);
@@ -87,12 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (product.subject) filters.subject.add(product.subject);
             if (product.size) filters.size.add(product.size);
             if (product.orientation) filters.orientation.add(product.orientation);
-
-            // Corrected: Use 'palette' field (which is an array)
             if (product.palette && Array.isArray(product.palette)) {
                 product.palette.forEach(c => filters.palette.add(c));
             }
         });
+        
         for (const key in filters) {
             if (key === 'priceRange') {
                 FILTER_OPTIONS[key] = filters[key].map(value => ({ value: value, display: priceDisplayMap[value] }));
@@ -120,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!options || options.length === 0) return '';
         const displayTitle = (type === 'palette' ? 'COLOR' : title.toUpperCase());
         const isPaletteFilter = type === 'palette';
-        const isPriceFilter = type === 'priceRange';
         let optionsHtml = '';
 
         if (isPaletteFilter) {
@@ -183,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!productGrid) return;
         productGrid.innerHTML = '<p style="padding: 50px 0; text-align: center;">Fetching artwork and building filters...</p>';
         try {
-            // API call now brings all products sorted by click_count descending
             const response = await fetch(API_URL);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -193,9 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 ...product,
                 id: product._id,
                 image: product.mainImage,
+                // Ensure click_count is present for sorting
+                click_count: product.click_count || 0,
                 priceValue: product.price ? parseFloat(product.price) : 0,
                 price: typeof product.price === 'number' ? `$${product.price.toLocaleString('en-US')}` : product.price
-
             }));
 
             extractUniqueFilters(ALL_PRODUCTS_DATA);
@@ -261,8 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (type === 'searchQuery' || state[type].size === 0) continue;
 
                 const activeValues = state[type];
-                const requiredValues = Array.from(activeValues).map(v => 
-                    v.toLowerCase());
+                const requiredValues = Array.from(activeValues).map(v => v.toLowerCase());
 
                 let matchesFilter = false;
 
@@ -279,15 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     continue;
                 }
 
-                if (type === 'size' || type === 'orientation') {
-                    const productValueRaw = product[type];
-                    if (!productValueRaw) return false;
-                    const productValueLower = String(productValueRaw).toLowerCase();
-                    matchesFilter = requiredValues.some(rv => rv === productValueLower);
-                    if (!matchesFilter) return false;
-                    continue;
-                }
-
                 // PALETTE (Color) Filter
                 if (type === 'palette') {
                     const productPalette = product.palette;
@@ -299,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     continue;
                 }
 
-                // Standard filters (Category, Style, Medium, Subject)
+                // Standard filters (Category, Style, Medium, Subject, Size, Orientation)
                 const productValueRaw = product[type];
                 if (!productValueRaw) return false;
 
@@ -316,18 +300,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Product Card Rendering (MODIFIED) ---
+    // Apply Sorting to the filtered products
+    function applySorting(products, sortOrder) {
+        // Create a mutable copy
+        const sortedProducts = [...products]; 
+        
+        switch (sortOrder) {
+            case 'newest':
+                // Sort by id, which is a common proxy for creation date in MongoDB ObjectIds.
+                return sortedProducts.sort((a, b) => (b.id > a.id) ? 1 : -1); 
+            case 'price-asc':
+                return sortedProducts.sort((a, b) => a.priceValue - b.priceValue);
+            case 'price-desc':
+                return sortedProducts.sort((a, b) => b.priceValue - a.priceValue);
+            case 'popular': 
+            default:
+                // Sort by click_count descending (Most Popular)
+                return sortedProducts.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
+        }
+    }
+
+    // --- Product Card Rendering ---
     function createProductCard(product) {
         const cardLink = document.createElement('a');
         cardLink.classList.add('art-card');
         cardLink.href = `detail.html?id=${product.id}`; // Navigation link
-        // ⭐ NEW: Add listener to link to increment click count before navigation
-        cardLink.addEventListener('click', (e) => {
-             // e.preventDefault(); // Don't prevent navigation, just do the API call first
+        
+        cardLink.addEventListener('click', () => {
              increaseClickCount(product.id);
-             // The browser will continue the navigation to 'detail.html?id=...'
         });
-
 
         const safeTitle = escapeHtml(product.title || '');
         const safeArtist = escapeHtml(product.artist || '');
@@ -346,7 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 class="title">${safeTitle}</h3>
                 <p class="artist">${safeArtist}</p>
                 <p class="price">${safePrice}</p>
-    
             </div>
         `;
         const addToCartBtn = cardLink.querySelector('.add-to-cart');
@@ -355,7 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // Prevent link navigation
                 e.stopPropagation(); // Stop event from bubbling up to the cardLink
                 alert(`Added ${safeTitle} to cart!`);
-                // Note: Agar aap cart mein add karte hain, toh click count nahi badhega.
             });
         }
 
@@ -364,7 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderFilteredProducts() {
         const activeState = getActiveState();
-        const filteredProducts = filterProducts(ALL_PRODUCTS_DATA, activeState);
+        let filteredProducts = filterProducts(ALL_PRODUCTS_DATA, activeState);
+        
+        // ⭐ UPDATED: Get the value from the currently checked radio button
+        const currentSortInput = document.querySelector('#sortOptions input[type="radio"]:checked');
+        const currentSortOrder = currentSortInput ? currentSortInput.value : 'popular';
+        
+        filteredProducts = applySorting(filteredProducts, currentSortOrder);
 
         if (!productGrid) return;
 
@@ -415,25 +420,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Search Logic ---
+    // Search Logic (Takeover)
     const handleSearchToggle = () => {
-        const isExpanded = searchBar.classList.contains('active');
+        const isHeaderActive = mainHeader.classList.contains('search-active');
+        const isSearchBarActive = searchBar.classList.contains('active');
         const query = searchInput.value.trim();
 
-        if (isExpanded) {
+        if (isHeaderActive) {
             renderFilteredProducts(); 
-
-            if (query === "") { 
-                searchBar.classList.remove('active');
-            }
+        } else if (isSearchBarActive) {
+            searchBar.classList.remove('active');
+            renderFilteredProducts();
         } else {
-            searchBar.classList.add('active');
+            searchBar.classList.add('active'); 
             searchInput.focus();
+            
+            if (window.innerWidth <= 768) {
+                mainHeader.classList.add('search-active');
+            }
         }
     };
 
-    if (searchButton) searchButton.addEventListener('click', handleSearchToggle);
+    const handleSearchClose = () => {
+        searchInput.value = '';
+        mainHeader.classList.remove('search-active');
+        searchBar.classList.remove('active');
+        renderFilteredProducts();
+    };
 
+
+    if (searchIconBtn) searchIconBtn.addEventListener('click', handleSearchToggle);
+    if (closeSearchBtn) closeSearchBtn.addEventListener('click', handleSearchClose);
+    
+    // Allow Enter key to search
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -442,6 +461,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchInput.blur();
             }
         });
+    }
+
+    // Mobile Menu Logic (Burger Button)
+    if (menuToggle && mobileNav) {
+        menuToggle.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
+        });
+    }
+    
+    // ⭐ UPDATED: Listener for the new radio buttons in the sort options container
+    if (sortOptionsContainer) {
+        sortOptionsContainer.addEventListener('change', renderFilteredProducts);
     }
 
     // --- Initial Load ---

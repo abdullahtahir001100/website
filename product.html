@@ -7,54 +7,79 @@
     <title>ink by hand product page</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/produt.css">
-    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" href="images/logo.jpg" />
 </head>
 
 <body>
-    <header class="navbar">
+    <header class="navbar" id="mainHeader">
         <div class="logo">
-            <a href="index.html"><img
-                    src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                    alt="ARTIFY Logo"></a>
+            <a href="index.html">
+                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="ARTIFY Logo">
+            </a>
         </div>
 
-        <nav class="nav-links" id="">
+        <nav class="nav-links">
             <a href="about.html">About</a>
             <a href="product.html">Shop</a>
             <a href="contect.html">Contacts</a>
         </nav>
+
         <div class="user-actions">
             <div class="search-bar-container">
                 <div class="search-bar" id="searchBar">
-                    <input type="text" id="searchInput" placeholder="Search by title, artist, or style">
-                    <button class="search-icon" aria-label="Search Toggle/Submit">🔍</button>
+                    <input type="text" id="searchInput" placeholder="Search by title, artist, or style...">
+                    <button class="search-icon" id="searchIconBtn" aria-label="Search">
+                        <img src="images/search.png" alt="Search" style="width: 20px;">
+                    </button>
                 </div>
+                <button class="close-search-btn" id="closeSearchBtn">×</button>
             </div>
-            <a href="cart.html" class="icon-btn" aria-label="Cart"><img src="images/trolley.png" alt=""></a>
-            <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu"><img src="images/ui.png"
-                    alt=""></button>
+
+            <a href="cart.html" class="icon-btn" aria-label="Cart">
+                <img src="images/trolley.png" alt="Cart">
+            </a>
+
+            <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <img src="images/ui.png" alt="Menu" style="width: 20px;">
+            </button>
         </div>
-        <nav class="nav-links none" id="navLinks">
+
+        <div class="mobile-nav-overlay" id="mobileNav">
             <a href="about.html">About</a>
             <a href="product.html">Shop</a>
             <a href="contect.html">Contacts</a>
-        </nav>
+        </div>
     </header>
 
     <main class="content-container">
         <aside class="sidebar" id="sidebar">
-
             <div class="filters-wrapper">
-                <p style="text-align: center;
-padding: 10px;">Loading Filters...</p>
+                <p style="text-align: center; padding: 10px;">Loading Filters...</p>
             </div>
         </aside>
 
-        <section class="art-gallery product-grid" id="artGallery">
-            <p>Loading artwork...</p>
-        </section>
+        <section class="product-view">
+            <div class="sort-controls">
+                <label>Sort By:</label>
+                <div class="sort-options" id="sortOptions">
+                    <input type="radio" id="sort-popular" name="sortOrder" value="popular" checked>
+                    <label for="sort-popular" class="sort-pill">Most Popular</label>
 
+                    <input type="radio" id="sort-newest" name="sortOrder" value="newest">
+                    <label for="sort-newest" class="sort-pill">Newest Arrivals</label>
+
+                    <input type="radio" id="sort-price-asc" name="sortOrder" value="price-asc">
+                    <label for="sort-price-asc" class="sort-pill">Price: Low to High</label>
+
+                    <input type="radio" id="sort-price-desc" name="sortOrder" value="price-desc">
+                    <label for="sort-price-desc" class="sort-pill">Price: High to Low</label>
+                </div>
+            </div>
+            
+            <section class="art-gallery product-grid" id="artGallery">
+                <p style="padding: 20px;">Loading artwork...</p>
+            </section>
+        </section>
     </main>
 
     <footer>
@@ -65,8 +90,7 @@ padding: 10px;">Loading Filters...</p>
                         class="logos" alt="Footer Logo">
                 </div>
                 <div class="pera">
-                    InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and
-                    expression.
+                    InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and expression.
                 </div>
             </div>
             <div class="sec-1">
@@ -86,24 +110,16 @@ padding: 10px;">Loading Filters...</p>
             <div class="sec-1">
                 <ul>
                     <li>Get In Touch</li>
-                    <li>
-                        <a href=""><img src="https://www.javehandmade.store/instagram.png" class="m"> instagram.com /
-                            ink_by_hand_12</a>
-                    </li>
-                    <li>
-                        <a href=""><img src="https://www.javehandmade.store/whatsapp.png" class="n">+92-310-7581250</a>
-                    </li>
+                    <li><a href="">instagram.com/ink_by_hand_12</a></li>
+                    <li><a href="">+92-310-7581250</a></li>
                 </ul>
             </div>
         </div>
         <div class="copy">
-            Copyright © 2025 inkbyhand.com |
-            Powered by inkbyhand.com
+            Copyright © 2025 inkbyhand.com | Powered by inkbyhand.com
         </div>
     </footer>
 
     <script src="js/product.js"></script>
-    <script src="js/dashboadover.js"></script>
 </body>
-
 </html>
