@@ -1,4 +1,4 @@
- // ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
     // --- API & HELPER FUNCTIONS ---
     // ----------------------------------------------------------------------------------
     const API_BASE_URL = 'https://backend-web-1.vercel.app/api'; 
@@ -61,6 +61,54 @@
     let BASE_SUBTOTAL = 0;
     const BASE_SHIPPING = 250;
     
+    // ----------------------------------------------------------------------------------
+    // --- USER AUTH DATA POPULATION (NEW FUNCTION) ---
+    // ----------------------------------------------------------------------------------
+    function prefillUserData() {
+        const authData = localStorage.getItem('userAuthData');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+
+        if (authData) {
+            try {
+                const user = JSON.parse(authData);
+                
+                // 1. Populate Name (First + Last)
+                if (nameInput) {
+                    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+                    nameInput.value = fullName;
+                    nameInput.readOnly = true;
+                    // Visual cues for readonly state
+                    nameInput.style.backgroundColor = '#e9ecef';
+                    nameInput.style.cursor = 'not-allowed';
+                    nameInput.style.color = '#495057';
+                }
+
+                // 2. Populate Email
+                if (emailInput) {
+                    emailInput.value = user.email || '';
+                    emailInput.readOnly = true;
+                    // Visual cues for readonly state
+                    emailInput.style.backgroundColor = '#e9ecef';
+                    emailInput.style.cursor = 'not-allowed';
+                    emailInput.style.color = '#495057';
+                }
+            } catch (e) {
+                console.error("Error parsing userAuthData", e);
+            }
+        } else {
+            // No local storage data? Ensure fields are editable and required
+            if (nameInput) {
+                nameInput.readOnly = false;
+                nameInput.required = true;
+            }
+            if (emailInput) {
+                emailInput.readOnly = false;
+                emailInput.required = true;
+            }
+        }
+    }
+
     // ----------------------------------------------------------------------------------
     // --- FETCH & MERGE PRODUCT DATA ---
     // ----------------------------------------------------------------------------------
@@ -580,19 +628,22 @@
     // ----------------------------------------------------------------------------------
     
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Initial product render (includes 404 check)
+        // 1. Prefill user data if logged in
+        prefillUserData();
+
+        // 2. Initial product render (includes 404 check)
         renderProductList().then(() => { 
             // This code only runs if the cart was NOT empty
             initializeMap();
             toggleSubmitButton(); 
             
             const initialPaymentMethod = document.querySelector('input[name="payment_method"]:checked') 
-                                            ? document.querySelector('input[name="payment_method"]:checked').value 
-                                            : 'card';
+                                                                    ? document.querySelector('input[name="payment_method"]:checked').value 
+                                                                    : 'card';
             showPaymentDetails(initialPaymentMethod);
         });
 
-        // 2. Event Listeners
+        // 3. Event Listeners
         const form = document.getElementById('checkout-form'); 
         if (form) {
             form.addEventListener('submit', validateAndSubmit);

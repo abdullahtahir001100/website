@@ -5,7 +5,7 @@
 // ====================================================================
 
 // Configuration: The base URL for your Express API
-const API_BASE = 'http://localhost:5000/api'; 
+const API_BASE = 'http://localhost:5000/api'; // Ensure this matches your backend API base URL
 
 /**
  * Check if the 'loggedIn' cookie exists for client-side status check.
@@ -70,5 +70,5 @@ const logoutUser = async () => {
     document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     
     // Redirect to login page
-    window.location.href = '/login.html';
+    // window.location.href = '/login.html';
 };

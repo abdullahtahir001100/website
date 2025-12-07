@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', initializeDashboard);
 // Yeh script aapke backend tracking routes ko call karne ke liye zaroori hai.
 
 // API ka base path. Assuming aapka frontend aur backend same domain par hain.
-const API_BASE = '/api/tracking'; 
+const API_2 = '/api/tracking'; 
 let currentPage = window.location.pathname; // Current page ka URL path
 
 /**
@@ -297,7 +297,7 @@ async function makeRequest(endpoint, method = 'GET', body = null) {
             body: body ? JSON.stringify(body) : null
         };
         
-        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        const response = await fetch(`${API_2}${endpoint}`, options);
         
         if (!response.ok) {
             console.error(`HTTP error! status: ${response.status} at ${endpoint}`);
