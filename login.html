@@ -905,7 +905,7 @@
             
             localStorage.setItem('userAuthData', JSON.stringify(userAuthData));
             
-            const redirectUrl = data.user.role === 'admin' ? 'admin.html' : 'index.html';
+            const redirectUrl = data.user.role === 'admin' ? 'dashboard/overview.html' : 'index.html';
             window.location.replace(redirectUrl);
 
         } catch (err) {
