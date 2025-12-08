@@ -725,6 +725,9 @@ RESPONSIVENESS (Media Queries)
         margin: 30px 10px;
         font-size: 16px;
     }
+    .user-menu-popup {
+        right: -128px !important;
+    }
 }
 /* Default (hidden) for small screens */
 #nav-links {
@@ -1172,7 +1175,7 @@ RESPONSIVENESS (Media Queries)
      }
      #cookie-consent-banner{
         padding: 45px 30px !important;
-        width: 35% !important;
+        
      }
       #cookie-consent-banner p{
         margin: 10px 0 30px 0 !important;
