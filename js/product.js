@@ -7,28 +7,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const searchBar = document.getElementById('searchBar');
     
-    // UI Elements for fixes
+    // UI Elements
     const searchIconBtn = document.getElementById('searchIconBtn');
     const closeSearchBtn = document.getElementById('closeSearchBtn');
     const mainHeader = document.getElementById('mainHeader');
     const menuToggle = document.getElementById('menuToggle');
     const mobileNav = document.getElementById('mobileNav');
     
-    // ⭐ UPDATED: Target the container div instead of a select element
     const sortOptionsContainer = document.getElementById('sortOptions'); 
+    
+    // ⭐ NEW: Filter Toggle Elements
+    const filterTogglePill = document.getElementById('filterTogglePill');
+    const contentContainer = document.querySelector('.content-container');
+    const filterToggleIcon = filterTogglePill ? filterTogglePill.querySelector('.icon-toggle') : null;
     
     const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products'; 
     const filtersWrapper = document.querySelector('.filters-wrapper');
 
-    // ⭐ NEW: Mapping palette names to actual CSS colors for display
+    // Mapping palette names to actual CSS colors for display
     const colorMap = {
-        'monochromatic': '#A0A0A0', // Example grey
-        'analogous': '#4CAF50', // Example green/blue tone
-        'pastel': '#FFB6C1', // Example light pink
-        'vibrant': '#FF0000', // Example red
-        'earthy': '#8B4513', // Example brown
-        'cool': '#00BFFF', // Example deep sky blue
-        'warm': '#FFA500', // Example orange
+        'monochromatic': '#A0A0A0', 
+        'analogous': '#4CAF50', 
+        'pastel': '#FFB6C1', 
+        'vibrant': '#FF0000', 
+        'earthy': '#8B4513', 
+        'cool': '#00BFFF', 
+        'warm': '#FFA500', 
     };
 
     // Helper to prevent XSS issues
@@ -63,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- CORE LOGIC: Dynamic Filter Extraction ---
+    // --- CORE LOGIC: Dynamic Filter Extraction & Rendering ---
 
     function extractUniqueFilters(products) {
         const filters = {
@@ -206,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Filter State ---
+    // --- Filter State & Logic ---
 
     function getActiveState() {
         const activeState = {
@@ -236,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return activeState;
     }
 
-    // --- Filter Logic ---
     function filterProducts(products, state) {
         return products.filter(product => {
             if (state.searchQuery) {
@@ -365,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeState = getActiveState();
         let filteredProducts = filterProducts(ALL_PRODUCTS_DATA, activeState);
         
-        // ⭐ UPDATED: Get the value from the currently checked radio button
+        // Get the value from the currently checked radio button
         const currentSortInput = document.querySelector('#sortOptions input[type="radio"]:checked');
         const currentSortOrder = currentSortInput ? currentSortInput.value : 'popular';
         
@@ -419,6 +422,22 @@ document.addEventListener('DOMContentLoaded', () => {
             header.addEventListener('click', toggleFilterCollapse);
         });
     }
+    
+    // ⭐ NEW FUNCTION: Handle filter sidebar toggle
+    function handleFilterToggle() {
+        if (!contentContainer || !filterTogglePill || !filterToggleIcon) return;
+        
+        const isHidden = contentContainer.classList.toggle('sidebar-hidden');
+        
+        if (isHidden) {
+            filterTogglePill.innerHTML = '<span class="icon-toggle">+</span> Show Filters';
+            filterTogglePill.setAttribute('aria-expanded', 'false');
+        } else {
+            filterTogglePill.innerHTML = '<span class="icon-toggle">✖</span> Hide Filters';
+            filterTogglePill.setAttribute('aria-expanded', 'true');
+        }
+    }
+
 
     // Search Logic (Takeover)
     const handleSearchToggle = () => {
@@ -470,9 +489,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ⭐ UPDATED: Listener for the new radio buttons in the sort options container
+    // Listener for the sort radio buttons
     if (sortOptionsContainer) {
         sortOptionsContainer.addEventListener('change', renderFilteredProducts);
+    }
+    
+    // ⭐ NEW: Listener for filter toggle pill
+    if (filterTogglePill) {
+        filterTogglePill.addEventListener('click', handleFilterToggle);
     }
 
     // --- Initial Load ---

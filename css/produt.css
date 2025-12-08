@@ -228,6 +228,12 @@ body {
     display: flex;
     padding: 20px 40px;
     align-items: flex-start;
+    transition: all 0.3s ease-in-out; /* Smooth transition when sidebar hides */
+}
+
+/* Sidebar Toggle Logic: Class applied to .content-container when filters are hidden */
+.content-container.sidebar-hidden .sidebar {
+    display: none; /* Hide the sidebar completely */
 }
 
 /* Product View Wrapper */
@@ -236,6 +242,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 
 /* --- Sidebar (Filters) --- */
 .sidebar {
@@ -249,6 +256,7 @@ body {
     top: 80px;
     max-height: calc(100vh - 100px);
     overflow-y: auto;
+    transition: all 0.3s ease-in-out;
 }
 
 .filter-group { margin-bottom: 20px; }
@@ -313,24 +321,33 @@ body {
 }
 
 
-/* ⭐ UPDATED: Sort Controls Styling (New Button/Pill style) */
-.sort-controls {
+/* --- Filter & Sort Controls Styling (Pill style) --- */
+
+/* NEW: Wrapper for Filter Toggle and Sort Controls */
+.product-controls-row {
     display: flex;
-    justify-content: flex-end; /* Align to the right */
+    /* Aligns filter toggle to left, sort to right */
+    justify-content: space-between; 
     align-items: center;
     margin-bottom: 20px;
     padding-right: 10px;
+    flex-wrap: wrap; 
+    gap: 10px 30px; /* Vertical and horizontal gap */
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between 'Sort By' label and pills */
     font-size: 14px;
     color: #555;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    gap: 15px; /* Spacing between label and options */
+    /* Ensure sort options group stays on the right on desktop */
+    margin-left: auto;
 }
 
 .sort-controls > label {
     font-weight: 600;
     color: #333;
-    /* Ensure label aligns nicely with the pills */
-    align-self: flex-start;
     padding-top: 6px; 
 }
 
@@ -357,6 +374,10 @@ body {
     transition: all 0.2s ease;
     user-select: none;
     white-space: nowrap;
+    
+    /* Ensure all pills are styled as buttons */
+    box-sizing: border-box; 
+    text-align: center;
 }
 
 .sort-pill:hover {
@@ -365,12 +386,37 @@ body {
     color: #333;
 }
 
-/* Style for the selected pill */
+/* Style for the selected sort pill */
 .sort-options input[type="radio"]:checked + .sort-pill {
     background-color: #000;
     color: #fff;
     border-color: #000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* NEW: Filter Toggle Specific Styles */
+.filter-toggle-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    color: #000;
+    border-color: #000;
+    background-color: #fff;
+    flex-shrink: 0;
+}
+
+.filter-toggle-pill .icon-toggle {
+    font-size: 10px;
+    line-height: 1;
+    transition: transform 0.3s ease;
+    font-weight: 700;
+}
+
+/* Rotate the icon when filters are hidden (for 'Show Filters' state) */
+.filter-toggle-pill[aria-expanded="false"] .icon-toggle {
+    /* From X to a rotated X or a plus sign */
+    transform: rotate(45deg); 
 }
 
 
@@ -383,6 +429,7 @@ body {
 }
 
 .art-card {
+    /* ... (rest of .art-card styles unchanged) ... */
     background-color: #fff;
     border-radius: 0px;
     overflow: hidden;
@@ -597,6 +644,8 @@ footer a:hover {
         flex-direction: column;
         padding: 15px;
     }
+    
+    /* Sidebar is full width on mobile, and is toggled via display: none */
     .sidebar {
         width: 100%;
         margin-right: 0;
@@ -605,22 +654,30 @@ footer a:hover {
         max-height: 400px;
     }
 
-    /* ⭐ UPDATED: Mobile Sort Controls */
+    /* Mobile Sort & Filter Controls */
+    .product-controls-row {
+        /* Allow the Filter toggle to be on one row, and the Sort controls to wrap below */
+        justify-content: flex-start; 
+        gap: 10px;
+    }
+    
     .sort-controls {
+        /* Ensure sort controls stack below the filter toggle */
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
-        margin-top: 10px;
-        padding-right: 0;
+        width: 100%; /* Take full width on a new line */
+        margin-left: 0; /* Reset auto margin */
     }
-    .sort-controls > label {
-        align-self: flex-start;
-        padding: 0;
-    }
-
+    
     .sort-options {
         flex-wrap: wrap;
         width: 100%;
+    }
+    
+    .sort-controls > label {
+        align-self: flex-start;
+        padding: 0;
     }
 
     .art-gallery {

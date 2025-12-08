@@ -59,20 +59,26 @@
         </aside>
 
         <section class="product-view">
-            <div class="sort-controls">
-                <label>Sort By:</label>
-                <div class="sort-options" id="sortOptions">
-                    <input type="radio" id="sort-popular" name="sortOrder" value="popular" checked>
-                    <label for="sort-popular" class="sort-pill">Most Popular</label>
+            <div class="product-controls-row">
+                <button class="sort-pill filter-toggle-pill" id="filterTogglePill" aria-expanded="true">
+                    <span class="icon-toggle">✖</span> Hide Filters
+                </button>
+                
+                <div class="sort-controls">
+                    <label>Sort By:</label>
+                    <div class="sort-options" id="sortOptions">
+                        <input type="radio" id="sort-popular" name="sortOrder" value="popular" checked>
+                        <label for="sort-popular" class="sort-pill">Most Popular</label>
 
-                    <input type="radio" id="sort-newest" name="sortOrder" value="newest">
-                    <label for="sort-newest" class="sort-pill">Newest Arrivals</label>
+                        <input type="radio" id="sort-newest" name="sortOrder" value="newest">
+                        <label for="sort-newest" class="sort-pill">Newest Arrivals</label>
 
-                    <input type="radio" id="sort-price-asc" name="sortOrder" value="price-asc">
-                    <label for="sort-price-asc" class="sort-pill">Price: Low to High</label>
+                        <input type="radio" id="sort-price-asc" name="sortOrder" value="price-asc">
+                        <label for="sort-price-asc" class="sort-pill">Price: Low to High</label>
 
-                    <input type="radio" id="sort-price-desc" name="sortOrder" value="price-desc">
-                    <label for="sort-price-desc" class="sort-pill">Price: High to Low</label>
+                        <input type="radio" id="sort-price-desc" name="sortOrder" value="price-desc">
+                        <label for="sort-price-desc" class="sort-pill">Price: High to Low</label>
+                    </div>
                 </div>
             </div>
             
