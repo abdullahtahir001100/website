@@ -133,9 +133,9 @@
             color: #a9a9a9;
         }
 
-        form input:focus {
+        form input:focus,textarea:focus {
             outline: none;
-            border: 1px solid rgb(0, 123, 255);
+            border: 1px solid #ea580c !important;
         }
 
         form textarea {
@@ -152,7 +152,7 @@
 
         form textarea:focus {
             outline: none;
-            border: 1px solid rgb(0, 123, 255);
+            border: 1px solid #ea580c;
         }
         
         .text-center {
@@ -167,9 +167,9 @@
 
         .btn button {
             background-color: transparent;
-            color: rgb(0, 123, 255);
+            color: #ea580c;
             font-size: 18px;
-            border: 1px solid rgb(0, 123, 255);
+            border: 1px solid #ea580c;
             cursor: pointer;
             padding: 15px 30px;
             border-radius: 50px;
@@ -178,13 +178,13 @@
         }
 
         .btn button:hover {
-            background-color: rgb(0, 123, 255);
+            background-color: #ea580c;
             color: #fff;
             transform: translateY(-2px) scale(1.03);
         }
 
         .blocks {
-            background-color: rgb(0, 123, 255);
+            background-color: #ea580c;
             padding: 40px;
             border-radius: 40px;
             width: 33%;
