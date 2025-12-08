@@ -470,3 +470,8 @@ for (let i = 0; i < que.length; i++) {
         
     });
 }
+let removebar = document.getElementById('removebar');
+let topbar = document.getElementById('topbar');
+removebar.onclick = function() {
+    topbar.style.display = 'none';
+};

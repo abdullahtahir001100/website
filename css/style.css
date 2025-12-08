@@ -1186,3 +1186,28 @@ RESPONSIVENESS (Media Queries)
    .inner h1{
     width: fit-content !important;
    }
+   .topbar .flex{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 30px;
+   }
+   .topbar .text{
+    font-family: regular !important;
+    font-size: 16px !important;
+   }
+   .topbar img{
+   width: 10px;
+    cursor: pointer;
+   }
+   .topbar{
+    background-color: #f7c5c1;
+    color: #000;
+    font-size: 14px;
+    max-width: 1220px;
+    margin: 0 auto;
+    font-weight: 500;
+   }
+   .topbar a{
+    text-decoration: none !important;
+    color: #111;
+   }
