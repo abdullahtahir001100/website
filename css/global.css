@@ -313,3 +313,6 @@ body {
    .imgee{
     width: 30px !important;
    }
+   .controls-bar input{
+    border: 0.5px solid #585454 !important;
+   }
