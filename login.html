@@ -147,6 +147,7 @@
                     <div>
                         <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" id="login-email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <span id="login-email-error" class="error-message"></span>
                     </div>
                     <div>
                         <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
@@ -194,10 +195,12 @@
                         <div>
                             <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
                             <input type="text" id="first-name"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                            <span id="first-name-error" class="error-message"></span>
                         </div>
                         <div>
                             <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
                             <input type="text" id="last-name"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                            <span id="last-name-error" class="error-message"></span>
                         </div>
                     </div>
                     
@@ -218,6 +221,7 @@
                     <div>
                         <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
                         <input type="email" id="register-email"  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <span id="register-email-error" class="error-message"></span>
                     </div>
                     <div>
                         <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
@@ -270,6 +274,7 @@
                     <div id="forgot-email-field">
                         <label for="forgot-input" class="block text-sm font-medium text-gray-700">Enter Email Address</label>
                         <input type="email" id="forgot-input" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5">
+                        <span id="forgot-input-error" class="error-message"></span>
                     </div>
                     
                     <div id="forgot-phone-field" class="hidden"> 
@@ -336,7 +341,6 @@
     // --- Configuration ---
     const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api/auth'; 
     const ACTIVITY_API_URL = 'https://backend-web-1-yb6q.vercel.app/api/activity'; // New Activity API URL
-    const DASHBOARD_URL = 'index.html'; 
 
     // --- DOM Elements ---
     const loginFormContainer = document.getElementById('login-form-container');
@@ -350,19 +354,28 @@
 
     // Registration Fields
     const firstNameInput = document.getElementById('first-name');
+    const firstNameError = document.getElementById('first-name-error');
     const lastNameInput = document.getElementById('last-name');
+    const lastNameError = document.getElementById('last-name-error');
     const registerUsernameInput = document.getElementById('register-username');
     const usernameSuggestionsContainer = document.getElementById('username-suggestions');
     const registerUsernameError = document.getElementById('register-username-error');
     const registerPhoneInput = document.getElementById('register-phone');
     const registerPhoneError = document.getElementById('register-phone-error');
+    const registerEmailInput = document.getElementById('register-email');
+    const registerEmailError = document.getElementById('register-email-error');
     const registerPasswordInput = document.getElementById('register-password');
     const confirmPasswordInput = document.getElementById('confirm-password');
     const passwordMatchError = document.getElementById('password-match-error');
 
+    // Login Fields
+    const loginEmailInput = document.getElementById('login-email');
+    const loginEmailError = document.getElementById('login-email-error');
+
     // Forgot Password Fields
     const forgotEmailField = document.getElementById('forgot-email-field');
     const forgotEmailInput = document.getElementById('forgot-input'); 
+    const forgotInputError = document.getElementById('forgot-input-error');
     const forgotPhoneField = document.getElementById('forgot-phone-field');
     const forgotPhoneInput = document.getElementById('forgot-phone');
     const forgotPhoneError = document.getElementById('forgot-phone-error');
@@ -606,15 +619,20 @@
         return isValid;
     }
 
-    /** Validates the username format (min 3 chars, specific characters). */
+    /** Validates the username format (3-100 chars, specific characters). */
     function validateUsername(username) {
         const errorElement = registerUsernameError;
         const input = registerUsernameInput;
-        const isValid = username.length >= 3 && /^[a-zA-Z0-9._]+$/.test(username);
+        const isValid = username.length >= 3 && username.length <= 100 && /^[a-zA-Z0-9._]+$/.test(username);
         
         if (!username.trim()) {
             errorElement.classList.add('hidden');
             input.classList.remove('input-error');
+            return false;
+        } else if (username.length > 100) {
+            errorElement.textContent = 'Username must not exceed 100 characters.';
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
             return false;
         } else if (!isValid) {
             errorElement.textContent = 'Username must be 3+ characters and contain only letters, numbers, dot, or underscore.';
@@ -651,6 +669,50 @@
             errorElement.classList.add('hidden');
         }
         return isValid;
+    }
+
+    /** Validates name length (max 100 chars). */
+    function validateName(input, errorElement, fieldName) {
+        const name = input.value.trim();
+        if (name === '') {
+            errorElement.classList.add('hidden');
+            input.classList.remove('input-error');
+            return false;
+        }
+        if (name.length > 100) {
+            errorElement.textContent = `${fieldName} must not exceed 100 characters.`;
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
+            return false;
+        }
+        errorElement.classList.add('hidden');
+        input.classList.remove('input-error');
+        return true;
+    }
+
+    /** Validates email format (must include @ and basic structure). */
+    function validateEmail(input, errorElement) {
+        const email = input.value.trim();
+        if (email === '') {
+            errorElement.classList.add('hidden');
+            input.classList.remove('input-error');
+            return false;
+        }
+        if (!email.includes('@')) {
+            errorElement.textContent = 'Email must include @ symbol.';
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
+            return false;
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            errorElement.textContent = 'Please enter a valid email address.';
+            errorElement.classList.remove('hidden');
+            input.classList.add('input-error');
+            return false;
+        }
+        errorElement.classList.add('hidden');
+        input.classList.remove('input-error');
+        return true;
     }
     
     /** Enforces numeric and '+' input for phone fields. */
@@ -800,7 +862,7 @@
         const username = registerUsernameInput.value.trim();
         const firstName = firstNameInput.value;
         const lastName = lastNameInput.value;
-        const email = document.getElementById('register-email').value;
+        const email = registerEmailInput.value;
         const password = registerPasswordInput.value;
         
         const dataToSend = {
@@ -826,8 +888,25 @@
             displayMessage(messageContainerId, 'Registration successful! Redirecting...', 'success');
             registerForm.reset();
             
-            // Redirect immediately after success
-            window.location.replace(DASHBOARD_URL); 
+            function getRandomColor() {
+                const color = (Math.random() * 0x808080 + 0x404040).toString(16).slice(0, 6);
+                return '#' + color;
+            }
+            
+            const userAuthData = {
+                isLoggedIn: true,
+                firstName: data.user.firstName || (data.user.username ? data.user.username.charAt(0).toUpperCase() + data.user.username.slice(1) : 'User'), 
+                lastName: data.user.lastName || '',
+                email: data.user.email,
+                username: data.user.username,
+                avatarColor: getRandomColor(),
+                role: data.user.role || 'user'
+            };
+            
+            localStorage.setItem('userAuthData', JSON.stringify(userAuthData));
+            
+            const redirectUrl = data.user.role === 'admin' ? 'admin.html' : 'index.html';
+            window.location.replace(redirectUrl);
 
         } catch (err) {
             console.error('Registration API Error:', err);
@@ -844,12 +923,15 @@
         const isUsernameValid = validateUsername(username);
         const isPhoneValid = validatePhoneNumber(registerPhoneInput, registerPhoneError);
         const isPasswordValid = validateRegistrationPasswords();
+        const isFirstNameValid = validateName(firstNameInput, firstNameError, 'First Name');
+        const isLastNameValid = validateName(lastNameInput, lastNameError, 'Last Name');
+        const isEmailValid = validateEmail(registerEmailInput, registerEmailError);
         const agreeTerms = document.getElementById('agree-terms').checked;
         
         // Check if all required simple fields are filled
-        const requiredFieldsValid = firstNameInput.value.trim() && lastNameInput.value.trim() && username && registerPasswordInput.value.trim() && confirmPasswordInput.value.trim() && document.getElementById('register-email').value.trim() && agreeTerms;
+        const requiredFieldsValid = firstNameInput.value.trim() && lastNameInput.value.trim() && username && registerPasswordInput.value.trim() && confirmPasswordInput.value.trim() && registerEmailInput.value.trim() && agreeTerms;
 
-        if (!isUsernameValid || !isPhoneValid || !isPasswordValid || !requiredFieldsValid) {
+        if (!isUsernameValid || !isPhoneValid || !isPasswordValid || !isFirstNameValid || !isLastNameValid || !isEmailValid || !requiredFieldsValid) {
              return displayMessage('register-message-container', 'Error: Please fill all fields, correct the marked errors, and agree to terms.', 'error');
         }
         
@@ -863,7 +945,7 @@
         const messageContainerId = 'login-message-container';
         displayMessage(messageContainerId, 'Logging in...', 'info');
 
-        const email = document.getElementById('login-email').value; 
+        const email = loginEmailInput.value; 
         const password = document.getElementById('login-password').value;
         
         const dataToSend = { 
@@ -916,13 +998,15 @@
                 email: data.user.email,
                 username: data.user.username,
                 // **The Key Fix:** Generate and save a random color for the avatar
-                avatarColor: getRandomColor()
+                avatarColor: getRandomColor(),
+                role: data.user.role || 'user'
             };
             
             localStorage.setItem('userAuthData', JSON.stringify(userAuthData));
             
             // Now, redirect
-            window.location.replace(DASHBOARD_URL); 
+            const redirectUrl = data.user.role === 'admin' ? 'admin.html' : 'index.html';
+            window.location.replace(redirectUrl);
             
             /* --- END CRITICAL FIX --- */
 
@@ -938,10 +1022,11 @@
         e.preventDefault();
 
         // 1. Run local validation checks
-        const email = document.getElementById('login-email').value.trim();
+        const email = loginEmailInput.value.trim();
         const password = document.getElementById('login-password').value.trim();
+        const isEmailValid = validateEmail(loginEmailInput, loginEmailError);
 
-        if (!email || !password) {
+        if (!email || !password || !isEmailValid) {
              return displayMessage('login-message-container', 'Error: Please enter your credentials before verifying.', 'error');
         }
         
@@ -961,9 +1046,8 @@
 
         if (forgotMethod === 'email') {
             identifier = forgotEmailInput.value.trim();
-            if (!identifier || !identifier.includes('@')) { // Basic email check
-                isValid = false;
-            } else {
+            isValid = validateEmail(forgotEmailInput, forgotInputError);
+            if (isValid) {
                 recoveryData.email = identifier;
             }
         } else {
@@ -1006,15 +1090,16 @@
 
     /** Checks for the authentication cookie and redirects if the user is already logged in. */
     function checkLoginStatus() {
-        const authToken = getCookie('authToken');
-        if (authToken) {
-            console.log("AuthToken found.");
+        const userData = JSON.parse(localStorage.getItem('userAuthData'));
+        if (userData && userData.isLoggedIn) {
+            console.log("User is logged in.");
             if (authFormWrapper) {
                 authFormWrapper.innerHTML = `<div class="message info p-4 rounded-lg bg-blue-100 text-blue-800 text-center">You are already logged in....</div>`;
             }
-            window.location.replace(DASHBOARD_URL);
+            const redirectUrl = userData.role === 'admin' ? 'admin.html' : 'index.html';
+            window.location.replace(redirectUrl);
         } else {
-            console.log("No AuthToken found. Displaying login form.");
+            console.log("No user logged in. Displaying login form.");
         }
     }
 
@@ -1047,8 +1132,20 @@
 
 
         // 5. Form Switching and Validation Listeners
-        if(firstNameInput) firstNameInput.addEventListener('input', generateUsernameSuggestions);
-        if(lastNameInput) lastNameInput.addEventListener('input', generateUsernameSuggestions);
+        if(firstNameInput) {
+            firstNameInput.addEventListener('input', () => {
+                validateName(firstNameInput, firstNameError, 'First Name');
+                generateUsernameSuggestions();
+            });
+            firstNameInput.addEventListener('blur', () => validateName(firstNameInput, firstNameError, 'First Name'));
+        }
+        if(lastNameInput) {
+            lastNameInput.addEventListener('input', () => {
+                validateName(lastNameInput, lastNameError, 'Last Name');
+                generateUsernameSuggestions();
+            });
+            lastNameInput.addEventListener('blur', () => validateName(lastNameInput, lastNameError, 'Last Name'));
+        }
         if(registerUsernameInput) {
             registerUsernameInput.addEventListener('input', handleUsernameInput); 
             registerUsernameInput.addEventListener('blur', () => validateUsername(registerUsernameInput.value.trim()));
@@ -1085,6 +1182,25 @@
             confirmPasswordInput.addEventListener('input', validateRegistrationPasswords);
         }
 
+        if (registerEmailInput) {
+            registerEmailInput.addEventListener('input', () => validateEmail(registerEmailInput, registerEmailError));
+            registerEmailInput.addEventListener('blur', () => validateEmail(registerEmailInput, registerEmailError));
+        }
+
+        if (loginEmailInput) {
+            loginEmailInput.addEventListener('input', () => validateEmail(loginEmailInput, loginEmailError));
+            loginEmailInput.addEventListener('blur', () => validateEmail(loginEmailInput, loginEmailError));
+        }
+
+        if (forgotEmailInput) {
+            forgotEmailInput.addEventListener('input', () => {
+                if (forgotMethod === 'email') validateEmail(forgotEmailInput, forgotInputError);
+            });
+            forgotEmailInput.addEventListener('blur', () => {
+                if (forgotMethod === 'email') validateEmail(forgotEmailInput, forgotInputError);
+            });
+        }
+
         // 6. Form Switch Buttons (Completing the cut-off section)
         if(switchToRegisterBtn) switchToRegisterBtn.addEventListener('click', () => switchForm(registerFormContainer));
         if(switchToLoginBtn) switchToLoginBtn.addEventListener('click', () => switchForm(loginFormContainer));
@@ -1116,6 +1232,7 @@
     });
     
 </script>
+
 
 </body>
 </html>
