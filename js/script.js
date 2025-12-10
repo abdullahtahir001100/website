@@ -320,7 +320,7 @@ function generateProductHtml(product) {
     return `
                 <div class="product" data-id="${product._id}">
                     <div class="image">
-                        <img src="${imageUrl}" alt="${product.title}">
+                        <img src="${imageUrl}" alt="${product.title}" loding="lazy">
                     </div>
                     <div class="info">
                         <h6>${product.title}</h6>
