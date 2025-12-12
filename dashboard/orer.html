@@ -383,7 +383,7 @@
             'Cancelled': 'bg-status-cancelled',
             'Requested': 'bg-status-requested'
         };
-        const formatCurrency = (amount) => `PKR ${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        const formatCurrency = (amount) => `$ ${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
         const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         const formatDateTime = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
 

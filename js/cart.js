@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function calculateTotals(currentSubTotal) {
         // Update Subtotal display
-        if (subtotalEl) subtotalEl.textContent = formatPrice(currentSubTotal) + " PKR";
+        if (subtotalEl) subtotalEl.textContent = formatPrice(currentSubTotal) + " $";
     }
 
     // --- 1. Fetch Product Details and Render Cart ---

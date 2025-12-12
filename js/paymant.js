@@ -206,7 +206,7 @@
                                 <span class="product-variant">${product.selectVal || 'N/A'}</span> 
                             </div>
                         </div>
-                        <span class="product-price">PKR ${totalProductPrice.toLocaleString()}</span>
+                        <span class="product-price">$ ${totalProductPrice.toLocaleString()}</span>
                     </div>
                 `;
             });
@@ -215,7 +215,7 @@
 
         container.innerHTML = content;
         document.getElementById('item-count').textContent = PRODUCTS.reduce((sum, p) => sum + p.qty, 0);
-        document.getElementById('subtotal-amount').textContent = `PKR ${BASE_SUBTOTAL.toLocaleString()}`;
+        document.getElementById('subtotal-amount').textContent = `$ ${BASE_SUBTOTAL.toLocaleString()}`;
 
         // 2. Update totals based on the new subtotal
         applyPromoCode(); 
@@ -535,7 +535,7 @@
         if (input === 'SAVE1000' && currentSubtotal > 1000) {
             flatDiscount = 1000;
             totalDisplayDiscount = flatDiscount;
-            updatePromoMessage('✅ Success! PKR 1,000 discount applied!', 'success');
+            updatePromoMessage('✅ Success! $ 1,000 discount applied!', 'success');
         } else if (input === 'FREESHIP') {
             finalShipping = 0;
             totalDisplayDiscount = BASE_SHIPPING;
@@ -549,14 +549,14 @@
         }
 
         const finalTotal = currentSubtotal + finalShipping - flatDiscount;
-        shippingAmountElement.textContent = finalShipping === 0 ? 'FREE' : `PKR ${finalShipping.toLocaleString()}`;
+        shippingAmountElement.textContent = finalShipping === 0 ? 'FREE' : `$ ${finalShipping.toLocaleString()}`;
         shippingAmountElement.style.color = finalShipping === 0 ? 'var(--color-success)' : 'var(--color-text)';
         
-        discountAmountElement.textContent = `-PKR ${totalDisplayDiscount.toLocaleString()}`;
+        discountAmountElement.textContent = `-$ ${totalDisplayDiscount.toLocaleString()}`;
         discountAmountElement.style.color = totalDisplayDiscount > 0 ? 'var(--color-success)' : 'blue';
         
-        document.getElementById('total-payable').textContent = `PKR ${finalTotal.toLocaleString()}`;
-        document.getElementById('final-pay-button').textContent = `Complete Order & Pay PKR ${finalTotal.toLocaleString()}`;
+        document.getElementById('total-payable').textContent = `$ ${finalTotal.toLocaleString()}`;
+        document.getElementById('final-pay-button').textContent = `Complete Order & Pay $ ${finalTotal.toLocaleString()}`;
         
         const selectedMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
         showPaymentDetails(selectedMethod);
