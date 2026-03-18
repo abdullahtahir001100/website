@@ -1,59 +1,54 @@
-Full-Stack Service Architecture
-Node.js + Express + MongoDB | HTML/JS Frontend
-A robust, full-stack application focused on high availability and secure content delivery. This project demonstrates the integration of a custom Node.js backend with a high-performance frontend optimized via global CDNs.
+## Full-Stack Service Architecture  
 
-🛠 Tech Stack
-Backend: Node.js & Express.js — Robust server-side logic and API routing.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express-API-000?style=for-the-badge&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/HTML5-Frontend-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-Frontend-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JS-ES6-FFDD00?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/ScrollReveal-Animations-111?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Vercel-Deployment-000?style=for-the-badge&logo=vercel&logoColor=white" />
+</p>
 
-Database: MongoDB — Scalable NoSQL data management.
+<p align="center">
+  High-performance full-stack platform with secure, globally optimized delivery
+</p>
 
-Frontend: Vanilla HTML5, CSS3, and JavaScript (ES6+).
+---
 
-Security: HSTS (HTTP Strict Transport Security) implemented for encrypted connections.
+## 🛠 Tech Stack  
 
-Networking & CDN: Cloudflare, cdnjs, and Unpkg for optimized asset delivery.
+- **Backend:** Node.js + Express.js (API routing & server logic)  
+- **Database:** MongoDB (Scalable NoSQL)  
+- **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6+)  
+- **Security:** HSTS implemented for encrypted connections  
+- **CDN & Networking:** Cloudflare, cdnjs, Unpkg  
+- **Animations:** ScrollReveal (lightweight scroll animations)  
+- **Icons:** Font Awesome (via CDN)  
+- **Deployment:** Vercel (Serverless edge architecture)  
 
-Animations: ScrollReveal — For elegant, scroll-triggered UI reveals.
+---
 
-Icons: Font Awesome — Integrated via high-speed CDN.
+## ✨ Key Features  
 
-Deployment: Vercel — Deployed with a serverless function architecture.
+- **Global Optimization:** CDN-powered fast asset delivery (cdnjs + Unpkg + Cloudflare)  
+- **Secure Data Flow:** MERN-style API architecture with HSTS headers  
+- **Dynamic Motion:** ScrollReveal for elegant UI animations  
+- **Serverless Edge:** Deployed on Vercel for global low-latency access  
+- **Scalable Backend:** MongoDB for fast and flexible data retrieval  
 
-✨ Key Features
-Global Optimization: Leveraging Cloudflare and multiple CDNs (cdnjs/Unpkg) to reduce latency and improve load times.
+---
 
-Secure Data Flow: A secure MERN-based API structure protecting user data and server requests.
+## 📂 Project Structure  
 
-Dynamic Motion: Lightweight, high-performance scroll animations using ScrollReveal.
-
-Hardened Security: Configured HSTS headers to ensure the site is only accessible via HTTPS.
-
-Serverless Edge: Deployed on Vercel to utilize global edge network benefits.
-
-🚀 Setup & Installation
-git clone the repository.
-
-Run npm install in the server directory.
-
-Configure your MongoDB Connection String in .env.
-
-Run node server.js to start the backend.
-
-Open index.html via a local server for the frontend.
-
-2. Project Description 
-Project: High-Performance MERN Application
-
-The Stack: Node.js | Express | MongoDB | Cloudflare | ScrollReveal
-The Summary:
-A sophisticated full-stack platform built with a Node.js/Express backend and a high-speed Vanilla JS frontend. This project prioritizes Security and Global Delivery by utilizing Cloudflare and HSTS protocols.
-
-Technical Highlights:
-
-Optimized Delivery: Uses cdnjs and Unpkg CDNs to ensure global asset availability and 99.9% uptime.
-
-Interactive UI: Implements ScrollReveal for smooth, lightweight animations without the overhead of heavy frameworks.
-
-Production Security: Configured with HSTS to enforce secure browser connections.
-
-Scalable Backend: Powered by MongoDB for flexible and fast data retrieval.
+```bash
+server/
+  server.js
+  routes/
+  models/
+  .env
+public/
+  index.html
+  assets/
+README.md
