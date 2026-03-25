@@ -83,19 +83,76 @@
         .marquee-line { display: flex; white-space: nowrap; font-size: 8vw; font-weight: 700; text-transform: uppercase; line-height: 1; margin: 20px 0; }
         .outline-text { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3); }
 
-        /* Video Scroll Container */
-        .v-scroll-container { position: relative; height: 500vh; background: #000; }
-        .sticky-wrapper { height: 100vh; width: 100%; overflow: hidden; position: relative; }
-        #v-scrub { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
-        
-        .v-step {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; padding: 0 10%;
-            opacity: 0; transform: translateY(30px); transition: all 0.8s;
+        /* Process Grid Section (Replaces Video) */
+        .process-section { padding: 150px 10%; background: #000; color: #fff; }
+        .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 60px; }
+        .process-card h3 { font-size: 8rem; opacity: 0.1; line-height: 1; margin-bottom: 20px; font-family: 'Playfair Display'; }
+        .process-card h4 { font-size: 1.5rem; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        .process-card p { color: #888; line-height: 1.6; font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .process-grid { grid-template-columns: 1fr; }
         }
-        .v-step.active { opacity: 1; transform: translateY(0); }
-        .v-step.right { justify-content: flex-end; text-align: right; }
-        .v-step h3 { font-size: 5rem; max-width: 700px; }
+
+        /* Horizontal Scroll Section */
+        .horizontal-outer {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-deep); /* Use theme bg */
+        }
+
+        .horizontal-inner {
+            display: flex;
+            gap: 100px; /* Space between items */
+            padding-left: 10vw; /* Initial offset */
+            padding-right: 10vw;
+            width: max-content; /* Ensure container fits all items */
+        }
+
+        .h-scroll-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 50vw; /* Large, prominent items */
+            height: 70vh;
+            position: relative;
+            flex-shrink: 0;
+            opacity: 0.5;
+            transition: opacity 0.5s ease;
+        }
+        
+        .h-scroll-item.active {
+            opacity: 1;
+        }
+
+        .h-scroll-item img {
+            width: 100%;
+            height: 80%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+        
+        .h-scroll-item:hover img {
+            filter: grayscale(0%);
+        }
+
+        .h-scroll-item h3 {
+            font-size: 4vw;
+            margin-top: 20px;
+            color: var(--text-main);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .h-scroll-item p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            max-width: 80%;
+        }
 
         /* Swiper */
         .swiper-section { padding: 120px 0; background: var(--bg-light); color: #000; }
@@ -184,19 +241,24 @@
             </div>
         </section>
 
-        <section class="v-scroll-container" data-scroll-section id="v-trigger">
-            <div class="sticky-wrapper">
-                <video id="v-scrub" preload="auto" muted loop playsinline>
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                </video>
-                <div class="v-step" id="step1">
-                    <h3 class="playfair">Movement <br>In Stillness.</h3>
+        <!-- Process Section (Replaces Video Scroll) -->
+        <section class="process-section" data-scroll-section>
+            <h2 data-scroll data-scroll-speed="1" style="font-size: 3rem; margin-bottom: 50px;">The Methodology</h2>
+            <div class="process-grid">
+                <div class="process-card">
+                    <h3>01</h3>
+                    <h4>Precision</h4>
+                    <p>Every curve is calculated. We merge the fluidity of natural ink with mathematical precision to ensure scalability without losing character.</p>
                 </div>
-                <div class="v-step right" id="step2">
-                    <h3 class="playfair">The Weight <br>Of The Ink.</h3>
+                <div class="process-card">
+                    <h3>02</h3>
+                    <h4>Structure</h4>
+                    <p>Typography is architecture. We build letterforms that stand the test of time, focusing on balance, weight, and negative space.</p>
                 </div>
-                <div class="v-step" id="step3">
-                    <h3 class="playfair">Precision <br>Over Perfection.</h3>
+                <div class="process-card">
+                    <h3>03</h3>
+                    <h4>Identity</h4>
+                    <p>More than just letters. We forge visual identities that carry the weight of tradition while speaking the language of the future.</p>
                 </div>
             </div>
         </section>
@@ -206,11 +268,8 @@
                 <h2 style="font-size: 5vw; line-height: 1;">VISUAL <br><span class="playfair" style="font-style: italic;">ARCHIVE.</span></h2>
             </div>
             <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1584285408906-ac15eb810578?w=800" /></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1547844391-72f3d5ea907b?w=800" /></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1610427618073-107e32f50d99?w=800" /></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?w=800" /></div>
+                <div class="swiper-wrapper" id="fetch">
+                  
                 </div>
             </div>
         </section>
@@ -323,40 +382,21 @@
             });
         });
 
-        // 5. Video Scrub
-        const video = document.getElementById("v-scrub");
-
-        function initVideoTrigger() {
-            if(!video.duration) return;
-            
-            ScrollTrigger.create({
-                trigger: "#v-trigger", 
-                start: "top top",
-                end: "bottom bottom",
-                scroller: "[data-scroll-container]",
-                pin: ".sticky-wrapper", // Pinning the wrapper
-                pinSpacing: true,  // Important for Locomotive compatibility
-                scrub: true,
-                onUpdate: (self) => {
-                    try {
-                        if (video.duration) {
-                            video.currentTime = video.duration * self.progress;
-                        }
-                    } catch(e) {}
-                    
-                    document.getElementById('step1').classList.toggle('active', self.progress > 0.15 && self.progress < 0.35);
-                    document.getElementById('step2').classList.toggle('active', self.progress > 0.45 && self.progress < 0.65);
-                    document.getElementById('step3').classList.toggle('active', self.progress > 0.75 && self.progress < 0.95);
-                }
+        // 5. Scroll Animations for Process Section
+        gsap.utils.toArray('.process-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: ".process-section",
+                    scroller: "[data-scroll-container]",
+                    start: "top 80%"
+                },
+                y: 100,
+                opacity: 0,
+                duration: 1,
+                delay: i * 0.2,
+                ease: "power4.out"
             });
-            ScrollTrigger.refresh();
-        }
-
-        if (video.readyState >= 1) {
-            initVideoTrigger();
-        } else {
-            video.onloadedmetadata = initVideoTrigger;
-        }
+        });
 
         // 6. Swiper
         new Swiper(".mySwiper", {
@@ -372,7 +412,11 @@
         ScrollTrigger.refresh();
         fetch('https://backend-web-1.vercel.app/api/products')
             .then(res => res.json())
+
             .then(data => console.log(data))
+            document.getElementById('fetch').innerHTML = data.map(item => `
+                 <div class="swiper-slide"><a href="${item.link}" target="_blank"><img src="${item.image}" /></a></div>
+            `)
             .catch(err => console.error(err));
     </script>
 </body>
