@@ -95,6 +95,13 @@
         }
 
         /* Horizontal Scroll Section */
+        .horizontal-scroll-container {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
         .horizontal-outer {
             width: 100%;
             height: 100vh;
@@ -263,6 +270,48 @@
             </div>
         </section>
 
+        <!-- Horizontal Scroll Section (Pinned inside a data-scroll-section wrapper) -->
+        <div data-scroll-section>
+            <section class="horizontal-scroll-container">
+                <div class="horizontal-outer">
+                    <div class="horizontal-inner">
+                        <div class="h-scroll-item">
+                            <h2 style="font-size: 8vw; line-height: 0.9; margin-bottom: 20px;">SELECTED<br><span style="margin-left: 50px; font-style: italic;" class="playfair">WORKS</span></h2>
+                            <p style="max-width: 400px; font-size: 1.2rem; color: #888;">A curated selection of projects that define our approach to modern design.</p>
+                        </div>
+                        
+                        <div class="h-scroll-item">
+                            <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1974&auto=format&fit=crop" alt="Work 1">
+                            <h3>Abstract</h3>
+                            <p>Branding • 2024</p>
+                        </div>
+
+                        <div class="h-scroll-item">
+                            <img src="https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=1976&auto=format&fit=crop" alt="Work 2">
+                            <h3>Noir</h3>
+                            <p>Art Direction • 2023</p>
+                        </div>
+
+                        <div class="h-scroll-item">
+                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop" alt="Work 3">
+                            <h3>Silence</h3>
+                            <p>Photography • 2023</p>
+                        </div>
+
+                        <div class="h-scroll-item">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop" alt="Work 4">
+                            <h3>Flow</h3>
+                            <p>Motion • 2024</p>
+                        </div>
+
+                        <div class="h-scroll-item" style="justify-content: center; align-items: center;">
+                            <h2 style="font-size: 6vw;">VIEW ALL</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
         <section class="swiper-section" data-scroll-section>
             <div style="padding: 0 5% 80px;">
                 <h2 style="font-size: 5vw; line-height: 1;">VISUAL <br><span class="playfair" style="font-style: italic;">ARCHIVE.</span></h2>
@@ -398,7 +447,39 @@
             });
         });
 
-        // 6. Swiper
+        // 6. Horizontal Scroll Animation (Fixed)
+        // Ensure Locomotive updates on ScrollTrigger refresh
+        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+
+        const horizontalSection = document.querySelector('.horizontal-scroll-container');
+        const horizontalInner = document.querySelector('.horizontal-inner');
+
+        if (horizontalSection && horizontalInner) {
+            // Recalculate on load to ensure correct widths
+            window.addEventListener('load', () => ScrollTrigger.refresh());
+
+            // Use a speed multiplier: higher number = faster scroll / less vertical distance
+            // Current issue: "too much scroll". Solution: Reduce the 'end' duration.
+            const speedMultiplier = 0.5; // (Old was effectively 1.0) 
+
+            gsap.to(horizontalInner, {
+                x: () => -(horizontalInner.scrollWidth - window.innerWidth),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: horizontalSection,
+                    scroller: "[data-scroll-container]",
+                    pin: true,
+                    scrub: 0.5, // Reduced scrub lag for snappier feel
+                    // Only scroll for half the actual width distance - speeds it up
+                    end: () => "+=" + (horizontalInner.scrollWidth - window.innerWidth) * speedMultiplier, 
+                    invalidateOnRefresh: true,
+                    start: "top top",
+                    anticipatePin: 1
+                }
+            });
+        }
+
+        // 7. Swiper
         new Swiper(".mySwiper", {
             effect: "coverflow",
             centeredSlides: true,
@@ -408,16 +489,22 @@
             autoplay: { delay: 2500 }
         });
 
-        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+        // 8. Dynamic Data
         ScrollTrigger.refresh();
+        
         fetch('https://backend-web-1.vercel.app/api/products')
             .then(res => res.json())
-
-            .then(data => console.log(data))
-            document.getElementById('fetch').innerHTML = data.map(item => `
-                 <div class="swiper-slide"><a href="${item.link}" target="_blank"><img src="${item.image}" /></a></div>
-            `)
-            .catch(err => console.error(err));
+            .then(data => {
+                const wrapper = document.getElementById('fetch');
+                if (wrapper && Array.isArray(data)) {
+                    wrapper.innerHTML = data.map(item => `
+                        <div class="swiper-slide"><a href="${item.link}" target="_blank"><img src="${item.image}" /></a></div>
+                    `).join('');
+                } else {
+                    console.log('No data or element missing');
+                }
+            })
+            .catch(err => console.error('Fetch error:', err));
     </script>
 </body>
 </html>
