@@ -73,6 +73,11 @@
         .hero { height: 100vh; display: flex; align-items: center; justify-content: center; }
         .hero-title h1 { font-size: 12vw; text-transform: uppercase; line-height: 0.8; letter-spacing: -5px; }
 
+        /* Content Blocks (Restored from Previous Versions) */
+        .content-block { padding: 150px 10%; background: var(--bg-light); color: var(--bg-deep); }
+        .content-block h2 { font-size: 3.5rem; margin-bottom: 30px; line-height: 1.1; }
+        .content-block p { font-size: 1.2rem; line-height: 1.6; max-width: 600px; opacity: 0.8; }
+
         /* Moving Section */
         .moving-text-section { padding: 100px 0; background: var(--bg-mid); overflow: hidden; }
         .marquee-line { display: flex; white-space: nowrap; font-size: 8vw; font-weight: 700; text-transform: uppercase; line-height: 1; margin: 20px 0; }
@@ -80,7 +85,7 @@
 
         /* Video Scroll Container */
         .v-scroll-container { position: relative; height: 500vh; background: #000; }
-        .sticky-wrapper { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; }
+        .sticky-wrapper { height: 100vh; width: 100%; overflow: hidden; position: relative; }
         #v-scrub { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
         
         .v-step {
@@ -158,6 +163,13 @@
                 <p style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">SARGODHA / PAKISTAN</p>
                 <h1>INKBYHAND</h1>
             </div>
+        </section>
+
+        <!-- Combining Content Block from V1 into V3 structure -->
+        <section class="content-block" data-scroll-section>
+            <div style="width: 80px; height: 1px; background: #000; margin-bottom: 40px;"></div>
+            <h2 data-scroll data-scroll-speed="1">The Art of <br><span class="playfair">Modern Precision.</span></h2>
+            <p>Every stroke is a deliberate journey. We merge the soulful history of manual calligraphy with the sharp demands of contemporary branding.</p>
         </section>
 
         <section class="moving-text-section" data-scroll-section>
@@ -313,21 +325,38 @@
 
         // 5. Video Scrub
         const video = document.getElementById("v-scrub");
-        video.onloadedmetadata = function() {
+
+        function initVideoTrigger() {
+            if(!video.duration) return;
+            
             ScrollTrigger.create({
-                trigger: "#v-trigger",
+                trigger: "#v-trigger", 
                 start: "top top",
                 end: "bottom bottom",
                 scroller: "[data-scroll-container]",
+                pin: ".sticky-wrapper", // Pinning the wrapper
+                pinSpacing: true,  // Important for Locomotive compatibility
                 scrub: true,
                 onUpdate: (self) => {
-                    video.currentTime = video.duration * self.progress;
+                    try {
+                        if (video.duration) {
+                            video.currentTime = video.duration * self.progress;
+                        }
+                    } catch(e) {}
+                    
                     document.getElementById('step1').classList.toggle('active', self.progress > 0.15 && self.progress < 0.35);
                     document.getElementById('step2').classList.toggle('active', self.progress > 0.45 && self.progress < 0.65);
                     document.getElementById('step3').classList.toggle('active', self.progress > 0.75 && self.progress < 0.95);
                 }
             });
-        };
+            ScrollTrigger.refresh();
+        }
+
+        if (video.readyState >= 1) {
+            initVideoTrigger();
+        } else {
+            video.onloadedmetadata = initVideoTrigger;
+        }
 
         // 6. Swiper
         new Swiper(".mySwiper", {
@@ -341,6 +370,10 @@
 
         ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
         ScrollTrigger.refresh();
+        fetch('https://backend-web-1.vercel.app/api/products')
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.error(err));
     </script>
 </body>
 </html>
