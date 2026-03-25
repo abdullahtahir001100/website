@@ -4,245 +4,856 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Detail</title>
-        <meta name="description" content="Discover the art of calligraphy. Learn modern brush lettering, traditional copperplate, and engrosser's script. Shop premium pens, inks, and supplies for beginners and masters."/>
-    <meta name="keywords" content="calligraphy, calligraphy art, modern calligraphy, traditional calligraphy, hand lettering, brush lettering, brush script, copperplate, copperplate calligraphy, Spencerian script, engrosser's script, gothic calligraphy, blackletter, italic script, chancery script, foundational hand, uncial, ruling pen, pointed pen, broad-edge pen, dip pen, fountain pen, calligraphy pens, brush pens, water brush, nibs, calligraphy nibs, pointed nibs, broad nibs, oblique holder, straight holder, pen holders, calligraphy ink, india ink, sumi ink, watercolor, gouache, metallic ink, practice paper, tracing paper, parchment paper, calligraphy pad, light box, beginner calligraphy, learn calligraphy, calligraphy classes, calligraphy workshops, online calligraphy course, calligraphy tutorials, how to start calligraphy, calligraphy for beginners, calligraphy supplies, best calligraphy pens, calligraphy tools, penmanship, beautiful handwriting, fine art, decorative writing, wedding invitations, envelope addressing, custom stationery, bespoke design, logo design, signature style, vintage script, flourishing, ornamental calligraphy, calligraphy guides, letter forms, script styles, art materials, art and craft, creative hobbies, drawing and design, typography, hand drawn type, script lettering, sign painting, artistic writing, copperplate masters, Spencerian practice, modern brush script, bounce lettering, monoline, faux calligraphy, pointed pen skills, thick and thin strokes, upstrokes, downstrokes, ink flow, pen angle, x-height, ascenders, descenders, pressure control, digitizing calligraphy, calligraphy resources, calligraphy exercises, practice drills, free templates, professional calligrapher, artist studio, handmade cards, gift tags, certificates, illumination, medieval manuscripts, ancient scripts, Western calligraphy, Eastern calligraphy, Japanese calligraphy, Chinese calligraphy, Arabic calligraphy, Thuluth, Naskh, Diwani, Kufic, artistic expression, relaxation, mindfulness, creative outlet, DIY projects, wedding calligraphy services, event signage, menu design, personalized gifts, art instruction, calligraphy books, digital calligraphy, iPad lettering, Procreate brushes, vectorizing artwork, vector graphics, calligraphy workshops near me, lettering styles, fancy writing, decorative fonts, artistic handwriting, beautiful scripts, elegant design, handwritten text, artistic fonts, cursive, elegant writing, fine details, personalized items, art prints, inspirational quotes, custom artwork, drawing lessons, graphic design elements, creative writing, artistic techniques, ink mixing, storage solutions, paper selection, handmade paper, calligraphy paper weight, desk setup, ergonomic pen holder, professional artist supplies, creative entrepreneurship, small business art, commission work, unique gifts, custom apparel, calligraphy mastery, advanced techniques, composition, layout, historical scripts, illumination techniques, gilded lettering, gold leaf, decorative borders, scrollwork, ornamental designs, artistic flair, fine script, legible writing, expressive lines, handmade quality, artistic home decor, creative passions, art education, skills development, manual dexterity, visual arts, design aesthetics, refined taste, premium stationery, luxury goods, high-end design, elegant invitations, wedding stationery suite, bespoke paper goods, event branding, brand identity design, unique logotype, handwritten logos, italic hand, roman capitals, versals, Lombardic versals, half-uncial, Insular minuscule, Carolingian minuscule, Humanist minuscule, Textura, Fraktur, Rotunda, Scheveningen, Gillott nibs, Nikko G nibs, Zebra G nibs, Brause nibs, Speedball nibs, automatic pens, parallel pens, acrylic ink, pigment ink, iron gall ink, archival ink, shimmer ink, pearlescent ink, white ink calligraphy, black paper lettering, wedding place cards, seating charts, chalkboard art, mirror calligraphy, glass engraving, foiled calligraphy, letterpress design, stationery suite design, custom vows, poem transcription, calligraphy coaching, certification program, advanced flourishing, decorative capitals, brush pen practice sheets, modern wedding stationery, minimalist calligraphy, watercolor calligraphy, dip pen cleaning, pen rest, slant guides, line guides, how to write beautiful script, vintage style lettering, hand-painted signs, commission a calligrapher, calligraphy artist portfolio, calligraphy services pricing, brush marker tutorials, Procreate lettering guides, digital brush pen, pointed pen versus brush pen, oblique vs straight holder, beginner ink recommendations, calligraphy paper brands, practicing proper form, consistency drills, letter connection, baseline bouncing, free calligraphy worksheets, best paper for dip pen ink, wedding envelope addressing cost, custom poem handwritten, art of beautiful writing, calligraphy for stress relief, creative lettering ideas, inkbyhand, i nkbyhand, in k by hand, ink by han ds, ink-by-hands, ink by hands, ink byhand, inkby hands, inkbyhand calligraphy, inkbyhand art, ink by hand tutorials, ink by hand supplies" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/global.css">
+    <title>INKBYHAND | Product Detail</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/details.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        :root {
+            --bg-deep: #0a0a0a;
+            --bg-mid: #141414;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Cursor */
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            border-radius: 50%;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+            transition: transform 0.15s ease-out;
+        }
+
+        /* Header */
+        .main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2200;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-logo img {
+            width: 100px;
+            filter: invert(1);
+        }
+
+        .burger {
+            cursor: pointer;
+            z-index: 2300;
+            padding: 10px;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 1px;
+            background: white;
+            margin: 6px;
+            transition: 0.4s;
+        }
+
+        /* Menu Overlay */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(1.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .nav-overlay.active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .nav-links a {
+            display: block;
+            font-size: 5vw;
+            color: white;
+            margin: 10px 0;
+            font-family: 'Playfair Display';
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.6s;
+        }
+
+        .nav-overlay.active .nav-links a {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(0.1s * var(--i));
+        }
+
+        /* --- HERO SECTION --- */
+        .page-spacer {
+            height: 140px;
+            width: 100%;
+        }
+
+        .product-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding: 0 5%;
+            max-width: 1600px;
+            margin: 0 auto 100px;
+        }
+
+        @media(min-width: 900px) {
+            .product-hero {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        /* Gallery */
+        .gallery-container {
+            flex: 1.2;
+            position: relative;
+        }
+
+        .main-image-frame {
+            width: 100%;
+            height: 70vh;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: scale(0.9);
+            transition: transform 0.5s;
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .thumb {
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .thumb.active,
+        .thumb:hover {
+            opacity: 1;
+            border-color: #fff;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Details */
+        .details-container {
+            flex: 0.8;
+            padding-left: 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 70vh;
+        }
+
+        .collection-tag {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .product-title {
+            font-size: 4vw;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* Selects */
+        .options-group {
+            margin-bottom: 40px;
+        }
+
+        .native-select {
+            background: transparent;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            width: 100%;
+            font-family: 'Inter';
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .native-select option {
+            background: #000;
+        }
+
+        .add-btn {
+            background: #fff;
+            color: #000;
+            width: 100%;
+            padding: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #ccc;
+        }
+
+        /* --- MARQUEE --- */
+        .moving-text-section {
+            padding: 80px 0;
+            background: var(--bg-mid);
+            overflow: hidden;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .marquee-line {
+            display: flex;
+            white-space: nowrap;
+            font-size: 6vw;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .outline-text {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- ACCORDION SPECS / REVIEWS (Connected Lines) --- */
+        .info-accordion-section {
+            padding: 100px 10%;
+            position: relative;
+        }
+
+        .accordion-item {
+            border-top: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .accordion-item:last-child {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .accordion-header {
+            padding: 40px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-header h3 {
+            font-size: 2rem;
+        }
+
+        .accordion-icon {
+            font-size: 1.5rem;
+            transition: transform 0.4s;
+        }
+
+        .accordion-content {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .accordion-inner {
+            padding-bottom: 60px;
+            color: #aaa;
+            line-height: 1.8;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        /* Animated Left Line for Content */
+        .content-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Active State */
+        .accordion-item.active .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        .accordion-item.active .accordion-content {
+            height: auto;
+        }
+
+        /* Connected Reviews */
+        .review-node {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .review-node::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .review-line {
+            position: absolute;
+            left: 3px;
+            top: 16px;
+            width: 1px;
+            height: 100%;
+            background: #333;
+            z-index: 1;
+        }
+
+        .review-node:last-child .review-line {
+            display: none;
+        }
+
+        /* Review Form Area */
+        .add-review-box {
+            margin-top: 60px;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- RELATED WORKS STRIP (SWIPER) --- */
+        .swiper-section {
+            padding: 100px 0;
+            background: var(--bg-deep);
+        }
+
+        .swiper-main {
+            width: 100%;
+            height: 600px;
+            padding: 50px 0;
+        }
+
+        .swiper-slide {
+            width: 400px;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: all 0.5s ease;
+        }
+
+        .swiper-slide-active img,
+        .swiper-slide:hover img {
+            filter: grayscale(0%);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .swiper-slide:hover .slide-overlay {
+            opacity: 1;
+        }
+
+        .slide-title {
+            font-family: 'Playfair Display';
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .slide-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 20px;
+            max-width: 80%;
+        }
+
+        .slide-btn {
+            border: 1px solid #fff;
+            padding: 12px 30px;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .slide-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* Footer */
+        footer {
+            padding: 100px 5%;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-cta {
+            font-family: 'Playfair Display';
+            font-size: 8vw;
+            line-height: 0.9;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            color: #555;
+            margin-top: 80px;
+        }
+
+        /* Modal */
+        #productAddedModal {
+            display: none;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            position: fixed;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #productAddedModal:not(.hidden) {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 400px;
+            background: #111;
+            border: 1px solid #333;
+            padding: 40px;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .page-spacer { height: 100px; }
+            .product-hero { padding-top: 20px; gap: 30px; }
+            .details-container { padding-left: 0; height: auto; margin-top: 40px; }
+            .main-image-frame { height: 50vh; }
+            .product-title { font-size: 10vw; margin-top: 10px; }
+            .product-price { font-size: 1.2rem; margin-bottom: 25px; }
+            
+            /* Better mobile touch targets */
+            .add-btn, .native-select, .thumb { cursor: default; } 
+            
+            /* Swiper Mobile */
+            .swiper-slide { width: 85vw !important; height: 400px; }
+            .swiper-main { height: 500px; padding: 30px 0; }
+            
+            /* Accordion Mobile */
+            .info-accordion-section { padding: 60px 20px; }
+            .accordion-header h3 { font-size: 1.5rem; }
+            .accordion-inner { padding-left: 0; }
+            .content-line { display: none; } /* Simplify on mobile */
+            
+            /* Footer Mobile */
+            footer { padding: 60px 20px; }
+            .footer-cta { font-size: 12vw; }
+            .footer-bottom { flex-direction: column; gap: 20px; margin-top: 40px; }
+
+            /* Modal */
+            .modal-box { width: 90%; padding: 25px; }
+
+            /* Hide Custom Cursor on Touch */
+            .cursor, .cursor-follower { display: none !important; }
+        }
+        
+        @media (max-width: 480px) {
+           .marquee-line { font-size: 10vw; }
+           .gallery-thumbnails { justify-content: flex-start; overflow-x: auto; padding-bottom: 10px; }
+           .product-title { font-size: 13vw; }
+        }
+        
+        @media (max-width: 900px) {
+            .nav-overlay .nav-links a { font-size: 12vw; margin: 15px 0; }
+        }
+    </style>
 </head>
 
 <body>
-       <header class="main-header">
-        <div class="header-content">
-            <a href="/" class="header-logo">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="INKBYHAND Logo" class="logo-img">
-            </a>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
-            <div class="icon-nav-container">
-                
-                 <div id="auth-container" class="auth-container">
-                    </div>
-
-                <div class="cart-icon-container" onclick="window.location.href='cart.html'">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-
-                <div id="menu-icon-container" class="menu-icon-container" onclick="toggleBurgerMenu(event)">
-                    <i class="fas fa-bars"></i>
-                    <div id="burger-menu-dropdown" class="burger-menu-dropdown">
-                        <a href="product.html">Shop</a>
-                        <a href="about.html">About Us</a>
-                        <a href="contect.html">Contact</a> 
-                        <a href="order.html">Yours Orders</a>
-                        
-                    </div>
-                </div>
-
-                
-                
-               
-                
-            </div>
+    <header class="main-header">
+        <a href="l.html" class="header-logo"><img
+                src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
+        <div class="burger" id="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
         </div>
     </header>
 
-    <div id="productAddedModal"
-        class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300"
-        aria-modal="true" role="dialog">
-        <div
-            class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto p-6 transition-all duration-500 transform scale-95 md:scale-100">
-            <div class="flex justify-between items-center pb-4 border-b border-gray-100">
-                <div class="flex items-center text-black-100 font-light text-lg test">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Item added to your cart
-                </div>
-                <button id="closeModalButton"
-                    class="text-gray-400 hover:text-gray-600 focus:outline-none p-1 rounded-full transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
+    <nav class="nav-overlay" id="menu">
+        <div class="nav-links">
+            <a href="l.html" style="--i:1">WORK</a>
+            <a href="#" style="--i:2">STUDIO</a>
+            <a href="#" style="--i:3">PROCESS</a>
+            <a href="#" style="--i:4">CONTACT</a>
+        </div>
+    </nav>
 
-            <div class="flex items-center space-x-4 py-6">
-                <img id="modalProductImage" src="https://placehold.co/80x80/cccccc/333333?text=Art" alt="Added Product"
-                    class="w-20 h-20 object-cover rounded-lg border border-gray-200">
-                <div class="flex-grow">
-                    <p id="modalProductTitle" class="font-bold text-gray-800 line-clamp-2">Product Title</p>
-                    <p id="modalProductOption" class="text-sm text-gray-500 mt-1">Option: Unframed, Qty: 1</p>
-                </div>
+    <!-- Modal -->
+    <div id="productAddedModal" class="hidden">
+        <div class="modal-box">
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px;">ADDED TO CART</h3>
+            <div style="margin-bottom: 20px;">
+                <img id="modalProductImage" src=""
+                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;">
             </div>
-
-            <div class="space-y-3">
-                <a href="cart.html" id="modalViewCartBtn"
-                    class="block w-full text-center py-3 border border-orange-600 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition-colors">
-                    View cart (1)
-                </a>
-                <a href="paymant.html"
-                    class="block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors">
-                    Check out
-                </a>
-                <button id="continueShoppingButton"
-                    class="block w-full text-center py-3 text-gray-500 font-semibold hover:text-gray-800 transition-colors">
-                    Continue shopping
-                </button>
-            </div>
+            <p id="modalProductTitle" style="color: #888; margin-bottom: 30px;">...</p>
+            <a href="cart.html" class="add-btn" style="display:block; text-align:center;">VIEW CART</a>
+            <button id="continueShoppingButton"
+                style="background:none; border:none; color:#555; margin-top:20px; text-decoration:underline;">Continue
+                Shopping</button>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 bg-white rounded-xl my-6 p-6 md:p-10">
-        <div class="product-container">
-            <div class="product-layout">
+    <!-- SMOOTH SCROLL CONTAINER -->
+    <div id="scroll-wrapper" data-scroll-container>
 
-                <div class="smallimages order-2 md:order-1">
-                    <div class="images small-images-container">
-                        </div>
+        <div class="page-spacer"></div>
+
+        <!-- 1. HERO PRODUCT -->
+        <section class="product-hero" data-scroll-section>
+            <div class="gallery-container">
+                <div class="main-image-frame" data-scroll data-scroll-speed="-1">
+                    <img src="" alt="Main" class="product-image">
+                </div>
+                <!-- Thumbnails injected by JS -->
+                <div class="gallery-thumbnails small-images-container"></div>
+            </div>
+
+            <div class="details-container" data-scroll data-scroll-speed="2">
+                <p class="collection-tag">InkByHand • Collection</p>
+                <h1 class="product-title">Loading...</h1>
+                <p class="product-price">...</p>
+
+                <div class="options-group">
+                    <select class="native-select" id="finish-select">
+                        <option value="" disabled selected>Select Finish</option>
+                        <option value="Unframed">Unframed</option>
+                        <option value="Gallery Frame">Gallery Frame</option>
+                        <option value="Custom Archival">Custom Archival</option>
+                    </select>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="number" id="quantity" value="1" min="1" max="5" class="native-select"
+                            style="width: 80px; text-align: center; margin-bottom: 0;">
+                        <button class="add-btn" id="add-to-cart-btns">Add to Archive</button>
+                    </div>
                 </div>
 
-                <div class="image-column order-1 md:order-2">
-                    <div class="image-wrapper">
-                        <img src="https://placehold.co/500x500/cccccc/333333?text=Main+Product+Image"
-                            alt="Main Product Image" class="product-image">
-                    </div>
+                <p class="summary-text" style="color: #666; line-height: 1.6; font-size: 0.9rem;">
+                    Authentic ink work. Validated by hand.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. MARQUEE MOVING COMPONENT -->
+        <section class="moving-text-section" data-scroll-section>
+            <div class="marquee-line" data-scroll data-scroll-direction="horizontal" data-scroll-speed="6">
+                <span>SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
+            </div>
+            <div class="marquee-line outline-text" data-scroll data-scroll-direction="horizontal"
+                data-scroll-speed="-6">
+                <span>AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
+            </div>
+        </section>
+
+        <!-- 3. ACCORDION INFO (Specifications, Care, Reviews) -->
+        <section class="info-accordion-section" data-scroll-section>
+
+            <!-- Item 1: Specifications -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <h3 class="playfair">Specifications</h3>
+                    <div class="accordion-icon">+</div>
                 </div>
-
-                <div class="details-column order-2 md:order-3">
-                    <p class="collection-tag">Gallery Exclusive</p>
-                    <h1 class="product-title">Loading Title...</h1>
-                    <p class="product-price">Loading Price...</p>
-
-                    <p class="summary-text text-gray-600 mt-4 mb-6">
-                        Loading product summary...
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                        <div class="custom-select-wrapper">
-                            <select class="hidden-native-select" id="hidden-native-select">
-                                <option value="" disabled selected>Select an Option</option>
-                                <option value="Unframed">Option: Unframed</option>
-                                <option value="Basic Gallery Frame">Option: Basic Gallery Frame</option>
-                                <option value="Custom Archival Frame">Option: Custom Archival Frame</option>
-                                <option value="Signed Print (Limited Ed.)">Option: Signed Print (Limited Ed.)</option>
-                            </select>
-                            <div class="select-selected" id="custom-select-button">
-                                Select an option
-                                <span class="arrow"></span>
-                            </div>
-                            <div class="select-items" id="custom-select-items">
-                            </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="content-line"></div> <!-- Vertical Line -->
+                        <div class="features-box">
+                            <ul id="spec-list">
+                                <!-- JS Injected via features-box -->
+                            </ul>
+                            <div id="description-text" style="margin-top: 20px;"></div>
                         </div>
-                        <div class="quantity-control">
-                            <label for="quantity" class="font-medium text-gray-700">Quantity:</label>
-                            <input type="number" id="quantity" value="1" min="1" max="5">
-                        </div>
-                    </div>
-
-                    <div class="action-buttons-wrapper space-y-3">
-                        <button class="add-to-cart-btn" id="add-to-cart-btns">
-                            Add to Cart
-                        </button>
-                        <button class="add-to-cart-btn go-to-cart-btn" id="go-to-cart-btn" style="display: none;">
-                            🛒 Go to Cart
-                        </button>
-                    </div>
-                    <div class="features-box border-t border-gray-200 mt-6 pt-6">
-                        <h3 class="text-xl font-bold mb-3 text-gray-800">Artwork Highlights</h3>
-                        <ul class="features-list space-y-2 text-gray-600 list-disc pl-5">
-                            <li>Loading features...</li>
-                        </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="content-area pt-10">
-                <div class="tab-nav">
-                    <button id="tab-description-btn" class="tab-button active" data-tab="description">
-                        Artwork Details & Provenance
-                    </button>
-                    <button id="tab-artist-btn" class="tab-button" data-tab="artist">
-                        Meet the Artist
-                    </button>
-                    <button id="tab-care-btn" class="tab-button" data-tab="care">
-                        Display & Care
-                    </button>
-                    <button id="reviews-tab-button" class="tab-button" data-tab="reviews">
-                        Reviews (0)
-                    </button>
+            <!-- Item 2: Display & Care -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <h3 class="playfair">Preservation</h3>
+                    <div class="accordion-icon">+</div>
                 </div>
-
-                <div class="tab-content text-lg text-gray-700 p-4 border border-t-0 rounded-b-lg">
-                    <div id="description" class="tab-pane">
-                        Loading Description...
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="content-line"></div>
+                        <p>Avoid direct sunlight. Do not clean with solvents. Use a dry microfiber cloth to dust the
+                            frame.</p>
+                        <p style="margin-top: 10px;">All works are sealed with archival varnish to prevent fading over
+                            decades.</p>
                     </div>
+                </div>
+            </div>
 
-                    <div id="artist" class="tab-pane hidden">
-                        Loading Artist Story...
-                    </div>
+            <!-- Item 3: Reviews (Linked List) -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <h3 class="playfair">Collector Reviews</h3>
+                    <div class="accordion-icon">+</div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="content-line"></div>
 
-                    <div id="care" class="tab-pane hidden">
-                        <h3 class="text-2xl font-bold mb-4 text-gray-900">Protecting Your Investment</h3>
-                        <h4 class="font-semibold text-xl mb-2">Display & Care Instructions:</h4>
-                        <p class="mb-4">
-                            To ensure the longevity of your artwork, keep it out of **direct sunlight**. Display the
-                            artwork in an environment with stable temperature and humidity. Dust gently with a soft, dry
-                            lint-free cloth or a very soft brush. **Do not use liquid cleaning agents**
-                            on the canvas or painted surface.
-                        </p>
+                        <div id="reviews-list-container" style="padding-top: 20px;">
+                            <!-- Reviews injected here as .review-node -->
+                        </div>
 
-                        <h4 class="font-semibold text-xl mb-2">Our Acquisition Guarantee:</h4>
-                        <p>
-                            We stand behind the authenticity and condition of every piece of artwork. This painting is
-                            covered by a **Lifetime Authenticity Guarantee**. The sale includes professional packaging,
-                            insurance, and tracked shipping.
-                        </p>
-                    </div>
-                    
-                    <div id="reviews" class="tab-pane hidden p-6">
-                        <h3 class="text-2xl font-bold mb-6 text-gray-900">Customer Reviews</h3>
-
-                        <div id="review-form-container" class="mb-8 p-6 border rounded-lg bg-gray-50">
-                            <h4 class="text-xl font-semibold mb-4">Write a Review</h4>
+                        <!-- Add Review -->
+                        <div class="add-review-box">
+                            <h4 style="margin-bottom: 20px;">ADD YOUR VOICE</h4>
                             <form id="review-form">
-                                <div class="mb-4">
-                                    <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
-                                    <div id="star-rating" class="flex items-center space-x-1 text-2xl text-yellow-500 cursor-pointer">
-                                    </div>
-                                    <input type="hidden" id="rating-value" name="rating" value="0" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="review-text" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-                                    <textarea id="review-text" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" placeholder="Share your thoughts on the artwork..."></textarea>
-                                </div>
-                                <button type="submit" class="add-to-cart-btn w-full">Submit Review</button>
+                                <div id="star-rating"
+                                    style="font-size: 1.5rem; margin-bottom: 20px; cursor: pointer; color: #555;"></div>
+                                <input type="hidden" id="rating-value" value="0">
+                                <textarea id="review-text" rows="3" placeholder="Write here..."
+                                    style="width: 100%; background: transparent; border: 1px solid #333; color: #fff; padding: 15px; margin-bottom: 20px;"></textarea>
+                                <button type="submit" class="add-btn"
+                                    style="width: auto; padding: 10px 30px; font-size: 0.8rem;">Submit Note</button>
+                                <p id="review-feedback" style="margin-top: 10px; color: #888; font-size: 0.8rem;"></p>
                             </form>
-                            <p id="review-feedback" class="mt-2 text-sm hidden"></p> 
-                        </div>
-
-                        <div id="reviews-list" class="space-y-6">
-                            <p class="text-center text-gray-500">Loading reviews...</p>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
-            
-            <div class="related-products pt-10">
-                <h2 class="related-title text-3xl font-bold mb-6 text-gray-900">You Might Also Love</h2>
 
-                <div class="product-grid">
-                    </div>
+        </section>
+
+        <!-- 4. RELATED WORKS (SWIPER) -->
+        <section class="swiper-section" data-scroll-section>
+            <div style="padding: 0 5% 60px;">
+                <h2 class="playfair" style="font-size: 3rem;">Related Works</h2>
             </div>
-        </div>
-    </main>
+            <div class="swiper mySwiper swiper-main">
+                <div class="swiper-wrapper" id="related-swiper-wrapper">
+                    <!-- Slides injected by JS -->
+                </div>
+            </div>
+        </section>
 
-    <script src="js/cockees.js"></script>
-    <script src="js/dashboadover.js"></script>
+        <!-- FOOTER -->
+        <footer data-scroll-section>
+            <a href="l.html" class="footer-cta">LET'S BUILD<br>SOMETHING<br>ICONIC.</a>
+            <div class="footer-bottom">
+                <p>© 2026 INKBYHAND. ALL EDGES SHARP.</p>
+                <div>
+                    <a href="#" style="margin-right: 20px;">PRIVACY</a>
+                    <a href="#">TERMS</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1. Locomotive
+        const locoScroll = new LocomotiveScroll({
+            el: document.querySelector("[data-scroll-container]"),
+            smooth: true, multiplier: 1, lerp: 0.05,
+            smartphone: { smooth: false }, tablet: { smooth: false }
+        });
+
+        // 2. ScrollTrigger proxy
+        locoScroll.on("scroll", ScrollTrigger.update);
+        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+            scrollTop(value) {
+                return arguments.length 
+                    ? locoScroll.scrollTo(value, 0, 0) 
+                    : (locoScroll.scroll && locoScroll.scroll.instance && locoScroll.scroll.instance.scroll.y) || window.pageYOffset;
+            },
+            getBoundingClientRect() { 
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; 
+            },
+            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
+        });
+
+        // 2. Accordion Logic
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                // Toggle active state
+                item.classList.toggle('active');
+
+                // Refresh Scroll after animation
+                setTimeout(() => { locoScroll.update(); ScrollTrigger.refresh(); }, 700);
+            });
+        });
+
+        // 3. Burger
+        const burger = document.getElementById('burger');
+        const menu = document.getElementById('menu');
+        burger.onclick = () => {
+            menu.classList.toggle('active');
+            const lines = burger.querySelectorAll('div');
+            lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
+            lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
+        };
+
+        // 4. Cursor
+        const cursor = document.querySelector(".cursor");
+        const follower = document.querySelector(".cursor-follower");
+        window.addEventListener("mousemove", e => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
+        });
+
+        // Expose
+        window.locoScroll = locoScroll;
+        window.gsap = gsap;
+        window.ScrollTrigger = ScrollTrigger;
+
+        // Wait for load
+        window.addEventListener("load", () => {
+            ScrollTrigger.refresh();
+            locoScroll.update();
+        });
+    </script>
+
     <script type="module" src="js/detail.js"></script>
 </body>
 
