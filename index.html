@@ -12,98 +12,120 @@
 
     <style>
         :root {
-            --bg-deep: #121212;
-            --bg-mid: #1a1a1a;
-            --bg-light: #e5e5e5;
-            --text-main: #f5f5f5;
+            --bg-deep: #0a0a0a;
+            --bg-mid: #141414;
+            --bg-light: #f4f4f4;
+            --text-main: #ffffff;
             --text-muted: #888888;
-            --accent: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
-        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        h1, h2, h3, .playfair { font-family: 'Playfair Display', serif; }
+        /* Global Reset - Strict Sharp Edges */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            cursor: none !important; 
+            border-radius: 0 !important; 
+            box-shadow: none !important;
+        }
+
+        body { 
+            background: var(--bg-deep); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+        }
+
+        h1, h2, h3, h4, .playfair { font-family: 'Playfair Display', serif; }
 
         /* Custom Cursor */
-        .cursor { 
-            width: 10px; height: 10px; background: #fff; position: fixed; 
-            pointer-events: none; z-index: 10000; mix-blend-mode: difference; 
-            border-radius: 50%; transition: transform 0.2s ease-out;
-        }
-        .cursor-follower {
-            width: 30px; height: 30px; border: 1px solid #fff; position: fixed;
-            pointer-events: none; z-index: 9999; border-radius: 50%;
-            mix-blend-mode: difference; transition: transform 0.1s ease-out;
-        }
+        .cursor { width: 8px; height: 8px; background: #fff; position: fixed; pointer-events: none; z-index: 10000; mix-blend-mode: difference; border-radius: 50% !important; }
+        .cursor-follower { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.5); position: fixed; pointer-events: none; z-index: 9999; border-radius: 50% !important; transition: transform 0.15s ease-out; }
 
         /* Header */
         .main-header {
             position: fixed; top: 0; width: 100%; z-index: 2000;
-            background: rgba(18, 18, 18, 0.7); backdrop-filter: blur(20px);
-            padding: 20px 5%; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px);
+            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
         .header-logo img { width: 100px; filter: invert(1); }
-        .burger { width: 30px; height: 20px; position: relative; z-index: 2101; }
-        .burger span { 
-            display: block; width: 100%; height: 2px; background: #fff; 
-            position: absolute; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); 
-        }
-        .burger span:nth-child(1) { top: 0; }
-        .burger span:nth-child(2) { bottom: 0; }
-        .burger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-        .burger.active span:nth-child(2) { transform: translateY(-9px) rotate(-45deg); }
+        .burger { cursor: pointer; z-index: 2100; padding: 10px; }
+        .burger div { width: 25px; height: 1px; background: white; margin: 6px; transition: 0.4s; }
 
         /* Menu Overlay */
         .nav-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: #000; z-index: 2050; display: flex;
-            align-items: center; justify-content: center; transform: translateY(-100%);
-            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+            align-items: center; justify-content: center; transform: scale(1.1); opacity: 0; pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
-        .nav-overlay.active { transform: translateY(0); }
-        .nav-links { text-align: center; }
+        .nav-overlay.active { transform: scale(1); opacity: 1; pointer-events: all; }
         .nav-links a { 
             display: block; font-size: 8vw; color: white; text-decoration: none; 
-            margin: 10px 0; font-family: 'Playfair Display'; opacity: 0; transform: translateY(30px);
-            transition: 0.5s;
+            margin: 10px 0; font-family: 'Playfair Display'; opacity: 0; transform: translateY(50px);
+            transition: 0.6s;
         }
-        .nav-overlay.active .nav-links a { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+        .nav-overlay.active .nav-links a { opacity: 1; transform: translateY(0); transition-delay: calc(0.1s * var(--i)); }
 
         /* Hero */
         .hero { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .hero-title { text-align: center; }
         .hero-title h1 { font-size: 12vw; text-transform: uppercase; line-height: 0.8; letter-spacing: -5px; }
 
-        /* V-Scroll Sections Fix */
-        .v-scroll-container { position: relative; height: 400vh; background: #000; }
+        /* Moving Section */
+        .moving-text-section { padding: 100px 0; background: var(--bg-mid); overflow: hidden; }
+        .marquee-line { display: flex; white-space: nowrap; font-size: 8vw; font-weight: 700; text-transform: uppercase; line-height: 1; margin: 20px 0; }
+        .outline-text { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3); }
+
+        /* Video Scroll Container */
+        .v-scroll-container { position: relative; height: 500vh; background: #000; }
         .sticky-wrapper { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; }
-        #v-scrub { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
+        #v-scrub { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
         
         .v-step {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; padding: 0 10%;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s;
+            opacity: 0; transform: translateY(30px); transition: all 0.8s;
         }
+        .v-step.active { opacity: 1; transform: translateY(0); }
         .v-step.right { justify-content: flex-end; text-align: right; }
-        .v-step h3 { font-size: 5rem; line-height: 1; color: #fff; }
+        .v-step h3 { font-size: 5rem; max-width: 700px; }
 
         /* Swiper */
-        .swiper-section { padding: 100px 0; background: var(--bg-light); color: #000; }
-        .swiper-slide { width: 300px; height: 450px; }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.5s; }
+        .swiper-section { padding: 120px 0; background: var(--bg-light); color: #000; }
+        .swiper-slide { width: 350px; height: 500px; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.8s; }
         .swiper-slide-active img { filter: grayscale(0); }
 
-        /* Footer */
-        footer { padding: 100px 5%; background: #000; color: #fff; border-top: 1px solid #222; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; }
-        .footer-logo img { width: 120px; filter: invert(1); margin-bottom: 20px; }
-        .footer-link { display: block; margin-bottom: 10px; color: #555; text-decoration: none; transition: 0.3s; }
-        .footer-link:hover { color: #fff; padding-left: 5px; }
+        /* NEW: FAQ Section */
+        .faq-section { padding: 150px 10%; background: var(--bg-deep); border-top: 1px solid var(--border-color); }
+        .faq-grid { display: flex; flex-direction: column; gap: 40px; margin-top: 80px; }
+        .faq-item { 
+            max-width: 600px; 
+            padding: 40px; 
+            border: 1px solid var(--border-color); 
+            background: var(--bg-mid);
+            transition: border-color 0.3s;
+        }
+        .faq-item:hover { border-color: #fff; }
+        .faq-item.faq-left { align-self: flex-start; }
+        .faq-item.faq-right { align-self: flex-end; text-align: right; }
+        .faq-item h4 { font-size: 1.8rem; margin-bottom: 15px; color: #fff; }
+        .faq-item p { color: var(--text-muted); line-height: 1.6; }
 
+        /* Footer */
+        footer { padding: 100px 5% 50px; background: #000; border-top: 1px solid #1a1a1a; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; }
+        .footer-logo img { width: 130px; filter: invert(1); margin-bottom: 25px; }
+        .footer-link { color: #888; text-decoration: none; display: block; margin: 10px 0; transition: color 0.3s; }
+        .footer-link:hover { color: #fff; }
+        
         @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr; }
             .v-step h3 { font-size: 2.5rem; }
             .hero-title h1 { font-size: 18vw; }
-            .v-step { padding: 0 5%; }
+            .faq-item { max-width: 100%; }
         }
     </style>
 </head>
@@ -115,26 +137,38 @@
     <header class="main-header">
         <a href="#" class="header-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
         <div class="burger" id="burger">
-            <span></span>
-            <span></span>
+            <div class="line1"></div>
+            <div class="line2"></div>
         </div>
     </header>
 
     <nav class="nav-overlay" id="menu">
         <div class="nav-links">
-            <a href="#">WORK</a>
-            <a href="#">STUDIO</a>
-            <a href="#">PROCESS</a>
-            <a href="#">CONTACT</a>
+            <a href="#" style="--i:1">WORK</a>
+            <a href="#" style="--i:2">STUDIO</a>
+            <a href="#" style="--i:3">PROCESS</a>
+            <a href="#" style="--i:4">CONTACT</a>
         </div>
     </nav>
 
     <div id="scroll-wrapper" data-scroll-container>
         
         <section class="hero" data-scroll-section>
-            <div class="hero-title" data-scroll data-scroll-speed="-2">
-                <p style="letter-spacing: 5px; color: var(--text-muted); margin-bottom: 10px;">EST. 2026</p>
+            <div class="hero-title" data-scroll data-scroll-speed="-3">
+                <p style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">SARGODHA / PAKISTAN</p>
                 <h1>INKBYHAND</h1>
+            </div>
+        </section>
+
+        <section class="moving-text-section" data-scroll-section>
+            <div class="marquee-line" data-scroll data-scroll-direction="horizontal" data-scroll-speed="6">
+                <span>CRAFTING LEGACY • CRAFTING LEGACY • CRAFTING LEGACY •</span>
+            </div>
+            <div class="marquee-line outline-text" data-scroll data-scroll-direction="horizontal" data-scroll-speed="-6">
+                <span>MODERN CALLIGRAPHY • MODERN CALLIGRAPHY • MODERN CALLIGRAPHY •</span>
+            </div>
+            <div class="marquee-line" data-scroll data-scroll-direction="horizontal" data-scroll-speed="8">
+                <span>NO SHADOWS • NO RADIUS • NO LIMITS • NO SHADOWS •</span>
             </div>
         </section>
 
@@ -143,21 +177,22 @@
                 <video id="v-scrub" preload="auto" muted loop playsinline>
                     <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                 </video>
-                
                 <div class="v-step" id="step1">
-                    <h3>The Soul of <br>Modern Ink.</h3>
+                    <h3 class="playfair">Movement <br>In Stillness.</h3>
                 </div>
                 <div class="v-step right" id="step2">
-                    <h3>Precision in <br>Every Stroke.</h3>
+                    <h3 class="playfair">The Weight <br>Of The Ink.</h3>
                 </div>
                 <div class="v-step" id="step3">
-                    <h3>Legacy Crafted <br>By Hand.</h3>
+                    <h3 class="playfair">Precision <br>Over Perfection.</h3>
                 </div>
             </div>
         </section>
 
         <section class="swiper-section" data-scroll-section>
-            <h2 style="text-align: center; font-size: 4rem; margin-bottom: 50px;">SELECTED WORKS</h2>
+            <div style="padding: 0 5% 80px;">
+                <h2 style="font-size: 5vw; line-height: 1;">VISUAL <br><span class="playfair" style="font-style: italic;">ARCHIVE.</span></h2>
+            </div>
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1584285408906-ac15eb810578?w=800" /></div>
@@ -168,24 +203,54 @@
             </div>
         </section>
 
+        <section class="faq-section" data-scroll-section>
+            <h2 style="font-size: 4rem; text-align: center;" class="playfair">F.A.Q</h2>
+            <div class="faq-grid">
+                <div class="faq-item faq-left" data-faq-anim="left">
+                    <h4>What is InkByHand?</h4>
+                    <p>A specialized studio where traditional calligraphy meets modern digital architecture. We focus on identity through motion and ink.</p>
+                </div>
+                <div class="faq-item faq-right" data-faq-anim="right">
+                    <h4>Process Duration?</h4>
+                    <p>Depending on complexity, a bespoke brand mark typically requires 2 to 4 weeks of exploration and refinement.</p>
+                </div>
+                <div class="faq-item faq-left" data-faq-anim="left">
+                    <h4>Digital Assets?</h4>
+                    <p>All hand-inked works are high-fidelity scanned and delivered in vector formats (SVG, AI) for infinite scalability.</p>
+                </div>
+                <div class="faq-item faq-right" data-faq-anim="right">
+                    <h4>Global Reach?</h4>
+                    <p>While based in Sargodha, our systems and collaborations are built for international brand standards.</p>
+                </div>
+                <div class="faq-item faq-left" data-faq-anim="left">
+                    <h4>Custom Scripts?</h4>
+                    <p>Yes. We develop custom alphabet sets and typefaces based on specific manual handwriting styles.</p>
+                </div>
+                <div class="faq-item faq-right" data-faq-anim="right">
+                    <h4>The Philosophy?</h4>
+                    <p>Zero radius. Zero shadows. Just the raw, sharp elegance of precision craftsmanship.</p>
+                </div>
+            </div>
+        </section>
+
         <footer data-scroll-section>
             <div class="footer-grid">
                 <div>
                     <div class="footer-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></div>
-                    <p style="color: #666;">High-end calligraphy and minimalist design studio based in Sargodha, Pakistan.</p>
+                    <p style="color: #666; max-width: 350px; line-height: 1.8;">Artisanal calligraphy studio merging ancient heritage with digital-first brand systems.</p>
                 </div>
                 <div>
-                    <h4>Connect</h4><br>
-                    <a href="#" class="footer-link">Instagram</a>
-                    <a href="#" class="footer-link">Behance</a>
-                    <a href="#" class="footer-link">LinkedIn</a>
+                    <h4 style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 30px; color: #444;">SOCIAL</h4>
+                    <a href="#" class="footer-link">INSTAGRAM</a>
+                    <a href="#" class="footer-link">BEHANCE</a>
                 </div>
                 <div>
-                    <h4>Inquiries</h4><br>
-                    <p style="color: #555;">hello@inkbyhand.com</p>
-                    <p style="color: #555;">+92 310 7581250</p>
+                    <h4 style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 30px; color: #444;">STUDIO</h4>
+                    <p style="color:#888;">Sargodha, PK</p>
+                    <p style="color:#888; margin-top:10px;">hello@inkbyhand.com</p>
                 </div>
             </div>
+            <p style="text-align:center; margin-top:80px; font-size: 0.7rem; color: #222;">© 2026 INKBYHAND. ALL EDGES SHARP.</p>
         </footer>
     </div>
 
@@ -197,9 +262,10 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
+        // 1. Locomotive Init
         const locoScroll = new LocomotiveScroll({
             el: document.querySelector("[data-scroll-container]"),
-            smooth: true, lerp: 0.05
+            smooth: true, multiplier: 1, lerp: 0.05
         });
 
         locoScroll.on("scroll", ScrollTrigger.update);
@@ -209,23 +275,43 @@
             pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
         });
 
-        // Custom Cursor Logic
+        // 2. Cursor
         const cursor = document.querySelector(".cursor");
         const follower = document.querySelector(".cursor-follower");
         window.addEventListener("mousemove", e => {
             gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(follower, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.3 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
         });
 
-        // Burger Toggle
+        // 3. Burger Menu
         const burger = document.getElementById('burger');
         const menu = document.getElementById('menu');
         burger.onclick = () => {
-            burger.classList.toggle('active');
             menu.classList.toggle('active');
+            const lines = burger.querySelectorAll('div');
+            lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
+            lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
         };
 
-        // Video Content Scrubbing (The Fixed Logic)
+        // 4. FAQ Animations (Alternating)
+        gsap.utils.toArray('.faq-item').forEach(item => {
+            const direction = item.getAttribute('data-faq-anim');
+            const xVal = direction === 'left' ? -100 : 100;
+
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    scroller: "[data-scroll-container]",
+                    start: "top 90%",
+                },
+                x: xVal,
+                opacity: 0,
+                duration: 1,
+                ease: "power4.out"
+            });
+        });
+
+        // 5. Video Scrub
         const video = document.getElementById("v-scrub");
         video.onloadedmetadata = function() {
             ScrollTrigger.create({
@@ -236,22 +322,21 @@
                 scrub: true,
                 onUpdate: (self) => {
                     video.currentTime = video.duration * self.progress;
-                    
-                    // Show steps based on progress
-                    gsap.to("#step1", { opacity: (self.progress > 0.1 && self.progress < 0.3) ? 1 : 0 });
-                    gsap.to("#step2", { opacity: (self.progress > 0.4 && self.progress < 0.6) ? 1 : 0 });
-                    gsap.to("#step3", { opacity: (self.progress > 0.7 && self.progress < 0.9) ? 1 : 0 });
+                    document.getElementById('step1').classList.toggle('active', self.progress > 0.15 && self.progress < 0.35);
+                    document.getElementById('step2').classList.toggle('active', self.progress > 0.45 && self.progress < 0.65);
+                    document.getElementById('step3').classList.toggle('active', self.progress > 0.75 && self.progress < 0.95);
                 }
             });
         };
 
-        // Swiper
+        // 6. Swiper
         new Swiper(".mySwiper", {
             effect: "coverflow",
             centeredSlides: true,
             slidesPerView: "auto",
-            coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: false },
-            loop: true
+            coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
+            loop: true,
+            autoplay: { delay: 2500 }
         });
 
         ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
