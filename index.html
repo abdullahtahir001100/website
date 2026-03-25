@@ -94,39 +94,47 @@
             .process-grid { grid-template-columns: 1fr; }
         }
 
-        /* Horizontal Scroll Section */
+        /* Fix: Horizontal Scroll Container - V3 Stable */
+        .scroller-pin-fix {
+            /* Removed restrictive overflow that was hiding content */
+            display: block;
+        }
+
         .horizontal-scroll-container {
             width: 100%;
             height: 100vh;
-            overflow: hidden;
+            display: flex;
+            background-color: var(--bg-deep);
+            overflow: hidden; 
             position: relative;
         }
 
         .horizontal-outer {
             width: 100%;
-            height: 100vh;
-            overflow: hidden;
+            height: 100%;
             display: flex;
             align-items: center;
-            background-color: var(--bg-deep); /* Use theme bg */
         }
 
         .horizontal-inner {
             display: flex;
-            gap: 100px; /* Space between items */
-            padding-left: 10vw; /* Initial offset */
+            flex-wrap: nowrap;
+            padding-left: 10vw;
             padding-right: 10vw;
-            width: max-content; /* Ensure container fits all items */
+            height: 100%;
+            align-items: center;
+            width: max-content; /* FORCE WIDTH TO PREVENT BLANK SCREEN */
+            will-change: transform;
         }
 
         .h-scroll-item {
+            flex-shrink: 0; /* CRITICAL: Stops items from collapsing */
+            width: 45vw;    /* Balanced width for desktop */
+            height: 100%;
+            margin-right: 8vw;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            width: 50vw; /* Large, prominent items */
-            height: 70vh;
-            position: relative;
-            flex-shrink: 0;
             opacity: 0.5;
             transition: opacity 0.5s ease;
         }
@@ -137,8 +145,9 @@
 
         .h-scroll-item img {
             width: 100%;
-            height: 80%;
+            height: 60vh;
             object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1); /* Sharp edges */
             filter: grayscale(100%);
             transition: filter 0.5s ease;
         }
@@ -159,6 +168,10 @@
             color: var(--text-muted);
             margin-top: 10px;
             max-width: 80%;
+        }
+
+        @media (max-width: 768px) {
+            .h-scroll-item { width: 85vw; } /* Better for mobile */
         }
 
         /* Swiper */
@@ -270,8 +283,9 @@
             </div>
         </section>
 
-        <!-- Horizontal Scroll Section (Pinned inside a data-scroll-section wrapper) -->
-        <div data-scroll-section>
+        <!-- Horizontal Scroll Section -->
+        <!-- Wrapped in a generic div for Locomotive to see as a section -->
+        <div data-scroll-section class="scroller-pin-fix">
             <section class="horizontal-scroll-container">
                 <div class="horizontal-outer">
                     <div class="horizontal-inner">
@@ -447,37 +461,43 @@
             });
         });
 
-        // 6. Horizontal Scroll Animation (Fixed)
-        // Ensure Locomotive updates on ScrollTrigger refresh
+        // 6. Horizontal Scroll - Stable Calculation
         ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
-
-        const horizontalSection = document.querySelector('.horizontal-scroll-container');
+        
+        // Target the main container, not the wrapper
+        const horizontalSection = document.querySelector('.horizontal-scroll-container'); 
         const horizontalInner = document.querySelector('.horizontal-inner');
 
         if (horizontalSection && horizontalInner) {
-            // Recalculate on load to ensure correct widths
-            window.addEventListener('load', () => ScrollTrigger.refresh());
+            
+            // Recalculate width dynamically
+            const getScrollAmount = () => {
+                let totalWidth = horizontalInner.scrollWidth;
+                let viewportWidth = window.innerWidth;
+                return -(totalWidth - viewportWidth);
+            };
 
-            // Use a speed multiplier: higher number = faster scroll / less vertical distance
-            // Current issue: "too much scroll". Solution: Reduce the 'end' duration.
-            const speedMultiplier = 0.5; // (Old was effectively 1.0) 
+            const tween = gsap.to(horizontalInner, {
+                x: getScrollAmount,
+                ease: "none"
+            });
 
-            gsap.to(horizontalInner, {
-                x: () => -(horizontalInner.scrollWidth - window.innerWidth),
-                ease: "none",
-                scrollTrigger: {
-                    trigger: horizontalSection,
-                    scroller: "[data-scroll-container]",
-                    pin: true,
-                    scrub: 0.5, // Reduced scrub lag for snappier feel
-                    // Only scroll for half the actual width distance - speeds it up
-                    end: () => "+=" + (horizontalInner.scrollWidth - window.innerWidth) * speedMultiplier, 
-                    invalidateOnRefresh: true,
-                    start: "top top",
-                    anticipatePin: 1
-                }
+            ScrollTrigger.create({
+                trigger: horizontalSection,
+                scroller: "[data-scroll-container]",
+                pin: true,           
+                animation: tween,
+                scrub: 1,
+                // Use function for end value to handle invalidation correctly
+                end: () => "+=" + (horizontalInner.scrollWidth - window.innerWidth),
+                invalidateOnRefresh: true
             });
         }
+
+        // Ensure layout updates after images/content load
+        window.addEventListener("load", () => {
+            ScrollTrigger.refresh();
+        });
 
         // 7. Swiper
         new Swiper(".mySwiper", {
@@ -498,7 +518,7 @@
                 const wrapper = document.getElementById('fetch');
                 if (wrapper && Array.isArray(data)) {
                     wrapper.innerHTML = data.map(item => `
-                        <div class="swiper-slide"><a href="${item.link}" target="_blank"><img src="${item.image}" /></a></div>
+                        <div class="swiper-slide"><a href="${item.id}" target="_blank"><img src="${item.mainImage}" /></a></div>
                     `).join('');
                 } else {
                     console.log('No data or element missing');
