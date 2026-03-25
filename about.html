@@ -4,89 +4,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> About</title>
-    <meta name="description" content="Discover the art of calligraphy. Learn modern brush lettering, traditional copperplate, and engrosser's script. Shop premium pens, inks, and supplies for beginners and masters."/>
-    <meta name="keywords" content="calligraphy, calligraphy art, modern calligraphy, traditional calligraphy, hand lettering, brush lettering, brush script, copperplate, copperplate calligraphy, Spencerian script, engrosser's script, gothic calligraphy, blackletter, italic script, chancery script, foundational hand, uncial, ruling pen, pointed pen, broad-edge pen, dip pen, fountain pen, calligraphy pens, brush pens, water brush, nibs, calligraphy nibs, pointed nibs, broad nibs, oblique holder, straight holder, pen holders, calligraphy ink, india ink, sumi ink, watercolor, gouache, metallic ink, practice paper, tracing paper, parchment paper, calligraphy pad, light box, beginner calligraphy, learn calligraphy, calligraphy classes, calligraphy workshops, online calligraphy course, calligraphy tutorials, how to start calligraphy, calligraphy for beginners, calligraphy supplies, best calligraphy pens, calligraphy tools, penmanship, beautiful handwriting, fine art, decorative writing, wedding invitations, envelope addressing, custom stationery, bespoke design, logo design, signature style, vintage script, flourishing, ornamental calligraphy, calligraphy guides, letter forms, script styles, art materials, art and craft, creative hobbies, drawing and design, typography, hand drawn type, script lettering, sign painting, artistic writing, copperplate masters, Spencerian practice, modern brush script, bounce lettering, monoline, faux calligraphy, pointed pen skills, thick and thin strokes, upstrokes, downstrokes, ink flow, pen angle, x-height, ascenders, descenders, pressure control, digitizing calligraphy, calligraphy resources, calligraphy exercises, practice drills, free templates, professional calligrapher, artist studio, handmade cards, gift tags, certificates, illumination, medieval manuscripts, ancient scripts, Western calligraphy, Eastern calligraphy, Japanese calligraphy, Chinese calligraphy, Arabic calligraphy, Thuluth, Naskh, Diwani, Kufic, artistic expression, relaxation, mindfulness, creative outlet, DIY projects, wedding calligraphy services, event signage, menu design, personalized gifts, art instruction, calligraphy books, digital calligraphy, iPad lettering, Procreate brushes, vectorizing artwork, vector graphics, calligraphy workshops near me, lettering styles, fancy writing, decorative fonts, artistic handwriting, beautiful scripts, elegant design, handwritten text, artistic fonts, cursive, elegant writing, fine details, personalized items, art prints, inspirational quotes, custom artwork, drawing lessons, graphic design elements, creative writing, artistic techniques, ink mixing, storage solutions, paper selection, handmade paper, calligraphy paper weight, desk setup, ergonomic pen holder, professional artist supplies, creative entrepreneurship, small business art, commission work, unique gifts, custom apparel, calligraphy mastery, advanced techniques, composition, layout, historical scripts, illumination techniques, gilded lettering, gold leaf, decorative borders, scrollwork, ornamental designs, artistic flair, fine script, legible writing, expressive lines, handmade quality, artistic home decor, creative passions, art education, skills development, manual dexterity, visual arts, design aesthetics, refined taste, premium stationery, luxury goods, high-end design, elegant invitations, wedding stationery suite, bespoke paper goods, event branding, brand identity design, unique logotype, handwritten logos, italic hand, roman capitals, versals, Lombardic versals, half-uncial, Insular minuscule, Carolingian minuscule, Humanist minuscule, Textura, Fraktur, Rotunda, Scheveningen, Gillott nibs, Nikko G nibs, Zebra G nibs, Brause nibs, Speedball nibs, automatic pens, parallel pens, acrylic ink, pigment ink, iron gall ink, archival ink, shimmer ink, pearlescent ink, white ink calligraphy, black paper lettering, wedding place cards, seating charts, chalkboard art, mirror calligraphy, glass engraving, foiled calligraphy, letterpress design, stationery suite design, custom vows, poem transcription, calligraphy coaching, certification program, advanced flourishing, decorative capitals, brush pen practice sheets, modern wedding stationery, minimalist calligraphy, watercolor calligraphy, dip pen cleaning, pen rest, slant guides, line guides, how to write beautiful script, vintage style lettering, hand-painted signs, commission a calligrapher, calligraphy artist portfolio, calligraphy services pricing, brush marker tutorials, Procreate lettering guides, digital brush pen, pointed pen versus brush pen, oblique vs straight holder, beginner ink recommendations, calligraphy paper brands, practicing proper form, consistency drills, letter connection, baseline bouncing, free calligraphy worksheets, best paper for dip pen ink, wedding envelope addressing cost, custom poem handwritten, art of beautiful writing, calligraphy for stress relief, creative lettering ideas, inkbyhand, i nkbyhand, in k by hand, ink by han ds, ink-by-hands, ink by hands, ink byhand, inkby hands, inkbyhand calligraphy, inkbyhand art, ink by hand tutorials, ink by hand supplies" />
-    <link rel="stylesheet" href="css/about.css">
-    
-    <link rel="stylesheet" href="css/global.css">
-   
+    <title>INKBYHAND | The Studio</title>
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
 
-    <link rel="icon" href="images/logo.jpg" />
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        :root {
+            --bg-body: #050505;
+            --text-main: #fff;
+            --accent: #d6b598;
+            /* Gold/Bronze accent */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Typography */
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .h-jumbo {
+            font-size: 15vw;
+            line-height: 0.8;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            overflow: hidden;
+        }
+
+        .h-lg {
+            font-size: 5vw;
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+
+        .text-c {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #aaa;
+            max-width: 600px;
+        }
+
+        /* Utilities */
+        .split-line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .split-line span {
+            display: block;
+            transform: translateY(100%);
+            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .is-inview .split-line span {
+            transform: translateY(0);
+        }
+
+        /* --- HEADER --- */
+        .main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2200;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-logo img {
+            width: 100px;
+            filter: invert(1);
+        }
+
+        .burger {
+            cursor: pointer;
+            z-index: 2300;
+            padding: 10px;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 1px;
+            background: white;
+            margin: 6px;
+            transition: 0.4s;
+        }
+
+        /* Navigation Overlay */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            transform: translateY(-100%);
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .nav-links a {
+            display: block;
+            font-size: 4vw;
+            color: white;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Playfair Display';
+            opacity: 0;
+            transform: translateY(100px);
+            transition: 0.6s;
+        }
+
+        .nav-overlay.active .nav-links a {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(0.1s * var(--i));
+        }
+
+        /* --- SCROLL SECTIONS --- */
+        .section-padding {
+            padding: 150px 5%;
+            position: relative;
+        }
+
+        /* 1. Hero */
+        .about-hero {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 220px;
+            padding-bottom: 50px;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30vw;
+            opacity: 0.05;
+            font-weight: 900;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* 2. Image Grid */
+        .collage-section {
+            min-height: 120vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Prevent spillover causing blank space */
+        }
+
+        .c-img {
+            position: absolute;
+            filter: grayscale(100%);
+            transition: 0.5s;
+        }
+
+        .c-img:hover {
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+
+        .c-1 {
+            width: 25vw;
+            top: 10%;
+            left: 10%;
+        }
+
+        .c-2 {
+            width: 30vw;
+            bottom: 10%;
+            right: 10%;
+        }
+
+        .c-3 {
+            width: 20vw;
+            top: 40%;
+            left: 40%;
+            z-index: 5;
+        }
+
+        /* 3. Manifesto */
+        .manifesto-wrap {
+            background: #111;
+            color: #fff;
+        }
+
+        .big-para {
+            font-size: 2.5vw;
+            line-height: 1.4;
+            color: #888;
+        }
+
+        .big-para span {
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .big-para span:hover {
+            color: var(--accent);
+        }
+
+        /* 4. Marquee */
+        .marquee-container {
+            padding: 80px 0;
+            background: var(--accent);
+            color: #000;
+            overflow: hidden;
+        }
+
+        .marquee-inner {
+            display: flex;
+            white-space: nowrap;
+            font-size: 8vw;
+            font-weight: 700;
+        }
+
+        .marquee-item {
+            padding: 0 40px;
+            font-family: 'Inter';
+            text-transform: uppercase;
+        }
+
+        /* 5. Footer */
+        footer {
+            padding: 100px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-big {
+            font-size: 10vw;
+            line-height: 0.9;
+            margin-bottom: 50px;
+            display: block;
+            transition: 0.4s;
+        }
+
+        .footer-big:hover {
+            opacity: 0.7;
+            transform: translateX(20px);
+        }
+
+        /* Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+
+            /* Locomotive Scroll Fixes for Mobile */
+            html, body { 
+                /* Force minimum height but allow scroller to manage overflow */
+                height: 100% !important; 
+                overflow: hidden !important; 
+            }
+            #scroll-container {
+                min-height: 100vh;
+                /* Add a bit of bottom padding to ensure scroll ends properly */
+                padding-bottom: 0px !important;
+            }
+
+            /* Typography */
+            .h-jumbo {
+                font-size: 14vw;
+                line-height: 0.9;
+            }
+
+            .h-lg {
+                font-size: 8vw;
+            }
+
+            .hero-bg-text {
+                font-size: 40vw;
+                opacity: 0.03;
+                top: 40%;
+            }
+
+            .big-para {
+                font-size: 1.4rem;
+                line-height: 1.5;
+            }
+
+            /* Layout */
+            .section-padding {
+                padding: 80px 5%;
+            }
+
+            .about-hero {
+                height: 90vh;
+            }
+
+            /* Collage Redesign for Mobile */
+            .collage-section {
+                height: 100vh;
+                flex-direction: column;
+            }
+
+            .c-img {
+                filter: grayscale(0%);
+                position: absolute;
+            }
+
+            .c-1 {
+                width: 60vw;
+                top: 10%;
+                left: 5%;
+                transform: none;
+            }
+
+            .c-2 {
+                width: 70vw;
+                bottom: 10%;
+                right: 5%;
+                transform: none;
+            }
+
+            .c-3 {
+                width: 50vw;
+                top: 45%;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 15;
+                opacity: 0.9;
+            }
+
+            /* Marquee */
+            .marquee-inner {
+                font-size: 12vw;
+            }
+
+            .marquee-item {
+                padding: 0 15px;
+            }
+
+            .marquee-container {
+                padding: 50px 0;
+            }
+
+            /* Footer */
+            footer {
+                padding: 60px 5% 30px;
+            }
+
+            .footer-big {
+                font-size: 18vw;
+                margin-bottom: 40px;
+            }
+
+            footer>div {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            footer>div>div:last-child {
+                justify-content: flex-start;
+                gap: 30px;
+            }
+
+            /* UI Elements */
+            .cursor-dot {
+                display: none;
+            }
+
+            /* Hide custom cursor on touch */
+            .header-logo img {
+                width: 80px;
+            }
+
+            .burger {
+                padding: 5px;
+            }
+
+            /* Navigation */
+            .nav-overlay .nav-links a {
+                font-size: 12vw;
+                margin: 20px 0;
+            }
+        }
+    </style>
 </head>
 
-<body>
-    
-   <header class="main-header">
-        <div class="header-content">
-            <a href="/" class="header-logo">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="INKBYHAND Logo" class="logo-img">
-            </a>
+<body class="is-loading">
 
-            <div class="icon-nav-container">
-                
-                 <div id="auth-container" class="auth-container">
-                    </div>
+    <div class="cursor-dot"></div>
 
-                <div class="cart-icon-container" onclick="window.location.href='cart.html'">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-
-                <div id="menu-icon-container" class="menu-icon-container" onclick="toggleBurgerMenu(event)">
-                    <i class="fas fa-bars"></i>
-                    <div id="burger-menu-dropdown" class="burger-menu-dropdown">
-                        <a href="product.html">Shop</a>
-                        <a href="about.html">About Us</a>
-                        <a href="contect.html">Contact</a> 
-                        <a href="order.html">Yours Orders</a>
-                        
-                    </div>
-                </div>
-
-                
-                
-               
-                
-            </div>
+    <header class="main-header">
+        <a href="l.html" class="header-logo"><img
+                src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
+        <div class="burger" id="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
         </div>
     </header>
-    <section class="hero5">
-        <div class="hero5__media">
-            <img alt="Pile of golden and green handmade decorative pieces" src="images/5.jpg" class="hero5__img" />
+
+    <nav class="nav-overlay" id="menu">
+        <div class="nav-links">
+            <a href="l.html" style="--i:1">HOME</a>
+            <a href="checkout.html" style="--i:2">CART</a>
+            <a href="#" style="--i:3">CONTACT</a>
         </div>
+    </nav>
 
-        <div class="hero5__content">
-            <div class="hero5__headline">
-                <span>Ready to bring</span>
-                <span>more freedom,</span>
-                <span>ease, & intentional</span>
-                <span>growth into your</span>
-                <span>business?</span>
+    <div id="scroll-container" data-scroll-container style="overflow: hidden;">
+
+        <!-- SEC 1: HERO -->
+        <section class="about-hero" data-scroll-section>
+            <div class="hero-bg-text" data-scroll data-scroll-speed="-4" data-scroll-direction="horizontal">STUDIO</div>
+            <div>
+                <h1 class="h-jumbo playfair">
+                    <div class="split-line"><span>WE ARE</span></div>
+                    <div class="split-line" style="font-style:italic; color:var(--accent)"><span>INK BY</span></div>
+                    <div class="split-line"><span>HAND.</span></div>
+                </h1>
+                <div style="margin-top: 40px; overflow: hidden;">
+                    <p class="text-c" style="margin: 0 auto; transform: translateY(100%); opacity:0;" id="hero-sub">
+                        Blurring the lines between physical artistry and digital permanence.
+                    </p>
+                </div>
             </div>
+        </section>
 
-            <div class="hero5__copy">
-                <p class="hero5__kicker">You’ve come to the right place.</p>
-                <p>
-                    This is where you’ll find
-                    <strong>guidance</strong>,
-                    <strong>encouragement</strong>, and
-                    <strong>support</strong> so that you can build and run a business that
-                    <em>truly works best for you</em>.
-                </p>
+        <!-- SEC 2: COLLAGE -->
+        <section class="collage-section" data-scroll-section>
+            <!-- High quality artistic images (No Humans) -->
+            <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=800&auto=format&fit=crop"
+                class="c-img c-1" data-scroll data-scroll-speed="2" alt="Abstract Ink">
+            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop"
+                class="c-img c-2" data-scroll data-scroll-speed="4" alt="Studio Tools">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
+                class="c-img c-3" data-scroll data-scroll-speed="1" alt="Fluid Art">
+        </section>
+
+        <!-- SEC 3: MANIFESTO -->
+        <section class="section-padding manifesto-wrap" data-scroll-section>
+            <p class="text-sm" style="margin-bottom: 30px; text-transform:uppercase; letter-spacing:2px;">Our Philosophy
+            </p>
+            <p class="big-para" id="reveal-text">
+                InkByHand is not just a store. It is a <br>
+                <span>sanctuary for the creative soul.</span> <br>
+                We believe that every stroke tells a story, <br>
+                and every canvas holds a <span>universe.</span> <br>
+                In a digital world, we preserve the <br>
+                <span>texture of reality.</span>
+            </p>
+        </section>
+
+        <!-- SEC 4: MARQUEE -->
+        <section class="marquee-container" data-scroll-section>
+            <div class="marquee-inner">
+                <div class="marquee-item">ORIGINAL &nbsp;&bull;&nbsp; BESPOKE &nbsp;&bull;&nbsp; TIMELESS
+                    &nbsp;&bull;&nbsp; </div>
+                <div class="marquee-item">ORIGINAL &nbsp;&bull;&nbsp; BESPOKE &nbsp;&bull;&nbsp; TIMELESS
+                    &nbsp;&bull;&nbsp; </div>
+                <div class="marquee-item">ORIGINAL &nbsp;&bull;&nbsp; BESPOKE &nbsp;&bull;&nbsp; TIMELESS
+                    &nbsp;&bull;&nbsp; </div>
+                <div class="marquee-item">ORIGINAL &nbsp;&bull;&nbsp; BESPOKE &nbsp;&bull;&nbsp; TIMELESS
+                    &nbsp;&bull;&nbsp; </div>
             </div>
+        </section>
 
-            <a href="product.html" class="hero5__cta">
-                Let’s order now…
-            </a>
-        </div>
-    </section>
-    
-   
-    <script src="js/dashboadover.js"></script>
-    <script src="js/cockees.js"></script>
+        <!-- FOOTER -->
+        <footer data-scroll-section>
+            <a href="mailto:hello@inkbyhand.com" class="footer-big playfair">Let's Create.</a>
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:#666;">
+                <div>&copy; 2026 INKBYHAND STUDIOS</div>
+                <div style="display:flex; gap:20px;">
+                    <a href="#">Instagram</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">LinkedIn</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1. Locomotive Scroll Setup
+        const scroller = new LocomotiveScroll({
+            el: document.querySelector('[data-scroll-container]'),
+            smooth: true,
+            smartphone: { smooth: false },
+            tablet: { smooth: false }
+        });
+
+        // Add resize observer to fix blank space issues
+        new ResizeObserver(() => scroller.update()).observe(document.querySelector('[data-scroll-container]'));
+
+        // Sync GSAP to Locomotive (Only needed if smooth is true, but safe to keep)
+        ScrollTrigger.scrollerProxy('[data-scroll-container]', {
+            scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
+            getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
+            pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
+        });
+        ScrollTrigger.addEventListener('refresh', () => scroller.update());
+        ScrollTrigger.refresh();
+
+        // 2. Load Animations
+        window.onload = () => {
+            document.body.classList.add('loaded');
+
+            // --- CRITICAL LOCOMOTIVE FIX ---
+            // Force update after images and layout stabilize
+            setTimeout(() => {
+                scroller.update();
+                ScrollTrigger.refresh();
+            }, 100);
+            
+            // Second update for slower devices/images
+            setTimeout(() => {
+                scroller.update();
+                ScrollTrigger.refresh();
+            }, 1000);
+
+            // Hero Text Reveal
+            const splitLines = document.querySelectorAll('.split-line span');
+            gsap.to(splitLines, {
+                y: 0,
+                duration: 1.5,
+                stagger: 0.1,
+                ease: 'power4.out',
+                delay: 0.2
+            });
+
+            gsap.to('#hero-sub', {
+                y: 0, opacity: 1, duration: 1, delay: 1, ease: 'power3.out'
+            });
+        };
+
+        // 3. Burger Menu
+        const burger = document.getElementById('burger');
+        const menu = document.getElementById('menu');
+        burger.onclick = () => {
+            menu.classList.toggle('active');
+            const lines = burger.querySelectorAll('div');
+            // Simple X animation
+            if (menu.classList.contains('active')) {
+                gsap.to(lines[0], { y: 4, rotation: 45, duration: 0.3 });
+                gsap.to(lines[1], { y: -3, rotation: -45, duration: 0.3 });
+            } else {
+                gsap.to(lines[0], { y: 0, rotation: 0, duration: 0.3 });
+                gsap.to(lines[1], { y: 0, rotation: 0, duration: 0.3 });
+            }
+        };
+
+        // 4. Text Highlighter Effect (Manifesto)
+        const textSpan = document.querySelectorAll('.big-para span');
+        textSpan.forEach(span => {
+            gsap.to(span, {
+                color: '#d6b598',
+                scrollTrigger: {
+                    trigger: span,
+                    scroller: '[data-scroll-container]',
+                    start: 'top 80%',
+                    end: 'top 50%',
+                    scrub: true
+                }
+            });
+        });
+
+        // 5. Marquee Animation
+        gsap.to('.marquee-inner', {
+            xPercent: -50,
+            ease: "none",
+            duration: 10,
+            repeat: -1
+        });
+
+        // 6. Custom Cursor
+        const cursor = document.querySelector('.cursor-dot');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+        });
+
+    </script>
 </body>
 
 </html>
