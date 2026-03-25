@@ -383,17 +383,20 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: grayscale(1);
-            transition: transform 0.8s ease, filter 0.5s ease;
+            filter: blur(5px); /* Changed from grayscale to blur */
+            opacity: 0.6;      /* Dim inactive slides slightly */
+            transition: transform 0.8s ease, filter 0.5s ease, opacity 0.5s ease;
         }
 
         .swiper-slide:hover img {
             transform: scale(1.05);
-            /* filter: grayscale(0) !important; User requested view btn on hover, implied full color? usually yes. */
+            filter: blur(0);   /* Clear on hover */
+            opacity: 1;
         }
         
         .swiper-slide-active img {
-            filter: grayscale(0);
+            filter: blur(0);   /* Clear active slide */
+            opacity: 1;
         }
 
         .slide-title {
@@ -492,50 +495,276 @@
 
         /* Footer */
         footer {
+            padding: 0;
+            background: #050505;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .footer-container {
             padding: 100px 5% 50px;
-            background: #000;
-            border-top: 1px solid #1a1a1a;
+        }
+
+        .footer-top {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-cta {
+            font-family: 'Playfair Display', serif;
+            font-size: 9vw;
+            line-height: 1;
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 20px;
+            transition: opacity 0.3s;
+        }
+
+        .footer-cta:hover {
+            opacity: 0.7;
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 50px;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
         }
 
-        .footer-logo img {
-            width: 130px;
-            filter: invert(1);
-            margin-bottom: 25px;
+        .footer-col h4 {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #666;
+            margin-bottom: 30px;
+            text-transform: uppercase;
         }
 
         .footer-link {
-            color: #888;
-            text-decoration: none;
             display: block;
-            margin: 10px 0;
-            transition: color 0.3s;
+            color: #aaa;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            width: fit-content;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 1px;
+            background: #fff;
+            transition: width 0.3s;
         }
 
         .footer-link:hover {
             color: #fff;
         }
 
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .newsletter-box p {
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .newsletter-form {
+            display: flex;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+        }
+
+        .newsletter-input {
+            background: none;
+            border: none;
+            color: #fff;
+            flex-grow: 1;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .newsletter-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 60px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
         @media (max-width: 768px) {
             .footer-grid {
                 grid-template-columns: 1fr;
+                gap: 50px;
             }
 
-            .v-step h3 {
-                font-size: 2.5rem;
+            .footer-cta {
+                font-size: 15vw;
             }
 
             .hero-title h1 {
-                font-size: 18vw;
+                font-size: 16vw; 
+                line-height: 1.1;
+            }
+
+            .content-block h2 {
+                font-size: 2rem;
+            }
+
+            /* Fix Swiper responsiveness */
+            .swiper-slide {
+                width: 80vw;
+                height: 55vh;
+            }
+
+            /* Fix Horizontal Scroll responsiveness */
+            .h-scroll-item {
+                width: 85vw;
+            }
+            
+            .h-scroll-item img {
+                height: 40vh; /* Reduced height for mobile */
+            }
+            
+            .h-scroll-item h3 {
+                font-size: 2rem; /* Fixed size instead of vw for better readability */
             }
 
             .faq-item {
                 max-width: 100%;
+                padding: 20px;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Optimization (extended to 550px) */
+        @media (max-width: 550px) {
+            .hero-title h1{
+                text-align: center;
+            }
+            .nav-links a{
+                font-size: 8vw;
+            }
+            /* Global Adjustments */
+            .content-block, .process-section, .faq-section, .swiper-section, .footer-container {
+                padding: 60px 5%; /* Tighter padding */
+            }
+
+            /* 1. Hero Section */
+            .hero {
+                height: 85vh; /* Account for mobile browser bars */
+            }
+
+            .hero-title h1 {
+                font-size: 13vw; /* Smaller to prevent overflow on 320px */
+                line-height: 1;
+                letter-spacing: -2px;
+                word-break: break-all; /* Safety wrapper */
+            }
+
+            .main-header {
+                padding: 20px 5%;
+            }
+
+            .header-logo img {
+                width: 80px; /* Resize logo */
+            }
+
+            /* 2. Process Section */
+            .process-card h3 {
+                font-size: 4rem; /* Smaller numbers */
+            }
+
+            /* 3. Horizontal Scroll Section */
+            .horizontal-scroll-container {
+                padding-top: 100px;
+            }
+
+            .h-scroll-item {
+                width: 85vw; /* Almost full width */
+                margin-right: 20px;
+                opacity: 1; /* Always visible */
+            }
+
+            .h-scroll-item img {
+                height: 40vh;
+                filter: grayscale(0%);
+            }
+
+            .h-scroll-item h2 {
+                font-size: 12vw !important; /* Fix Main Title */
+            }
+
+            .h-scroll-item h3 {
+                font-size: 2rem;
+            }
+
+            /* 4. Swiper Visual Archive */
+            .swiper-slide {
+                width: 85vw;
+                height: 45vh;
+            }
+
+            .swiper-slide img {
+                filter: blur(0);
+                opacity: 1;
+            }
+
+            .slide-overlay {
+                opacity: 1;
+                background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%);
+                justify-content: flex-end;
+                align-items: flex-start;
+                padding: 30px;
+                text-align: left;
+            }
+
+            .slide-title, .slide-desc, .slide-btn {
+                transform: translateY(0);
+            }
+
+            .slide-desc {
+                -webkit-line-clamp: 2; /* Less text */
+                font-size: 0.85rem;
+            }
+
+            /* 5. FAQ Section */
+            .faq-item h4 {
+                font-size: 1.5rem;
+            }
+
+            /* 6. Footer */
+            .footer-cta {
+                font-size: 13.5vw; /* Prevent overflow of long words */
+                -webkit-text-stroke-width: 0.5px;
+            }
+
+            .footer-grid {
+                gap: 40px;
             }
         }
     </style>
@@ -717,27 +946,53 @@
         </section>
 
         <footer data-scroll-section>
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo"><img
-                            src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png"
-                            alt="Logo"></div>
-                    <p style="color: #666; max-width: 350px; line-height: 1.8;">Artisanal calligraphy studio merging
-                        ancient heritage with digital-first brand systems.</p>
+            <div class="footer-container">
+                <div class="footer-top">
+                    <a href="#" class="footer-cta">LET'S BUILD<br>SOMETHING<br>ICONIC.</a>
                 </div>
-                <div>
-                    <h4 style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 30px; color: #444;">SOCIAL</h4>
-                    <a href="#" class="footer-link">INSTAGRAM</a>
-                    <a href="#" class="footer-link">BEHANCE</a>
+
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>NEWSLETTER</h4>
+                        <div class="newsletter-box">
+                            <p>Join our list for updates on new case studies.</p>
+                            <div class="newsletter-form">
+                                <input type="email" placeholder="Email Address" class="newsletter-input">
+                                <button class="newsletter-btn">SUBSCRIBE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>SITEMAP</h4>
+                        <a href="#" class="footer-link">Home</a>
+                        <a href="#" class="footer-link">Work</a>
+                        <a href="#" class="footer-link">Studio</a>
+                        <a href="#" class="footer-link">Journal</a>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>SOCIAL</h4>
+                        <a href="#" class="footer-link">Instagram</a>
+                        <a href="#" class="footer-link">Behance</a>
+                        <a href="#" class="footer-link">LinkedIn</a>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>CONTACT</h4>
+                        <p style="color: #888; margin-bottom: 10px;">Sargodha, Pakistan</p>
+                        <a href="mailto:hello@inkbyhand.com" class="footer-link" style="color:#fff;">hello@inkbyhand.com</a>
+                    </div>
                 </div>
-                <div>
-                    <h4 style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 30px; color: #444;">STUDIO</h4>
-                    <p style="color:#888;">Sargodha, PK</p>
-                    <p style="color:#888; margin-top:10px;">hello@inkbyhand.com</p>
+
+                <div class="footer-bottom">
+                    <p>© 2026 INKBYHAND. ALL EDGES SHARP.</p>
+                    <div style="display: flex; gap: 20px;">
+                        <a href="#" style="color: #555; text-decoration: none;">Privacy</a>
+                        <a href="#" style="color: #555; text-decoration: none;">Terms</a>
+                    </div>
                 </div>
             </div>
-            <p style="text-align:center; margin-top:80px; font-size: 0.7rem; color: #222;">© 2026 INKBYHAND. ALL EDGES
-                SHARP.</p>
         </footer>
     </div>
 
@@ -859,9 +1114,10 @@
             effect: "coverflow",
             centeredSlides: true,
             slidesPerView: "auto",
+            slideToClickedSlide: true, // Allows clicking side images to center them
             coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
             loop: true,
-            autoplay: { delay: 2500 }
+            autoplay: { delay: 2500, disableOnInteraction: false }
         });
 
         // 8. Dynamic Data
@@ -878,7 +1134,7 @@
                             <div class="slide-overlay">
                                 <h3 class="slide-title">${item.title || 'Untitled'}</h3>
                                 <p class="slide-desc">${item.description || 'No description available.'}</p>
-                                <a href="detail.html?id=${item.id}" class="slide-btn">VIEW DETAILS</a>
+                                <a href="https://inkbyhand.store/detail.html?id=${item._id}" class="slide-btn">VIEW DETAILS</a>
                             </div>
                         </div>
                     `).join('');
