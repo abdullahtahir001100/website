@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutBtn = document.querySelector('.checkout-btn');
     if(checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            window.location.href = 'checkout.html';
+            window.location.href = 'paymant.html';
         });
     }
 
