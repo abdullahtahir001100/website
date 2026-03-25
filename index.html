@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INKBYHAND | Art Gallery</title>
+    <title>INKBYHAND | Professional Studio</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
@@ -11,198 +11,214 @@
 
     <style>
         :root {
-            --bg-light: #fdfcf8;
-            --text-dark: #1a1a1a;
-            --accent: #c5a059;
-            --header-bg: rgba(253, 252, 248, 0.95);
+            --bg-gray: #f2f2f2;         /* Main background */
+            --slate-gray: #2d2d2d;     /* Dark text/elements */
+            --muted-gray: #7a7a7a;     /* Subtext */
+            --accent-gold: #c5a059;    /* Refined gold */
+            --border-color: rgba(0,0,0,0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Playfair Display', serif; }
-        body { background: var(--bg-light); color: var(--text-dark); overflow: hidden; }
+        body { background: var(--bg-gray); color: var(--slate-gray); overflow: hidden; }
 
-        /* Navigation */
+        /* Smooth Navigation */
         .main-header {
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: var(--header-bg); backdrop-filter: blur(10px);
-            padding: 20px 5%; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(242, 242, 242, 0.85); backdrop-filter: blur(15px);
+            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
-        .header-logo img { width: 140px; }
+        .header-logo img { width: 130px; filter: grayscale(1); transition: 0.3s; }
+        .header-logo:hover img { filter: grayscale(0); }
 
-        /* Hero */
-        .hero { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
-        #hero-canvas { position: absolute; width: 100%; height: 100%; opacity: 0.5; }
-        .hero-content { position: relative; z-index: 2; text-align: center; color: white; }
-        .hero h1 { font-size: 8vw; letter-spacing: 10px; text-transform: uppercase; }
+        /* Professional Grayish Hero */
+        .hero {
+            height: 100vh; background: #dcdcdc; /* Grayish mixture */
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        #hero-canvas { position: absolute; width: 100%; height: 100%; opacity: 0.4; }
+        .hero-content { position: relative; z-index: 2; text-align: center; }
+        .hero h1 { font-size: 9vw; font-weight: 900; color: var(--slate-gray); letter-spacing: -2px; line-height: 0.8; }
+        .hero p { text-transform: uppercase; letter-spacing: 10px; font-size: 0.8rem; margin-top: 20px; color: var(--muted-gray); }
 
-        /* Dynamic Product Grid */
-        .shop-section { padding: 100px 5%; background: var(--bg-light); }
-        .section-header { margin-bottom: 60px; text-align: center; }
-        .section-header h2 { font-size: 3rem; margin-bottom: 10px; }
+        /* Smooth Video/Canvas Scroll Section */
+        .v-scroll-wrap { height: 400vh; background: var(--slate-gray); position: relative; }
+        .v-sticky { 
+            position: sticky; top: 0; height: 100vh; width: 100%; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        #calligraphy-canvas { width: 100%; height: 100%; object-fit: cover; }
         
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-            gap: 40px; 
+        /* Floating Overlay Text */
+        .v-overlay {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; z-index: 5; pointer-events: none;
+        }
+        .v-overlay h2 { font-size: 5vw; opacity: 0; transform: translateY(50px); }
+
+        /* Shop Section - Grayish Mixture */
+        .shop-section { padding: 150px 5%; background: #ebebeb; }
+        .product-card {
+            background: #fff; padding: 15px; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--border-color);
+        }
+        .product-card:hover { transform: translateY(-15px); box-shadow: 0 40px 60px rgba(0,0,0,0.05); }
+        .product-card img { width: 100%; height: 500px; object-fit: cover; filter: sepia(0.2); }
+
+        /* Custom Cursor */
+        .c-cursor {
+            width: 15px; height: 15px; background: var(--accent-gold);
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
         }
 
-        .art-card {
-            background: white; border-radius: 15px; overflow: hidden;
-            transition: transform 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            cursor: pointer; position: relative;
-        }
-        .art-card:hover { transform: translateY(-10px); }
-        .art-card img { width: 100%; height: 450px; object-fit: cover; }
-        
-        .art-info { padding: 25px; }
-        .art-info h3 { font-size: 1.5rem; margin-bottom: 5px; }
-        .art-info p { color: #777; font-size: 0.9rem; margin-bottom: 15px; text-transform: uppercase; }
-        .art-price { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
-        
-        /* Swiper Overrides */
-        .swiper-slide { width: 400px; height: 550px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
-
-        footer { background: #111; color: white; padding: 100px 5% 50px; }
+        footer { background: var(--slate-gray); color: #888; padding: 100px 5% 50px; text-align: center; }
     </style>
 </head>
 <body>
 
+    <div class="c-cursor"></div>
+
     <header class="main-header">
         <div class="header-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></div>
-        <div class="nav-icons"><i class="fas fa-shopping-bag"></i></div>
+        <div style="display:flex; gap:30px; font-size: 0.9rem; text-transform: uppercase; font-weight: bold;">
+            <span>Gallery</span><span>Studio</span><span>Contact</span>
+        </div>
     </header>
 
-    <div id="main-container" data-scroll-container>
+    <div id="main-wrapper" data-scroll-container>
         
         <section class="hero" data-scroll-section>
             <canvas id="hero-canvas"></canvas>
-            <div class="hero-content" data-scroll data-scroll-speed="2">
-                <h1>Curated Gallery</h1>
-                <p>Spiritual Art by Areeba Tahir</p>
+            <div class="hero-content" data-scroll data-scroll-speed="3">
+                <p>Est. 2025 • Calligraphy Studio</p>
+                <h1>INKBYHAND</h1>
             </div>
         </section>
 
-        <section class="featured-slider" style="padding: 100px 0; background: #0a0a0a;" data-scroll-section>
-            <h2 style="color:white; text-align: center; margin-bottom: 50px; font-size: 2.5rem;">Signature Pieces</h2>
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper" id="swiper-target">
-                    </div>
+        <section class="v-scroll-wrap" data-scroll-section>
+            <div class="v-sticky">
+                <canvas id="calligraphy-canvas"></canvas>
+                <div class="v-overlay">
+                    <h2 id="text-1">Purity of Lines</h2>
+                    <h2 id="text-2">Soul of the Ink</h2>
+                </div>
             </div>
         </section>
 
         <section class="shop-section" data-scroll-section>
-            <div class="section-header gsap-fade-up">
-                <h2>The Collection</h2>
-                <p>Hand-painted calligraphy on premium canvas</p>
+            <div style="margin-bottom: 80px;" class="gsap-reveal">
+                <h2 style="font-size: 3.5rem;">The Grey Collection</h2>
+                <p style="color: var(--muted-gray);">Muted tones for modern spaces.</p>
             </div>
-            <div class="product-grid" id="grid-target">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;">
+                <div class="product-card gsap-reveal">
+                    <img src="https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?q=80&w=800" alt="Art">
+                    <div style="padding-top: 20px;">
+                        <h3>99 Names of Allah</h3>
+                        <p style="color: var(--accent-gold); font-weight: bold; margin-top: 5px;">$2,500</p>
+                    </div>
                 </div>
+                <div class="product-card gsap-reveal">
+                    <img src="https://images.unsplash.com/photo-1584285408906-ac15eb810578?q=80&w=800" alt="Art">
+                    <div style="padding-top: 20px;">
+                        <h3>Surah Ad Duha</h3>
+                        <p style="color: var(--accent-gold); font-weight: bold; margin-top: 5px;">$1,200</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <footer data-scroll-section>
-            <p style="text-align: center; opacity: 0.5;">© 2026 INKBYHAND ART GALLERY</p>
+            <p>© 2026 INKBYHAND STUDIO. ALL RIGHTS RESERVED.</p>
         </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        // YOUR DATA
-        const artData = [
-            {
-                "title": "99 Names Of Allah",
-                "artist": "Areeba Tahir",
-                "price": 2500,
-                "mainImage": "https://res.cloudinary.com/dwnnadeb0/image/upload/v1764773613/art_gallery_products/lbhqkkgckqw5wpw6tl7q.jpg",
-                "category": "Painting"
-            },
-            {
-                "title": "Surah Kausar",
-                "artist": "Areeba Tahir",
-                "price": 1600,
-                "mainImage": "https://res.cloudinary.com/dwnnadeb0/image/upload/v1764773301/art_gallery_products/iwbv0bparcfvmrzcf45b.jpg",
-                "category": "Modern"
-            },
-            {
-                "title": "Darood e Ibrhimi",
-                "artist": "Areeba Tahir",
-                "price": 2600,
-                "mainImage": "https://res.cloudinary.com/dwnnadeb0/image/upload/v1764774635/art_gallery_products/ahwk8mdx6alh5eolg44i.jpg",
-                "category": "Classic"
-            },
-            {
-                "title": "Surah Rehman",
-                "artist": "Areeba Tahir",
-                "price": 1200,
-                "mainImage": "https://res.cloudinary.com/dwnnadeb0/image/upload/v1764772989/art_gallery_products/wotk4oicdd79flhxglji.jpg",
-                "category": "Painting"
-            },
-            {
-                "title": "Kaswa Paintaing",
-                "artist": "Areeba Tahir",
-                "price": 3000,
-                "mainImage": "https://res.cloudinary.com/dwnnadeb0/image/upload/v1764774940/art_gallery_products/v3psc0d6dfqwrlrkwy1s.jpg",
-                "category": "Large Scale"
-            }
-            // ... Add more from your JSON as needed
-        ];
+        gsap.registerPlugin(ScrollTrigger);
 
-        // 1. Injected Data Logic
-        const gridTarget = document.getElementById('grid-target');
-        const swiperTarget = document.getElementById('swiper-target');
-
-        artData.forEach(item => {
-            // Fill Grid
-            gridTarget.innerHTML += `
-                <div class="art-card gsap-fade-up">
-                    <img src="${item.mainImage}" alt="${item.title}">
-                    <div class="art-info">
-                        <p>${item.category} • ${item.artist}</p>
-                        <h3>${item.title}</h3>
-                        <div class="art-price">$${item.price}</div>
-                    </div>
-                </div>
-            `;
-            // Fill Swiper
-            swiperTarget.innerHTML += `
-                <div class="swiper-slide">
-                    <img src="${item.mainImage}" alt="${item.title}">
-                </div>
-            `;
-        });
-
-        // 2. Initialize Locomotive & ScrollTrigger
         const scroller = new LocomotiveScroll({
             el: document.querySelector('[data-scroll-container]'),
             smooth: true
         });
 
         scroller.on("scroll", ScrollTrigger.update);
-        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+        ScrollTrigger.scrollerProxy("#main-wrapper", {
             scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
             getBoundingClientRect() { return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight}; }
         });
 
-        // 3. Animations
-        gsap.utils.toArray('.gsap-fade-up').forEach(elem => {
-            gsap.from(elem, {
-                scrollTrigger: { trigger: elem, scroller: "[data-scroll-container]", start: "top 90%" },
-                y: 60, opacity: 0, duration: 1.2, ease: "power3.out"
-            });
+        // Custom Cursor Logic
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(".c-cursor", { x: e.clientX, y: e.clientY, duration: 0.1 });
         });
 
-        // 4. Swiper Init
-        new Swiper(".mySwiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto",
-            coverflowEffect: { rotate: 5, stretch: 0, depth: 100, modifier: 2, slideShadows: true },
-            loop: true,
-            autoplay: { delay: 3000 }
+        // CANVAS VIDEO SEQUENCE LOGIC (THE SMOOTH WAY)
+        const canvas = document.getElementById("calligraphy-canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = 1158;
+        canvas.height = 770;
+
+        const frameCount = 147; // Adjusted to common sequence length
+        const currentFrame = index => `https://www.apple.com/105/main/default/explore-iphone/images/overview/hero/hero_canvas__f7v7v7v7v7v7_large_2x.jpg`; 
+        // NOTE: Replace with your actual grayish frame sequence folder
+
+        const images = [];
+        const airplay = { frame: 0 };
+
+        // Preload images to prevent "blank" frames during scroll
+        for (let i = 0; i < frameCount; i++) {
+            const img = new Image();
+            img.src = currentFrame(i);
+            images.push(img);
+        }
+
+        images[0].onload = render;
+
+        function render() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(images[airplay.frame], 0, 0);
+        }
+
+        gsap.to(airplay, {
+            frame: frameCount - 1,
+            snap: "frame",
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".v-scroll-wrap",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.5, // Added slight scrub delay for butter-smooth movement
+                scroller: "#main-wrapper"
+            },
+            onUpdate: render
+        });
+
+        // Overlay Text Transitions
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".v-scroll-wrap",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true,
+                scroller: "#main-wrapper"
+            }
+        });
+
+        tl.to("#text-1", { opacity: 1, y: -20, duration: 2 })
+          .to("#text-1", { opacity: 0, y: -40, duration: 2 }, "+=1")
+          .to("#text-2", { opacity: 1, y: -20, duration: 2 }, "+=1");
+
+        // Reveal Animations
+        gsap.utils.toArray('.gsap-reveal').forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: { trigger: el, scroller: "#main-wrapper", start: "top 90%" },
+                y: 80, opacity: 0, duration: 1.5, ease: "power4.out"
+            });
         });
 
         ScrollTrigger.addEventListener("refresh", () => scroller.update());
