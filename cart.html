@@ -1,143 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Shopping Cart</title>
-    <!-- Load Tailwind CSS for modern, responsive styling -->
-         <meta name="description" content="Discover the art of calligraphy. Learn modern brush lettering, traditional copperplate, and engrosser's script. Shop premium pens, inks, and supplies for beginners and masters."/>
-    <meta name="keywords" content="calligraphy, calligraphy art, modern calligraphy, traditional calligraphy, hand lettering, brush lettering, brush script, copperplate, copperplate calligraphy, Spencerian script, engrosser's script, gothic calligraphy, blackletter, italic script, chancery script, foundational hand, uncial, ruling pen, pointed pen, broad-edge pen, dip pen, fountain pen, calligraphy pens, brush pens, water brush, nibs, calligraphy nibs, pointed nibs, broad nibs, oblique holder, straight holder, pen holders, calligraphy ink, india ink, sumi ink, watercolor, gouache, metallic ink, practice paper, tracing paper, parchment paper, calligraphy pad, light box, beginner calligraphy, learn calligraphy, calligraphy classes, calligraphy workshops, online calligraphy course, calligraphy tutorials, how to start calligraphy, calligraphy for beginners, calligraphy supplies, best calligraphy pens, calligraphy tools, penmanship, beautiful handwriting, fine art, decorative writing, wedding invitations, envelope addressing, custom stationery, bespoke design, logo design, signature style, vintage script, flourishing, ornamental calligraphy, calligraphy guides, letter forms, script styles, art materials, art and craft, creative hobbies, drawing and design, typography, hand drawn type, script lettering, sign painting, artistic writing, copperplate masters, Spencerian practice, modern brush script, bounce lettering, monoline, faux calligraphy, pointed pen skills, thick and thin strokes, upstrokes, downstrokes, ink flow, pen angle, x-height, ascenders, descenders, pressure control, digitizing calligraphy, calligraphy resources, calligraphy exercises, practice drills, free templates, professional calligrapher, artist studio, handmade cards, gift tags, certificates, illumination, medieval manuscripts, ancient scripts, Western calligraphy, Eastern calligraphy, Japanese calligraphy, Chinese calligraphy, Arabic calligraphy, Thuluth, Naskh, Diwani, Kufic, artistic expression, relaxation, mindfulness, creative outlet, DIY projects, wedding calligraphy services, event signage, menu design, personalized gifts, art instruction, calligraphy books, digital calligraphy, iPad lettering, Procreate brushes, vectorizing artwork, vector graphics, calligraphy workshops near me, lettering styles, fancy writing, decorative fonts, artistic handwriting, beautiful scripts, elegant design, handwritten text, artistic fonts, cursive, elegant writing, fine details, personalized items, art prints, inspirational quotes, custom artwork, drawing lessons, graphic design elements, creative writing, artistic techniques, ink mixing, storage solutions, paper selection, handmade paper, calligraphy paper weight, desk setup, ergonomic pen holder, professional artist supplies, creative entrepreneurship, small business art, commission work, unique gifts, custom apparel, calligraphy mastery, advanced techniques, composition, layout, historical scripts, illumination techniques, gilded lettering, gold leaf, decorative borders, scrollwork, ornamental designs, artistic flair, fine script, legible writing, expressive lines, handmade quality, artistic home decor, creative passions, art education, skills development, manual dexterity, visual arts, design aesthetics, refined taste, premium stationery, luxury goods, high-end design, elegant invitations, wedding stationery suite, bespoke paper goods, event branding, brand identity design, unique logotype, handwritten logos, italic hand, roman capitals, versals, Lombardic versals, half-uncial, Insular minuscule, Carolingian minuscule, Humanist minuscule, Textura, Fraktur, Rotunda, Scheveningen, Gillott nibs, Nikko G nibs, Zebra G nibs, Brause nibs, Speedball nibs, automatic pens, parallel pens, acrylic ink, pigment ink, iron gall ink, archival ink, shimmer ink, pearlescent ink, white ink calligraphy, black paper lettering, wedding place cards, seating charts, chalkboard art, mirror calligraphy, glass engraving, foiled calligraphy, letterpress design, stationery suite design, custom vows, poem transcription, calligraphy coaching, certification program, advanced flourishing, decorative capitals, brush pen practice sheets, modern wedding stationery, minimalist calligraphy, watercolor calligraphy, dip pen cleaning, pen rest, slant guides, line guides, how to write beautiful script, vintage style lettering, hand-painted signs, commission a calligrapher, calligraphy artist portfolio, calligraphy services pricing, brush marker tutorials, Procreate lettering guides, digital brush pen, pointed pen versus brush pen, oblique vs straight holder, beginner ink recommendations, calligraphy paper brands, practicing proper form, consistency drills, letter connection, baseline bouncing, free calligraphy worksheets, best paper for dip pen ink, wedding envelope addressing cost, custom poem handwritten, art of beautiful writing, calligraphy for stress relief, creative lettering ideas, inkbyhand, i nkbyhand, in k by hand, ink by han ds, ink-by-hands, ink by hands, ink byhand, inkby hands, inkbyhand calligraphy, inkbyhand art, ink by hand tutorials, ink by hand supplies" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/cart.css">
+    <title>INKBYHAND | Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <style>
+        :root {
+            --bg-deep: #0a0a0a;
+            --bg-mid: #141414;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important; /* Custom cursor everywhere */
+        }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* Cursor */
+        .cursor {
+            width: 8px; height: 8px; background: #fff; position: fixed; pointer-events: none; z-index: 10000; mix-blend-mode: difference; border-radius: 50%;
+        }
+        .cursor-follower {
+            width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.5); position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transition: transform 0.15s ease-out;
+        }
+
+        /* Header */
+        .main-header {
+            position: fixed; top: 0; width: 100%; z-index: 2200; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px); padding: 25px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);
+        }
+        .header-logo img { width: 100px; filter: invert(1); }
+        .burger { cursor: pointer; z-index: 2300; padding: 10px; }
+        .burger div { width: 25px; height: 1px; background: white; margin: 6px; transition: 0.4s; }
+
+        /* Menu Overlay */
+        .nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000; z-index: 2100; display: flex; align-items: center; justify-content: center; transform: scale(1.1); opacity: 0; pointer-events: none; transition: all 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        .nav-overlay.active { transform: scale(1); opacity: 1; pointer-events: all; }
+        .nav-links a { display: block; font-size: 5vw; color: white; margin: 10px 0; font-family: 'Playfair Display'; opacity: 0; transform: translateY(50px); transition: 0.6s; }
+        .nav-overlay.active .nav-links a { opacity: 1; transform: translateY(0); transition-delay: calc(0.1s * var(--i)); }
+
+        /* --- CART PAGE STYLES --- */
+        .page-spacer { height: 140px; }
+        .cart-container {
+            padding: 0 5%;
+            min-height: 60vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .cart-title {
+            font-size: 4vw;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 40px;
+        }
+
+        /* Empty Cart */
+        #emptyCart { display: none; padding: 100px 0; text-align: center; }
+
+        /* Full Cart Layout */
+        #fullCartContent {
+            display: none; /* Flex when active */
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Cart Head (Desktop) */
+        #cardHead {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Cart Items */
+        .cart-product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0; 
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .product-details-group {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 2;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 120px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display';
+            font-size: 1.5rem;
+        }
+
+        .product-price-inline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Quantity */
+        .qty-column {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+            padding: 5px 15px;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .qty-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 20px;
+        }
+
+        /* Total & Remove */
+        .total-column {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 30px;
+            font-size: 1.2rem;
+        }
+
+        .remove-btn {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.3s;
+            color: #fff; /* If using icon */
+            width: 20px; /* If using image */
+        }
+        .remove-btn:hover { opacity: 1; color: #ff4444; }
+
+        /* Summary Panel */
+        .cart-summary {
+            margin-top: 60px;
+            padding-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .summary-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        .total-row {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        .checkout-btn {
+            background: #fff;
+            color: #000;
+            width: 100%;
+            padding: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: 0.3s;
+            display: block;
+            text-align: center;
+        }
+        .checkout-btn:hover { background: #ccc; }
+
+
+        /* Footer */
+        footer { padding: 100px 5%; border-top: 1px solid var(--border-color); margin-top: 100px; }
+        .footer-cta { font-family: 'Playfair Display'; font-size: 8vw; line-height: 0.9; color: #fff; text-transform: uppercase; }
+        .footer-bottom { border-top: 1px solid var(--border-color); padding-top: 30px; display: flex; justify-content: space-between; color: #555; margin-top: 80px; }
+
+        @media (max-width: 768px) {
+            .cart-title { font-size: 15vw; }
+            #cardHead { display: none; }
+            .cart-product-item { flex-direction: column; align-items: flex-start; gap: 20px; position: relative; }
+            .product-details-group { width: 100%; }
+            .qty-column { width: 100%; justify-content: flex-start; }
+            .total-column { position: absolute; top: 40px; right: 0; }
+            .remove-btn { position: absolute; top: 0; right: 0; }
+            .quantity-input { pointer-events: none; } /* On mobile maybe rely on +/- */
+            .total-column .item-total-price { display: none; } /* Hide subtotal per item on mobile if tight? */
+            
+            /* Hide Cursor */
+            .cursor, .cursor-follower { display: none !important; }
+        }
+
+    </style>
 </head>
-
 <body>
+    
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
-    <!-- Header Section -->
-  <header class="main-header">
-        <div class="header-content">
-            <a href="/" class="header-logo">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="INKBYHAND Logo" class="logo-img">
-            </a>
-
-            <div class="icon-nav-container">
-                
-                 <div id="auth-container" class="auth-container">
-                    </div>
-
-                <div class="cart-icon-container" onclick="window.location.href='cart.html'">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-
-                <div id="menu-icon-container" class="menu-icon-container" onclick="toggleBurgerMenu(event)">
-                    <i class="fas fa-bars"></i>
-                    <div id="burger-menu-dropdown" class="burger-menu-dropdown">
-                        <a href="product.html">Shop</a>
-                        <a href="about.html">About Us</a>
-                        <a href="contect.html">Contact</a> 
-                        <a href="order.html">Yours Orders</a>
-                        
-                    </div>
-                </div>
-
-                
-                
-               
-                
+    <header class="main-header">
+        <a href="l.html" class="header-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="font-size: 0.9rem;">CART (<span id="cart-count">0</span>)</div>
+            <div class="burger" id="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 md:py-10">
-
-        <div class="flex justify-between items-end mb-8">
-            <h1 id="cardHead" class="text-3xl md:text-4xl font-extrabold text-gray-900">
-                Your cart
-            </h1>
-            <a href="product.html"
-                class="text-base font-semibold text-gray-700 hover:text-gray-900 transition-colors border-b border-gray-700 pb-0.5">
-                Continue shopping
-            </a>
+    <nav class="nav-overlay" id="menu">
+        <div class="nav-links">
+            <a href="l.html" style="--i:1">WORK</a>
+            <a href="#" style="--i:2">STUDIO</a>
+            <a href="#" style="--i:3">PROCESS</a>
+            <a href="#contact" style="--i:4">CONTACT</a>
         </div>
+    </nav>
 
+    <div id="scroll-wrapper" data-scroll-container>
+        <div class="page-spacer"></div>
 
-        <!-- Empty Cart State -->
-        <div id="emptyCart" class="text-center bg-white p-10 rounded-xl shadow-lg" style="display: none;">
-            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                </path>
-            </svg>
-            <h2 class="text-2xl font-bold mt-4">Your cart is empty</h2>
-            <p class="text-gray-500 mt-2">Looks like you haven't added anything to your cart yet.</p>
-            <a href="product.html"
-                class="mt-6 inline-block bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-orange-700 transition-colors">
-                Start Shopping
-            </a>
-        </div>
+        <section class="cart-container" data-scroll-section>
+            
+            <h1 class="cart-title" data-scroll data-scroll-speed="1">Your Selection</h1>
 
-        <!-- Full Cart Content Wrapper -->
-        <div id="fullCartContent" class="cart-content-wrapper" style="display: none;">
-
-            <!-- Left Column: Cart Items and Instructions -->
-            <div class="scroll">
-                <div class="cart-items-container">
-
-                    <!-- Cart Header Row (Grid for alignment) -->
-                    <div class="cart-list-header">
-                        <div class="header-prod">PRODUCT</div>
-                        <div class="header-qty">QUANTITY</div>
-                        <div class="header-total">TOTAL</div>
-                    </div>
-
-                    <!-- Cart Items Body (Populated by JS) -->
-                    <div id="cart-items">
-                        <!-- Items will be inserted here -->
-                    </div>
-
-                    <!-- Order Special Instructions -->
-
-                </div>
+            <!-- EMPTY CART -->
+            <div id="emptyCart">
+                <!-- Injected via JS -->
             </div>
-            <div class="flex border-t border-gray-200" id="none">
-                <div class="ins">
-                    <h3 class="block text-lg font-semibold text-gray-800 mb-2">Order special instructions</h3>
-                    <textarea id="special-instructions" rows="4" class="text"></textarea>
+
+            <!-- FULL CART -->
+            <div id="fullCartContent">
+                
+                <div id="cardHead">
+                    <div style="flex:2;">Artwork</div>
+                    <div style="flex:1; text-align:center;">Quantity</div>
+                    <div style="flex:1; text-align:right;">Total</div>
                 </div>
-                <!-- Right Column: Cart Summary -->
-                <div id="cartSummary" class="cart-summary-column">
-                    <div class="summary-card">
-                        <!-- Subtotal Row -->
-                        <div class="summary-row font-semibold text-gray-900">
-                            <span class="text-xl">Subtotal</span>
-                            <span id="cartSubtotal" class="font-bold text-xl">0 Rs</span>
+
+                <div id="cart-items">
+                    <!-- Items Injected Here -->
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-box">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">0 Rs</span>
                         </div>
-
-                        <!-- Taxes/Info Row -->
-                        <p class="text-sm text-gray-500 text-right mt-0 mb-4">
-                            Taxes and shipping calculated at checkout
-                        </p>
-
-                        <!-- Checkout Button -->
-                        <a href="paymant.html"
-                            class="mt-2 block w-full text-center py-3 bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:bg-orange-700 transition-colors text-lg">
-                            Check out
-                        </a>
+                        <div class="summary-row" style="color:var(--text-muted); font-size: 0.9rem;">
+                            <span>Shipping</span>
+                            <span>Calculated at checkout</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Total</span>
+                            <span id="cartFinalTotal">-</span>
+                        </div>
+                        
+                        <button class="checkout-btn">PROCEED TO CHECKOUT</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <!-- Footer Section -->
-    <script src="js/cockees.js"></script>
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer data-scroll-section>
+            <a href="l.html" class="footer-cta">LET'S BUILD<br>SOMETHING<br>ICONIC.</a>
+            <div class="footer-bottom">
+                <p>© 2026 INKBYHAND. ALL EDGES SHARP.</p>
+                <div>
+                   <a href="#" style="margin-right: 20px;">PRIVACY</a>
+                   <a href="#">TERMS</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // Init Locomotive + GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        const locoScroll = new LocomotiveScroll({
+            el: document.querySelector("[data-scroll-container]"),
+            smooth: true, multiplier: 1, lerp: 0.05,
+            smartphone: { smooth: false }, tablet: { smooth: false }
+        });
+        locoScroll.on("scroll", ScrollTrigger.update);
+        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+            scrollTop(value) { return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y; },
+            getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
+            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
+        });
+        ScrollTrigger.refresh();
+
+        // Cursor
+        const cursor = document.querySelector(".cursor");
+        const follower = document.querySelector(".cursor-follower");
+        window.addEventListener("mousemove", e => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
+        });
+
+        // Menu
+        const burger = document.getElementById('burger');
+        const menu = document.getElementById('menu');
+        burger.onclick = () => {
+            menu.classList.toggle('active');
+            const lines = burger.querySelectorAll('div');
+            lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
+            lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
+        };
+
+        // Expose to window for JS files
+        window.locoScroll = locoScroll;
+    </script>
+    
     <script src="js/cart.js"></script>
 </body>
-
 </html>
