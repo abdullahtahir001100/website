@@ -663,12 +663,43 @@
 
         /* Mobile Optimization (extended to 550px) */
         @media (max-width: 550px) {
+            
+            /* --- Performance Fixes --- */
+            * {
+                cursor: auto !important; /* Disable custom cursor */
+            }
+            
+            .cursor, .cursor-follower {
+                display: none !important; /* Hide custom cursor elements */
+            }
+
+            .main-header {
+                backdrop-filter: none !important; /* Remove blur effect */
+                background: rgba(10,10,10,0.95); /* Solid-ish background */
+                padding: 20px 5%;
+            }
+            
+            .slide-overlay {
+                backdrop-filter: none !important; /* Remove blur effect */
+            }
+
+            .hero-title, .h-scroll-item, .swiper-slide {
+                will-change: transform; /* Hardware acceleration hint */
+            }
+
+            /* --- Layout Adjustments --- */
             .hero-title h1{
                 text-align: center;
+                font-size: 13vw; /* Smaller to prevent overflow on 320px */
+                line-height: 1;
+                letter-spacing: -2px;
+                word-break: break-all; /* Safety wrapper */
             }
+
             .nav-links a{
                 font-size: 8vw;
             }
+
             /* Global Adjustments */
             .content-block, .process-section, .faq-section, .swiper-section, .footer-container {
                 padding: 60px 5%; /* Tighter padding */
@@ -677,17 +708,6 @@
             /* 1. Hero Section */
             .hero {
                 height: 85vh; /* Account for mobile browser bars */
-            }
-
-            .hero-title h1 {
-                font-size: 13vw; /* Smaller to prevent overflow on 320px */
-                line-height: 1;
-                letter-spacing: -2px;
-                word-break: break-all; /* Safety wrapper */
-            }
-
-            .main-header {
-                padding: 20px 5%;
             }
 
             .header-logo img {
@@ -712,7 +732,7 @@
 
             .h-scroll-item img {
                 height: 40vh;
-                filter: grayscale(0%);
+                filter: none !important; /* No grayscale/blur on mobile */
             }
 
             .h-scroll-item h2 {
@@ -730,7 +750,7 @@
             }
 
             .swiper-slide img {
-                filter: blur(0);
+                filter: none !important; /* No blur on mobile */
                 opacity: 1;
             }
 
@@ -863,29 +883,29 @@
                         </div>
 
                         <div class="h-scroll-item">
-                            <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1974&auto=format&fit=crop"
-                                alt="Work 1">
+                            <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1200&auto=format&fit=crop"
+                                loading="lazy" alt="Work 1">
                             <h3>Abstract</h3>
                             <p>Branding • 2024</p>
                         </div>
 
                         <div class="h-scroll-item">
-                            <img src="https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=1976&auto=format&fit=crop"
-                                alt="Work 2">
+                            <img src="https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=1200&auto=format&fit=crop"
+                                loading="lazy" alt="Work 2">
                             <h3>Noir</h3>
                             <p>Art Direction • 2023</p>
                         </div>
 
                         <div class="h-scroll-item">
-                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop"
-                                alt="Work 3">
+                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200&auto=format&fit=crop"
+                                loading="lazy" alt="Work 3">
                             <h3>Silence</h3>
                             <p>Photography • 2023</p>
                         </div>
 
                         <div class="h-scroll-item">
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop"
-                                alt="Work 4">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"
+                                loading="lazy" alt="Work 4">
                             <h3>Flow</h3>
                             <p>Motion • 2024</p>
                         </div>
@@ -1007,7 +1027,11 @@
         // 1. Locomotive Init
         const locoScroll = new LocomotiveScroll({
             el: document.querySelector("[data-scroll-container]"),
-            smooth: true, multiplier: 1, lerp: 0.05
+            smooth: true, 
+            multiplier: 1, 
+            lerp: 0.05,
+            smartphone: { smooth: false }, // Disables smooth scrolling on mobile for better performance
+            tablet: { smooth: false }      // Disables on tablets
         });
 
         locoScroll.on("scroll", ScrollTrigger.update);
@@ -1130,7 +1154,7 @@
                 if (wrapper && Array.isArray(data)) {
                     wrapper.innerHTML = data.map(item => `
                         <div class="swiper-slide">
-                            <img src="${item.mainImage}" alt="${item.title || 'Artwork'}" />
+                            <img src="${item.mainImage}" alt="${item.title || 'Artwork'}" loading="lazy" />
                             <div class="slide-overlay">
                                 <h3 class="slide-title">${item.title || 'Untitled'}</h3>
                                 <p class="slide-desc">${item.description || 'No description available.'}</p>
@@ -1138,6 +1162,14 @@
                             </div>
                         </div>
                     `).join('');
+
+                    // CRITICAL FIX: Update Scroll height after dynamic content is added
+                    // This ensures the footer is pushed down correctly
+                    setTimeout(() => {
+                        locoScroll.update();
+                        ScrollTrigger.refresh();
+                    }, 500); // Small delay to allow DOM to settle
+
                 } else {
                     console.log('No data or element missing');
                 }
