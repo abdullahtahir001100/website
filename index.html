@@ -94,10 +94,10 @@
             .process-grid { grid-template-columns: 1fr; }
         }
 
-        /* Fix: Horizontal Scroll Container - V3 Stable */
+        /* Fix: Horizontal Scroll Container - V4 Locked */
         .scroller-pin-fix {
-            /* Removed restrictive overflow that was hiding content */
             display: block;
+            background: #000;
         }
 
         .horizontal-scroll-container {
@@ -105,7 +105,7 @@
             height: 100vh;
             display: flex;
             background-color: var(--bg-deep);
-            overflow: hidden; 
+            overflow: hidden; /* Hide the long content */
             position: relative;
         }
 
@@ -176,7 +176,7 @@
 
         /* Swiper */
         .swiper-section { padding: 120px 0; background: var(--bg-light); color: #000; }
-        .swiper-slide { width: 350px; height: 500px; }
+        .swiper-slide { width: 450px; height: 500px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.8s; }
         .swiper-slide-active img { filter: grayscale(0); }
 
@@ -461,16 +461,15 @@
             });
         });
 
-        // 6. Horizontal Scroll - Stable Calculation
+        // 6. Horizontal Scroll - Fixed Pinning (Strict Mode)
         ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
         
-        // Target the main container, not the wrapper
         const horizontalSection = document.querySelector('.horizontal-scroll-container'); 
         const horizontalInner = document.querySelector('.horizontal-inner');
 
         if (horizontalSection && horizontalInner) {
             
-            // Recalculate width dynamically
+            // Distance Calculation
             const getScrollAmount = () => {
                 let totalWidth = horizontalInner.scrollWidth;
                 let viewportWidth = window.innerWidth;
@@ -486,10 +485,13 @@
                 trigger: horizontalSection,
                 scroller: "[data-scroll-container]",
                 pin: true,           
+                // CRITICAL: Forces GSAP to use transform-based pinning
+                // This prevents the section from scrolling vertically with the page
+                pinType: "transform", 
                 animation: tween,
                 scrub: 1,
-                // Use function for end value to handle invalidation correctly
-                end: () => "+=" + (horizontalInner.scrollWidth - window.innerWidth),
+                start: "top top",
+                end: () => `+=${horizontalInner.scrollWidth}`, 
                 invalidateOnRefresh: true
             });
         }
