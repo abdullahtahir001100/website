@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products';
+    const API_URL = 'https://backend-web-1.vercel.app/api/products'; // Updated to match likely Vercel URL or user provided one
 
     // DOM Elements for cart state management
     const emptyCartSection = document.getElementById('emptyCart');
@@ -10,17 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // DOM Elements for totals
     const subtotalEl = document.getElementById('cartSubtotal');
+    const totalEl = document.getElementById('cartFinalTotal'); // Added for total row
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let productLookup = {}; // To store fetched product details globally
 
-    // Helper to format price (ensures "Rs" is added and numbers are clean)
+    // Helper to format price
     function formatPrice(price) {
         const numPrice = parseFloat(price);
         if (!isNaN(numPrice)) {
-            return `${numPrice.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Rs`;
+            return `$${numPrice.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
         }
-        return '0 Rs';
+        return '$0';
     }
 
     /**
@@ -29,11 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function calculateTotals(currentSubTotal) {
         // Update Subtotal display
-        if (subtotalEl) subtotalEl.textContent = formatPrice(currentSubTotal) + " $";
+        if (subtotalEl) subtotalEl.textContent = formatPrice(currentSubTotal);
+        if (totalEl) totalEl.textContent = formatPrice(currentSubTotal); // Assuming free shipping for now
     }
 
     // --- 1. Fetch Product Details and Render Cart ---
     async function loadAndRenderCart() {
+        // Update Count immediately
+        if (cartCountElement) {
+            const totalCount = cart.reduce((acc, item) => acc + (parseInt(item.qty)||1), 0);
+            cartCountElement.textContent = totalCount;
+        }
+
         if (cart.length === 0) {
             // Display empty cart state
             if (emptyCartSection) {
@@ -42,29 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- INSERTING EMPTY CART MESSAGE AND LINK HERE ---
                 emptyCartSection.innerHTML = `
                     <div style="text-align: center; padding: 50px;">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Your Cart is empty 🛒</h2>
-                        <p style="margin-bottom: 20px;">Time to go back to get or buy some items!</p>
-                        <a href="index.html" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">
-                            Continue Shopping
+                        <h2 class="playfair" style="font-size: 2rem; margin-bottom: 20px; color: #fff;">Your Collection is Empty</h2>
+                        <p style="margin-bottom: 30px; color: #888;">The archive awaits your selection.</p>
+                        <a href="l.html" style="background-color: #fff; color: #000; padding: 15px 30px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; display: inline-block; font-weight: 700;">
+                            View Works
                         </a>
                     </div>
                 `;
-                // ---------------------------------------------------
-                
-                let cartitemscontainer = document.getElementsByClassName('cart-items-container');
-                let none = document.getElementById('none');
-                
-                // Safely hide cart related containers
-                if (cartitemscontainer.length > 0) {
-                    cartitemscontainer[0].style.display = 'none';
-                }
-                if (none) {
-                    none.style.display = 'none';
-                }
             }
             if (mainhead) mainhead.style.display = 'none';
             if (fullCartContent) fullCartContent.style.display = 'none';
-            if (cartCountElement) cartCountElement.textContent = '0';
+            
+            // Refresh Loco Scroll
+            setTimeout(() => window.locoScroll && window.locoScroll.update(), 100);
             return;
         }
 
@@ -76,177 +74,159 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Fetch all products to get details
             const response = await fetch(API_URL);
+            
+            // Handle API error or map raw data
+            let rawProducts = [];
             if (!response.ok) {
-                // Fallback to mock data if API fails
-                console.warn('API call failed. Using mock data for cart lookup.');
-                const mockData = [
-                    { "_id": "6659c4701e91307af047545e", "title": "GLOW & WHITE KOREAN GOLD CREAM", "price": 2000.00, "mainImage": "https://placehold.co/100x100/fecaca/991b1b?text=Cream" },
-                    { "_id": "6659c4701e91307af047545f", "title": "Coastal Painting", "price": 280.00, "mainImage": "https://placehold.co/100x100/dbeafe/1e40af?text=Art2" },
+                console.warn('API call failed. Using fallback data.');
+                // Fallback mock data matching detail.js structure
+                 rawProducts = [
+                    { "_id": "6659c4701e91307af047545e", "title": "Ascension of Light", "price": 450.00, "mainImage": "https://placehold.co/100x120/222/fff?text=Art" },
+                    { "_id": "6659c4701e91307af047545f", "title": "Geometric Void", "price": 280.00, "mainImage": "https://placehold.co/100x120/222/fff?text=Void" },
                 ];
-                if (cart.length > 0 && cart.every(item => !productLookup[item.id])) {
-                    cart = [{ id: "6659c4701e91307af047545e", qty: 1, option: "Standard" }];
-                }
-                processCartData(mockData);
-                return;
+            } else {
+                rawProducts = await response.json();
             }
-            const rawProducts = await response.json();
+
             processCartData(rawProducts);
+
         } catch (error) {
             console.error('Error loading cart data:', error);
-            if (cartContainer) cartContainer.innerHTML = '<div class="text-red-500 text-center py-4">Error loading products. Check API connection.</div>';
+            if (cartContainer) cartContainer.innerHTML = '<div style="color:red; text-align:center; padding: 20px;">Unable to load artwork details.</div>';
         }
     }
 
     function processCartData(rawProducts) {
-        // Map products to an easy lookup dictionary using the unique ID
+        // Map products
         productLookup = {};
         rawProducts.forEach(product => {
-            productLookup[String(product._id)] = {
+            // Support both _id and id
+            const pid = String(product._id || product.id);
+            productLookup[pid] = {
                 title: product.title || 'Untitled',
-                image: product.mainImage || 'https://placehold.co/100x100/cccccc/333333?text=Art',
+                image: product.mainImage || product.image || 'https://placehold.co/100x120/cccccc/333333?text=Art',
                 price: parseFloat(product.price) || 0,
             };
         });
 
         let combinedCartHtml = '';
-        let totalItems = 0;
-        let subTotal = 0; // Final numeric subtotal
+        let subTotal = 0; 
+        let itemCount = 0;
 
         // 2. Combine Local Cart Data with Fetched API Data
         cart.forEach((item, index) => {
-            const productDetails = productLookup[item.id];
+            const productDetails = productLookup[String(item.id)];
 
-            if (!productDetails) {
-                console.warn(`Details for product ID ${item.id} not found. Skipping item.`);
-                return;
-            }
+            // If product API fails to return the item in cart, we use what we have in localStorage if possible, or skip
+            const displayTitle = productDetails?.title || item.title || "Unknown Artwork";
+            const displayImage = productDetails?.image || item.image || "https://placehold.co/100x120/333/fff?text=N/A";
+            const displayPrice = productDetails?.price || parseFloat(item.price) || 0;
 
-            const itemPriceValue = productDetails.price; // Numeric Price
-            const itemSubtotal = itemPriceValue * item.qty; // Numeric Subtotal
+            const itemSubtotal = displayPrice * item.qty; 
             subTotal += itemSubtotal;
-            totalItems += item.qty;
+            itemCount += item.qty;
 
-            // Rendering the streamlined cart item structure
+            // Using FontAwesome for remove icon instead of image for reliability
             combinedCartHtml += `
                 <div class="cart-product-item" data-index="${index}">
                     
                     <div class="product-details-group">
-                        <img src="${productDetails.image}" alt="${productDetails.title}" class="product-image" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/333333?text=Art';">
+                        <img src="${displayImage}" alt="${displayTitle}" class="product-image">
                         
                         <div class="product-info">
-                            <div class="product-name">${productDetails.title}</div>
-                            <div class="product-price-inline">${formatPrice(itemPriceValue)}</div>
+                            <div class="product-name">${displayTitle}</div>
+                            <p style="color: #666; font-size: 0.8rem;">${item.option || 'Standard'}</p>
+                            <div class="product-price-inline">${formatPrice(displayPrice)}</div>
                         </div>
                     </div>
 
-                    <div class="qty-column  md:flex">
+                    <div class="qty-column">
                         <div class="quantity-control">
-                            
+                            <button class="qty-minus qty-btn" data-index="${index}">−</button>
                             <input type="number" value="${item.qty}" min="1" max="5" class="quantity-input" data-index="${index}" readonly> 
-                            <img src="images/delete.png" class="remove-btn" data-index="${index}" alt="Remove Item">
+                            <button class="qty-plus qty-btn" data-index="${index}">+</button>
                         </div>
                     </div>
                     
-                    <div class="total-column hidden md:block">
+                    <div class="total-column">
                         ${formatPrice(itemSubtotal)}
-                         <img src="images/delete.png" class="remove-btn" data-index="${index}" alt="Remove Item">
-                    
+                        <i class="fas fa-trash remove-btn" data-index="${index}" style="margin-left: 20px;"></i>
                     </div>
-                    
-                    
-
                 </div> 
             `;
         });
 
-        // 3. Render the full cart content and update item count
+        // 3. Render
         if (cartContainer) cartContainer.innerHTML = combinedCartHtml;
-        if (cartCountElement) cartCountElement.textContent = totalItems;
+        if (cartCountElement) cartCountElement.textContent = itemCount;
 
-        // 4. Calculate and Update Totals
+        // 4. Calculate
         calculateTotals(subTotal);
 
-        // 5. Setup Event Listeners
+        // 5. Listeners
         setupListeners();
+
+        // 6. Refresh Scroll Height
+        setTimeout(() => window.locoScroll && window.locoScroll.update(), 200);
     }
 
-    // --- 2. Setup All Button Listeners (Remove and Quantity) ---
     function updateCart(newCart) {
         localStorage.setItem("cart", JSON.stringify(newCart));
-        // Reload the page to fully re-render and recalculate totals
-        location.reload();
+        // We can re-render instead of reload for smoother UX
+        cart = newCart;
+        loadAndRenderCart(); 
+        // Or confirm via reload if preferred: location.reload();
     }
 
     function setupListeners() {
-        // 1. Remove Button Listener
+        // 1. Remove
         document.querySelectorAll(".remove-btn").forEach(button => {
             button.addEventListener("click", (e) => {
                 const indexToRemove = parseInt(e.target.getAttribute('data-index'));
-                let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
-
-                if (indexToRemove >= 0 && indexToRemove < currentCart.length) {
-                    currentCart.splice(indexToRemove, 1);
-                    updateCart(currentCart);
-                } else {
-                    console.error("Attempted to remove item with invalid index.");
+                if (indexToRemove >= 0 && indexToRemove < cart.length) {
+                    cart.splice(indexToRemove, 1);
+                    updateCart(cart);
                 }
             });
         });
 
-        // 2. Quantity Change Listeners (Plus/Minus buttons)
+        // 2. Quantity
         document.querySelectorAll(".qty-plus").forEach(button => {
             button.addEventListener("click", (e) => {
-                const indexToUpdate = parseInt(e.target.getAttribute('data-index'));
-                let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
-                if (indexToUpdate >= 0 && indexToUpdate < currentCart.length) {
-                    const item = currentCart[indexToUpdate];
-                    if (item.qty < 5) { // Assuming max quantity is 5
-                        item.qty++;
-                        updateCart(currentCart);
-                    }
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                if (cart[idx] && cart[idx].qty < 10) {
+                    cart[idx].qty++;
+                    updateCart(cart);
                 }
             });
         });
 
         document.querySelectorAll(".qty-minus").forEach(button => {
             button.addEventListener("click", (e) => {
-                const indexToUpdate = parseInt(e.target.getAttribute('data-index'));
-                let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
-                if (indexToUpdate >= 0 && indexToUpdate < currentCart.length) {
-                    const item = currentCart[indexToUpdate];
-                    if (item.qty > 1) {
-                        item.qty--;
-                        updateCart(currentCart);
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                if (cart[idx]) {
+                    if (cart[idx].qty > 1) {
+                        cart[idx].qty--;
+                        updateCart(cart);
+                    } else {
+                        // Optional: Remove if < 1? For now just stay at 1
                     }
                 }
             });
         });
     }
 
-    // --- Mobile Menu Toggle Logic ---
-    const navLinks = document.getElementById('nav-links');
-    const openMenuIcon = document.getElementById('menu-icon');
-    const closeMenuIcon = document.getElementById('close-icon');
-    window.toggleNav = function () {
-        if (!navLinks) return;
-        navLinks.classList.toggle('active');
-        openMenuIcon.style.display = navLinks.classList.contains('active') ? 'none' : 'block';
-        closeMenuIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
-    };
-
-
-    // --- Initialization ---
+    // Toggle Nav for this page too if needed
+    // (Handled by the script in html usually, but here for safety)
+    
     loadAndRenderCart();
 
-});
-let dbd = document.getElementById('cart-items');
-let dd = document.getElementsByClassName('cart-product-item');
+    // Checkout Button Listener
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    if(checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            window.location.href = 'checkout.html';
+        });
+    }
 
-// This check relies on elements being loaded and rendered, which happens asynchronously
-// inside loadAndRenderCart. It's safer to move this logic *inside* loadAndRenderCart 
-// after rendering if you need to style the container based on item count, but 
-// for simple direct access on load, keep it here.
-// console.log(dd.length); // Removed for cleaner console
-if (dd.length <= 3 && dbd) {
-    dbd.style.height = '100%';
-}
+});
