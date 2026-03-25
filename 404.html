@@ -3,174 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oops! Page Not Found</title>
+    <title>INKBYHAND | 404</title>
     
-    <link rel="stylesheet" href="css/global.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Variables for easy color management */
         :root {
-            --silva-green: #009688;
-            --bg-color: #f0f8f8; /* Light mint/teal background */
-            --text-dark: #1f2937;
-            --text-medium: #6b7280;
-            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --bg: #050505;
+            --text: #fff;
+            --accent: #d6b598;
         }
 
-        /* 1. Global and Body Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
         body {
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            padding: 20px;
-            margin: 0;
-            box-sizing: border-box;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* 2. Main Card Container */
-        .error-card {
-            background-color: #ffffff;
-            padding: 40px; /* Base padding */
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
+        /* --- SVG Background Animation --- */
+        .bg-svg {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vh;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .line-path {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 0.5;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 4s ease-in-out forwards infinite alternate;
+        }
+
+        @keyframes drawPath {
+            0% { stroke-dashoffset: 1000; opacity: 0; }
+            40% { opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+
+        /* --- Glitch Text --- */
+        .glitch-wrapper {
+            position: relative;
+            z-index: 10;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 15vw;
+            line-height: 0.8;
+            mix-blend-mode: exclusion;
+        }
+
+        .glitch {
+            position: relative;
+            color: #fff;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 81px, 0); }
+            20% { clip: rect(65px, 9999px, 19px, 0); }
+            40% { clip: rect(24px, 9999px, 91px, 0); }
+            60% { clip: rect(4px, 9999px, 86px, 0); }
+            80% { clip: rect(54px, 9999px, 26px, 0); }
+            100% { clip: rect(93px, 9999px, 13px, 0); }
+        }
+
+        .sub-text {
+            margin-top: 30px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 1rem;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s 0.5s forwards;
             text-align: center;
-            max-width: 450px; /* Max width for desktop viewing */
-            width: 100%;
-            transition: box-shadow 0.3s ease-in-out;
         }
+
+        .home-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            border: 1px solid rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeUp 1s 0.8s forwards;
+        }
+        .home-btn:hover { background: #fff; color: #000; }
         
-        .error-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive adjustments for padding on smaller screens */
-        @media (min-width: 600px) {
-            .error-card {
-                padding: 60px; /* Increased padding for larger screens */
-            }
-        }
-
-        /* 3. Logo Styling */
-        .logo {
-            margin-bottom: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--silva-green);
-            margin-right: 4px;
-        }
-
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        /* 4. Illustration Container (Updated to match image insertion) */
-        .illustration-container {
-            margin: 0 auto 40px auto;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-        
-        /* 5. Typography */
-        h1 {
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--text-dark);
-            margin: 0 0 12px 0;
-        }
-
-        .description {
-            color: var(--text-medium);
-            margin: 0 0 40px 0;
-            padding: 0 15px; /* Add some horizontal padding for narrow screens */
-            font-size: 16px;
-        }
-        
-        @media (max-width: 400px) {
-            h1 {
-                font-size: 24px; /* Adjust size for very small screens */
-            }
-            .description {
-                font-size: 14px;
-            }
-        }
-
-
-        /* 6. Button Styling */
-        .btn-home {
-            display: inline-block;
-            padding: 12px 32px;
-            background-color: var(--silva-green);
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 150, 136, 0.3); /* Shadow based on the green color */
-            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .btn-home:hover {
-            background-color: #00796b; /* Darker green on hover */
-            box-shadow: 0 6px 8px rgba(0, 150, 136, 0.5);
-        }
-        
-        /* 7. Custom Classes from User's last update */
-        .img{
-            width: 34px;
-        }
-        .width{
-            max-width: 300px; /* Limiting width for the graphic to match the design */
-            width: 100%;
-            height: auto;
-        }
+        /* --- Cursor --- */
+        .cursor { width: 10px; height: 10px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+        .cursor-f { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.1s; }
 
     </style>
 </head>
 <body>
 
-    <!-- Main Card Container -->
-    <div class="error-card">
-        
-        <!-- Logo -->
-        <div class="logo">
-            <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="InkByHand Logo" class="img">
-            <span class="logo-text">InkByHand</span>
-        </div>
+    <div class="cursor"></div>
+    <div class="cursor-f"></div>
 
-        <!-- Illustration -->
-        <div class="illustration-container">
-            <!-- Using a guessed path for the 404 cat graphic -->
-           <img src="https://zoyothemes.com/silva/html/assets/images/svg/404-error.svg" alt="404 Cat Illustration" class="width">
-        </div>
+    <!-- Animated Abstract SVG Background -->
+    <svg class="bg-svg" viewBox="0 0 500 500">
+        <path class="line-path" d="M10,250 Q125,10 250,250 T490,250" />
+        <path class="line-path" d="M10,150 Q125,400 250,150 T490,150" style="animation-delay: 0.5s;" />
+        <path class="line-path" d="M10,350 Q125,100 250,350 T490,350" style="animation-delay: 1s;" />
+        <circle cx="250" cy="250" r="100" class="line-path" style="animation-duration: 6s;" />
+    </svg>
 
-        <!-- Main Heading -->
-        <h1>
-            Oops!, Page Not Found
-        </h1>
-
-        <!-- Subtext / Description -->
-        <p class="description">
-            This page you are trying to access does not exist or has been moved. Try going back to our homepage.
-        </p>
-
-        <!-- Action Button -->
-        <a href="index.html" class="btn-home">
-            Back to Home
-        </a>
+    <div class="glitch-wrapper">
+        <div class="glitch" data-text="404">404</div>
     </div>
-    
- <script src="js/dashboadover.js"></script>
-    <script src="js/cockees.js"></script>
+
+    <div class="sub-text">
+        The page you seek has been<br>lost to the void.
+    </div>
+
+    <a href="l.html" class="home-btn">Return to Light</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // Cursor Logic
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-f');
+        
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to(follower, { x: e.clientX - 15, y: e.clientY - 15, duration: 0.3 });
+        });
+
+        // Hover Effect
+        document.querySelector('.home-btn').addEventListener('mouseenter', () => {
+            gsap.to(follower, { scale: 2, background: 'rgba(255,255,255,0.1)', border: 'none' });
+        });
+        document.querySelector('.home-btn').addEventListener('mouseleave', () => {
+            gsap.to(follower, { scale: 1, background: 'transparent', border: '1px solid rgba(255,255,255,0.5)' });
+        });
+
+    </script>
 </body>
 </html>
