@@ -1,418 +1,242 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INKBYHAND | The Art of Calligraphy</title>
-    <link rel="icon" href="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" />
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INKBYHAND | Professional Portfolio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <style>
-        :root {
-            --bg-light: #fdfcf8;
-            --text-dark: #1a1a1a;
-            --accent: #c5a059;
-            --header-bg: rgba(253, 252, 248, 0.9);
-        }
+    <style>
+        :root {
+            /* Grayish Professional Palette */
+            --bg-deep: #1a1a1a;
+            --bg-mid: #2d2d2d;
+            --bg-light: #e5e5e5;
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --accent: #d4d4d4;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Playfair Display', serif; }
-        body { background: var(--bg-light); color: var(--text-dark); overflow: hidden; }
-        a { text-decoration: none; color: inherit; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--bg-deep); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
 
-        /* Custom Cursor */
-        .cursor {
-            width: 20px; height: 20px; border: 1px solid var(--accent);
-            border-radius: 50%; position: fixed; pointer-events: none;
-            z-index: 9999; transition: transform 0.1s;
-        }
+        h1, h2, .playfair { font-family: 'Playfair Display', serif; }
 
-        /* Fixed Navigation */
-        .topbar {
-            background: #111; color: white; text-align: center; padding: 10px;
-            font-size: 0.9rem; position: fixed; width: 100%; top: 0; z-index: 1001;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .topbar .text { width: 100%; text-align: center; }
-        .topbar .cross { cursor: pointer; padding-right: 20px; }
-        
-        .main-header {
-            position: fixed; top: 40px; width: 100%; z-index: 1000;
-            background: var(--header-bg); backdrop-filter: blur(10px);
-            padding: 15px 5%; border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .header-logo img { width: 120px; }
-        .icon-nav-container { display: flex; gap: 20px; font-size: 1.2rem; cursor: pointer; }
+        /* Smooth Cursor */
+        .cursor {
+            width: 12px; height: 12px; background: #fff;
+            position: fixed; pointer-events: none;
+            z-index: 9999; mix-blend-mode: difference;
+        }
 
-        /* Locomotive Scroll Wrapper */
-        #main-container { width: 100%; }
+        /* Header - Sharp & Clean */
+        .main-header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .header-logo img { width: 110px; filter: grayscale(1) brightness(2); }
+        .nav-trigger { font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
 
-        /* Hero Section (3D) */
-        .hero {
-            height: 100vh; width: 100%; display: flex;
-            align-items: center; justify-content: center;
-            position: relative; overflow: hidden; background: #000;
-        }
-        #hero-canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-        .hero-content {
-            position: relative; z-index: 2; text-align: center;
-            mix-blend-mode: exclusion; color: white; margin-top: 50px;
-        }
-        .hero h1 { font-size: 8vw; line-height: 0.9; text-transform: uppercase; letter-spacing: 5px;}
-        .hero h2 { font-size: 2vw; font-weight: 300; letter-spacing: 2px; }
+        /* Hero */
+        .hero {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: var(--bg-deep); position: relative;
+        }
+        .hero-title {
+            text-align: center; z-index: 2;
+        }
+        .hero-title h1 { 
+            font-size: 10vw; text-transform: uppercase; line-height: 0.8; 
+            letter-spacing: -2px; color: var(--text-main);
+        }
+        .hero-title p { 
+            font-size: 1rem; letter-spacing: 5px; color: var(--text-muted); 
+            margin-top: 20px; text-transform: uppercase;
+        }
 
-        /* Text + Video Intro Section */
-        .intro-section { padding: 100px 5%; display: flex; align-items: center; gap: 50px; flex-wrap: wrap; background: var(--bg-light); }
-        .intro-text { flex: 1; min-width: 300px; }
-        .intro-text h2 { color: var(--accent); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 10px; }
-        .intro-text h1 { font-size: 3rem; margin-bottom: 20px; line-height: 1.2; }
-        .intro-text p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px; opacity: 0.8; }
-        .intro-text button { padding: 15px 30px; background: #111; color: #fff; border: none; cursor: pointer; transition: 0.3s; }
-        .intro-text button:hover { background: var(--accent); }
-        .intro-video { flex: 1; min-width: 300px; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .intro-video video { width: 100%; display: block; }
+        /* Video Scroll Section - The "Pro" Way */
+        .v-scroll-container {
+            position: relative;
+            height: 400vh; /* Control scroll duration here */
+            background: var(--bg-mid);
+        }
+        .sticky-wrapper {
+            position: sticky; top: 0; height: 100vh; width: 100%;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        #v-scrub {
+            position: absolute; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0.4;
+        }
+        .v-overlay-text {
+            position: relative; z-index: 5; text-align: center;
+            max-width: 800px; padding: 0 20px;
+        }
+        .v-overlay-text h2 { font-size: 4rem; margin-bottom: 20px; }
 
-        /* Scroll Canvas Section */
-        .scroll-video-section { height: 300vh; position: relative; background: #000; }
-        .sticky-container {
-            position: sticky; top: 0; height: 100vh; width: 100%;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        #calligraphy-canvas { height: 100%; width: 100%; object-fit: cover; opacity: 0.6; }
-        .video-text {
-            position: absolute; bottom: 15%; left: 10%; color: white;
-            font-size: 3rem; max-width: 600px; opacity: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
+        /* Content Blocks */
+        .content-block {
+            padding: 150px 10%; background: var(--bg-light); color: var(--bg-deep);
+        }
+        .content-block h2 { font-size: 3.5rem; margin-bottom: 30px; letter-spacing: -1px; }
+        .content-block p { font-size: 1.2rem; line-height: 1.6; max-width: 600px; opacity: 0.8; }
 
-        /* Swiper Gallery */
-        .product-slider { padding: 100px 0; background: #111; color: white; overflow: hidden; }
-        .section-title { text-align: center; margin-bottom: 50px; font-size: 3rem; }
-        .swiper { width: 100%; padding-bottom: 50px; }
-        .swiper-slide {
-            width: 300px; height: 400px; display: flex;
-            align-items: center; justify-content: center;
-            border-radius: 10px; overflow: hidden;
-        }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .swiper-slide:hover img { transform: scale(1.1); }
+        /* Footer */
+        footer {
+            padding: 100px 5%; background: #000; color: #fff;
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px;
+        }
+        .footer-link { display: block; margin-bottom: 10px; color: var(--text-muted); transition: 0.3s; }
+        .footer-link:hover { color: #fff; transform: translateX(5px); }
 
-        /* Image Grid Section */
-        .grid-section { padding: 100px 5%; background: var(--bg-light); text-align: center; }
-        .grid-section p { max-width: 700px; margin: 20px auto 50px; font-size: 1.2rem; line-height: 1.8; }
-        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .image-grid img { width: 100%; height: 400px; object-fit: cover; border-radius: 10px; }
+        /* Utilities */
+        .line { width: 100px; height: 1px; background: var(--bg-deep); margin-bottom: 30px; }
 
-        /* FAQ Section */
-        .faq-section { padding: 100px 5%; background: #f4f3ed; }
-        .faq-container { max-width: 800px; margin: 0 auto; }
-        .faq-item { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 20px 0; cursor: pointer; }
-        .faq-question { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; }
-        .faq-answer { margin-top: 15px; display: none; font-size: 1.1rem; line-height: 1.6; color: #555; }
-
-        /* Footer */
-        footer { background: #0a0a0a; color: #fff; padding: 80px 5% 40px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; }
-        .footer-logo img { width: 150px; margin-bottom: 20px; filter: invert(1); }
-        .footer-grid ul { list-style: none; }
-        .footer-grid ul li { margin-bottom: 15px; opacity: 0.7; transition: 0.3s; cursor: pointer; }
-        .footer-grid ul li:hover { opacity: 1; color: var(--accent); }
-        .footer-grid h4 { font-size: 1.2rem; margin-bottom: 20px; color: var(--accent); }
-        .copyright { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; opacity: 0.5; font-size: 0.9rem; }
-    </style>
+    </style>
 </head>
 <body>
 
-    <div class="cursor"></div>
+    <div class="cursor"></div>
 
-    <div class="topbar" id="topbar">
-        <div class="text"><a href="#">20% Off - Click here to enjoy!</a></div>
-        <div class="cross" onclick="document.getElementById('topbar').style.display='none'; document.querySelector('.main-header').style.top='0';"><i class="fas fa-times"></i></div>
-    </div>
-    
-    <header class="main-header">
-        <a href="/" class="header-logo">
-            <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="INKBYHAND Logo">
-        </a>
-        <div class="icon-nav-container">
-            <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
-            <div class="menu-icon"><i class="fas fa-bars"></i></div>
-        </div>
-    </header>
+    <header class="main-header">
+        <a href="#" class="header-logo">
+            <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo">
+        </a>
+        <div class="nav-trigger"><i class="fas fa-bars"></i></div>
+    </header>
 
-    <div id="main-container" data-scroll-container>
-        
-        <section class="hero" data-scroll-section>
-            <canvas id="hero-canvas"></canvas>
-            <div class="hero-content" data-scroll data-scroll-speed="3">
-                <h2 id="hero-sub" class="gsap-hero">The Beauty of Words</h2>
-                <h1 id="hero-title" class="gsap-hero">INKBYHAND</h1>
-            </div>
-        </section>
+    <div id="scroll-wrapper" data-scroll-container>
+        
+        <section class="hero" data-scroll-section>
+            <div class="hero-title" data-scroll data-scroll-speed="-2">
+                <p>Est. 2025 — Calligraphy Studio</p>
+                <h1>InkByHand</h1>
+            </div>
+        </section>
 
-        <section class="intro-section" data-scroll-section>
-            <div class="intro-text gsap-fade-up">
-                <h2>The Soul of Art</h2>
-                <h1>The Art of Calligraphy</h1>
-                <p>Where every stroke of paint, beauty comes alive. Calligraphy is not just writing; it is harmony, grace, and timeless expression shaped into art. InkByHand honors the sacred art of calligraphy while inspiring creativity in every hand that writes.</p>
-                <button>LEARN MORE</button>
-            </div>
-            <div class="intro-video gsap-fade-left">
-                <video src="https://www.w3schools.com/html/mov_bbb.mp4" controls autoplay loop muted></video>
-            </div>
-        </section>
+        <section class="content-block" data-scroll-section>
+            <div class="line" data-scroll data-scroll-speed="1"></div>
+            <h2 data-scroll data-scroll-speed="2">The Art of <br><span class="playfair">Precision.</span></h2>
+            <p>We combine traditional strokes with modern minimalism. No shadows, no rounded edges—just pure, raw ink and craftsmanship.</p>
+        </section>
 
-        <section class="scroll-video-section" data-scroll-section>
-            <div class="sticky-container">
-                <canvas id="calligraphy-canvas"></canvas>
-                <div class="video-text" id="v-text" data-scroll data-scroll-speed="2">
-                    "Every stroke is a prayer, <br>every line a legacy."
-                </div>
-            </div>
-        </section>
+        <section class="v-scroll-container" data-scroll-section>
+            <div class="sticky-wrapper">
+                <video id="v-scrub" preload="auto" muted loop playsinline>
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                </video>
+                <div class="v-overlay-text">
+                    <h2 class="playfair" data-scroll data-scroll-speed="3">Motion in Silence.</h2>
+                    <p data-scroll data-scroll-speed="1">Watch the ink find its home on the paper, one frame at a time.</p>
+                </div>
+            </div>
+        </section>
 
-        <section class="grid-section" data-scroll-section>
-            <div class="gsap-fade-up">
-                <h2 class="section-title">Grace Flows With Every Stroke</h2>
-                <p>Every letter carries a rhythm, every stroke a meaning. Calligraphy transforms ordinary writing into extraordinary art. We bring grace and artistry into every curve and line, turning simple letters into timeless beauty.</p>
-            </div>
-            <div class="image-grid">
-                <img src="https://images.unsplash.com/photo-1584285408906-ac15eb810578?q=80&w=800&auto=format&fit=crop" class="gsap-grid-item" alt="Calligraphy 1">
-                <img src="https://images.unsplash.com/photo-1547844391-72f3d5ea907b?q=80&w=800&auto=format&fit=crop" class="gsap-grid-item" alt="Calligraphy 2">
-                <img src="https://images.unsplash.com/photo-1610427618073-107e32f50d99?q=80&w=800&auto=format&fit=crop" class="gsap-grid-item" alt="Calligraphy 3">
-            </div>
-        </section>
+        <section class="content-block" style="background: var(--bg-deep); color: var(--text-main);" data-scroll-section>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 40px;">
+                <h2 style="font-size: 5vw; margin: 0;">Minimalist. <br>Professional. <br>Sharp.</h2>
+                <div style="max-width: 400px;">
+                    <p style="margin-bottom: 30px;">Every project is treated as a masterpiece. From digital interfaces to physical canvases, we maintain the highest standards of design integrity.</p>
+                    <a href="#" style="color: #fff; text-decoration: underline; font-weight: bold;">VIEW ARCHIVE</a>
+                </div>
+            </div>
+        </section>
 
-        <section class="product-slider" data-scroll-section>
-            <h2 class="section-title gsap-fade-up">Selected Artworks</h2>
-            <div class="swiper mySwiper gsap-fade-up">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1605333830889-cb6a1473d052?q=80&w=600&auto=format&fit=crop" alt="Art 1"></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?q=80&w=600&auto=format&fit=crop" alt="Art 2"></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1584285408906-ac15eb810578?q=80&w=600&auto=format&fit=crop" alt="Art 3"></div>
-                    <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1547844391-72f3d5ea907b?q=80&w=600&auto=format&fit=crop" alt="Art 4"></div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </section>
+        <footer data-scroll-section>
+            <div class="footer-grid">
+                <div>
+                    <h3 class="playfair" style="font-size: 2rem; margin-bottom: 20px;">INKBYHAND</h3>
+                    <p style="color: var(--text-muted);">Sargodha, Pakistan. <br>Global Craftsmanship.</p>
+                </div>
+                <div>
+                    <h4>Navigation</h4><br>
+                    <a href="#" class="footer-link">Portfolio</a>
+                    <a href="#" class="footer-link">Services</a>
+                    <a href="#" class="footer-link">Contact</a>
+                </div>
+                <div>
+                    <h4>Social</h4><br>
+                    <a href="#" class="footer-link">Instagram</a>
+                    <a href="#" class="footer-link">LinkedIn</a>
+                    <a href="#" class="footer-link">Twitter</a>
+                </div>
+            </div>
+        </footer>
 
-        <section class="faq-section" data-scroll-section>
-            <h2 class="section-title gsap-fade-up">Frequently Asked Questions</h2>
-            <div class="faq-container">
-                <div class="faq-item gsap-fade-up">
-                    <div class="faq-question">Do you create custom calligraphy paintings? <i class="fas fa-plus"></i></div>
-                    <div class="faq-answer">Yes! We take custom orders for Quranic verses, names, wedding gifts, and special occasions. Share your idea, and we will turn it into a unique artwork.</div>
-                </div>
-                <div class="faq-item gsap-fade-up">
-                    <div class="faq-question">What materials do you use? <i class="fas fa-plus"></i></div>
-                    <div class="faq-answer">We use high-quality, archival-grade canvases, premium acrylic and oil paints, and traditional calligraphy inks to ensure longevity and vibrant detail.</div>
-                </div>
-                <div class="faq-item gsap-fade-up">
-                    <div class="faq-question">How long does it take? <i class="fas fa-plus"></i></div>
-                    <div class="faq-answer">Completion time varies depending on complexity, typically ranging from 2 to 4 weeks.</div>
-                </div>
-                <div class="faq-item gsap-fade-up">
-                    <div class="faq-question">Do you deliver worldwide? <i class="fas fa-plus"></i></div>
-                    <div class="faq-answer">Yes, we offer insured worldwide shipping calculated at checkout.</div>
-                </div>
-            </div>
-        </section>
+    </div>
 
-        <footer data-scroll-section>
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <a href="#" class="footer-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
-                    <p style="opacity: 0.7; line-height: 1.6;">InkByHand is a creative home where calligraphy becomes more than writing… It is art, faith, and expression.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Services</h4>
-                    <ul>
-                        <li>Supplies</li>
-                        <li>Communities</li>
-                        <li>Equipment</li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Links</h4>
-                    <ul>
-                        <li>Terms & Conditions</li>
-                        <li>News</li>
-                        <li>Shop</li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Get In Touch</h4>
-                    <ul>
-                        <li><i class="fab fa-instagram"></i> @ink_by_hand_12</li>
-                        <li><i class="fab fa-whatsapp"></i> +92-310-7581250</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                Copyright © 2025 inkbyhand.com | Powered by INKBYHAND
-            </div>
-        </footer>
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-    </div>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
 
-    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        // Initialize Locomotive Scroll
+        const locoScroll = new LocomotiveScroll({
+            el: document.querySelector("[data-scroll-container]"),
+            smooth: true,
+            multiplier: 1, // High speed for pro feel
+            lerp: 0.05
+        });
 
-    <script>
-        // 1. Locomotive & ScrollTrigger setup
-        gsap.registerPlugin(ScrollTrigger);
+        // Sync Locomotive with ScrollTrigger
+        locoScroll.on("scroll", ScrollTrigger.update);
+        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+            scrollTop(value) {
+                return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y;
+            },
+            getBoundingClientRect() {
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+            },
+            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
+        });
 
-        const scroller = new LocomotiveScroll({
-            el: document.querySelector('[data-scroll-container]'),
-            smooth: true,
-            smartphone: { smooth: true },
-            tablet: { smooth: true }
-        });
+        // Professional Cursor
+        window.addEventListener('mousemove', e => {
+            gsap.to(".cursor", { x: e.clientX, y: e.clientY, duration: 0.1 });
+        });
 
-        scroller.on("scroll", ScrollTrigger.update);
-        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
-            scrollTop(value) {
-                return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y;
-            },
-            getBoundingClientRect() {
-                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-            },
-            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
-        });
+        // VIDEO SCRUBBING LOGIC (The "Pro" Way)
+        const video = document.getElementById("v-scrub");
+        
+        // Ensure video is loaded
+        video.onloadedmetadata = function() {
+            ScrollTrigger.create({
+                trigger: ".v-scroll-container",
+                start: "top top",
+                end: "bottom bottom",
+                scroller: "[data-scroll-container]",
+                scrub: true,
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    const duration = video.duration;
+                    if (duration) {
+                        video.currentTime = duration * progress;
+                    }
+                }
+            });
+        };
 
-        // 2. Custom Cursor
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(".cursor", { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2 });
-        });
+        // Refresh ScrollTrigger
+        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+        ScrollTrigger.refresh();
 
-        // 3. Three.js Hero Background
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('hero-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const geo = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-        const mat = new THREE.MeshNormalMaterial({ wireframe: true, transparent: true, opacity: 0.3 });
-        const shape = new THREE.Mesh(geo, mat);
-        scene.add(shape);
-        camera.position.z = 30;
-
-        function animateThree() {
-            requestAnimationFrame(animateThree);
-            shape.rotation.x += 0.005;
-            shape.rotation.y += 0.005;
-            renderer.render(scene, camera);
-        }
-        animateThree();
-
-        // 4. Hero Text Animation
-        gsap.from(".gsap-hero", { opacity: 0, y: 50, duration: 1.5, stagger: 0.2, ease: "power4.out" });
-
-        // 5. GSAP General Reveal Animations
-        gsap.utils.toArray('.gsap-fade-up').forEach(elem => {
-            gsap.from(elem, {
-                scrollTrigger: { trigger: elem, scroller: "[data-scroll-container]", start: "top 85%" },
-                y: 50, opacity: 0, duration: 1, ease: "power3.out"
-            });
-        });
-        
-        gsap.from('.gsap-fade-left', {
-            scrollTrigger: { trigger: '.intro-section', scroller: "[data-scroll-container]", start: "top 70%" },
-            x: 50, opacity: 0, duration: 1, ease: "power3.out"
-        });
-
-        gsap.from('.gsap-grid-item', {
-            scrollTrigger: { trigger: '.grid-section', scroller: "[data-scroll-container]", start: "top 70%" },
-            y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out"
-        });
-
-        // 6. Canvas Scroll Sequence
-        const canvas = document.getElementById("calligraphy-canvas");
-        const context = canvas.getContext("2d");
-        canvas.width = 1920; canvas.height = 1080;
-        const frameCount = 100;
-        
-        // Placeholder images for sequence. Replace URL with your actual sequence frames.
-        const currentFrame = index => `https://www.apple.com/105/main/default/explore-iphone/images/overview/hero/hero_canvas__f7v7v7v7v7v7_large_2x.jpg`; 
-        
-        const images = [];
-        const airplay = { frame: 0 };
-
-        for (let i = 0; i < frameCount; i++) {
-            const img = new Image();
-            img.src = currentFrame(i);
-            images.push(img);
-        }
-
-        gsap.to(airplay, {
-            frame: frameCount - 1,
-            snap: "frame",
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".scroll-video-section",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: true,
-                scroller: "[data-scroll-container]"
-            },
-            onUpdate: () => {
-                if(images[airplay.frame]) context.drawImage(images[airplay.frame], 0, 0, canvas.width, canvas.height);
-            }
-        });
-
-        gsap.to("#v-text", {
-            opacity: 1, y: -50,
-            scrollTrigger: {
-                trigger: ".scroll-video-section",
-                start: "top 20%",
-                end: "top center",
-                scrub: true,
-                scroller: "[data-scroll-container]"
-            }
-        });
-
-        // 7. Swiper Init
-        new Swiper(".mySwiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto",
-            coverflowEffect: { rotate: 20, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
-            pagination: { el: ".swiper-pagination", clickable: true },
-            loop: true
-        });
-
-        // 8. FAQ Accordion Logic
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const answer = item.querySelector('.faq-answer');
-                const icon = item.querySelector('i');
-                const isOpen = answer.style.display === 'block';
-                
-                // Close all others
-                document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
-                document.querySelectorAll('.faq-question i').forEach(i => i.className = 'fas fa-plus');
-                
-                // Toggle clicked
-                if(!isOpen) {
-                    answer.style.display = 'block';
-                    icon.className = 'fas fa-minus';
-                }
-                
-                // Important: Update locomotive scroll height when expanding
-                setTimeout(() => scroller.update(), 100);
-            });
-        });
-
-        // Finalize ScrollTrigger
-        ScrollTrigger.addEventListener("refresh", () => scroller.update());
-        ScrollTrigger.refresh();
-
-    </script>
+    </script>
 </body>
-</html> and in scrolling plaese make smoth not like blank then show
+</html>
