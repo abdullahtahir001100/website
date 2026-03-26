@@ -274,7 +274,7 @@
                 </form>
             </div>
 
-            <!-- Forgot Password Section (Hidden Initially) -->
+            <!-- Forgot Password Section (Step 1: Email) -->
             <div id="forgotSection" class="hidden relative z-20">
                 <div class="space-y-6 md:space-y-8">
                     <div class="text-center mb-6">
@@ -292,9 +292,42 @@
 
                         <div class="pt-4 md:pt-6">
                             <button type="submit" id="forgotBtn" class="w-full bg-accent text-white font-display font-black text-base md:text-lg uppercase py-4 md:py-5 hover:bg-white hover:text-black transition-all hover:scale-[1.02] active:scale-95 tracking-widest relative overflow-hidden group/btn-forgot">
-                                <span class="relative z-10">InItiate_Reset</span>
+                                <span class="relative z-10">Dispatch_OTP</span>
                             </button>
                             <p id="showLoginBtn" class="text-[10px] md:text-xs text-center mt-4 text-gray-500 font-mono tracking-wider cursor-pointer hover:text-accent transition-colors">RETURN TO GATEWAY</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- OTP & Reset Password Section (Step 2) -->
+             <div id="resetSection" class="hidden relative z-20">
+                <div class="space-y-6 md:space-y-8">
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-display font-bold uppercase tracking-widest text-white">Verify_Hash</h2>
+                        <p class="text-[10px] font-mono text-gray-500 mt-2">ENTER OTP & NEW ACCESS KEY</p>
+                    </div>
+
+                    <form id="resetForm" class="space-y-6 md:space-y-8">
+                        <div class="space-y-2 group/input">
+                            <label class="text-[8px] md:text-[9px] uppercase font-bold tracking-widest text-muted block mb-1 group-focus-within/input:text-accent transition-colors">OTP_Code</label>
+                            <div class="input-group">
+                                <input type="text" id="otpCode" required placeholder="000000" maxlength="6" autocomplete="off" class="text-sm md:text-base py-3 md:py-4 tracking-[0.5em] text-center font-mono text-accent">
+                            </div>
+                        </div>
+                        
+                         <div class="space-y-2 group/input">
+                            <label class="text-[8px] md:text-[9px] uppercase font-bold tracking-widest text-muted block mb-1 group-focus-within/input:text-accent transition-colors">New_Hash</label>
+                            <div class="input-group">
+                                <input type="password" id="newPassword" required placeholder="NEW_ENCRYPTED_KEY" autocomplete="off" class="text-sm md:text-base py-3 md:py-4">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 md:pt-6">
+                            <button type="submit" id="resetBtn" class="w-full bg-white text-black font-display font-black text-base md:text-lg uppercase py-4 md:py-5 hover:bg-accent hover:text-white transition-all hover:scale-[1.02] active:scale-95 tracking-widest relative overflow-hidden group/btn-reset">
+                                <span class="relative z-10">Update_Access</span>
+                            </button>
+                            <p id="backToForgotBtn" class="text-[10px] md:text-xs text-center mt-4 text-gray-500 font-mono tracking-wider cursor-pointer hover:text-accent transition-colors">RESEND OTP?</p>
                         </div>
                     </form>
                 </div>
@@ -529,87 +562,144 @@
             // --- Toggle Forms Logic ---
             const loginSection = document.getElementById('loginSection');
             const forgotSection = document.getElementById('forgotSection');
+            const resetSection = document.getElementById('resetSection');
+
             const showForgotBtn = document.getElementById('showForgotBtn');
             const showLoginBtn = document.getElementById('showLoginBtn');
+            const backToForgotBtn = document.getElementById('backToForgotBtn');
 
-            // Switch to Forgot Password
-            showForgotBtn.addEventListener('click', () => {
+            // API ENDPOINTS
+            const API_LOGIN = 'https://backend-web-1.vercel.app/api/auth/login';
+            const API_FORGOT = 'https://backend-web-1.vercel.app/api/auth/forgot-password'; // Updated backend logic
+            const API_RESET = 'https://backend-web-1.vercel.app/api/auth/reset-password';
+
+            // Animation Helper
+            const switchSection = (hideEl, showEl, direction = 1) => {
                 const tl = gsap.timeline();
-                
-                tl.to(loginSection, {
+                tl.to(hideEl, {
                     opacity: 0,
-                    x: -20,
-                    duration: 0.4,
+                    x: -20 * direction,
+                    duration: 0.3,
                     ease: "power2.in",
                     onComplete: () => {
-                        loginSection.classList.add('hidden');
-                        forgotSection.classList.remove('hidden');
-                        gsap.set(forgotSection, { opacity: 0, x: 20 });
+                        hideEl.classList.add('hidden');
+                        showEl.classList.remove('hidden');
+                        gsap.set(showEl, { opacity: 0, x: 20 * direction });
                     }
                 })
-                .to(forgotSection, {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-            });
+                .to(showEl, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" });
+            };
 
-            // Switch to Login
-            showLoginBtn.addEventListener('click', () => {
-                const tl = gsap.timeline();
+            // Switch: Login -> Forgot
+            showForgotBtn.addEventListener('click', () => switchSection(loginSection, forgotSection, 1));
 
-                tl.to(forgotSection, {
-                    opacity: 0,
-                    x: 20,
-                    duration: 0.4,
-                    ease: "power2.in",
-                    onComplete: () => {
-                        forgotSection.classList.add('hidden');
-                        loginSection.classList.remove('hidden');
-                        gsap.set(loginSection, { opacity: 0, x: -20 });
-                    }
-                })
-                .to(loginSection, {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-            });
+            // Switch: Forgot -> Login
+            showLoginBtn.addEventListener('click', () => switchSection(forgotSection, loginSection, -1));
 
-            // --- Forgot Password Logic ---
+            // Switch: Reset -> Forgot (Resend OTP flow)
+            backToForgotBtn.addEventListener('click', () => switchSection(resetSection, forgotSection, -1));
+
+
+            // --- 1. Forgot Password Logic (Dispatch OTP) ---
             document.getElementById('forgotForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('forgotBtn');
                 const btnText = btn.querySelector('span');
                 const originalText = btnText.innerText;
+                const email = document.getElementById('forgotEmail').value;
                 
-                btnText.innerText = "SENDING LINK...";
-                gsap.to(btn, { opacity: 0.8, duration: 0.3 });
+                btnText.innerText = "OPENING_CHANNEL...";
+                gsap.to(btn, { opacity: 0.8 });
 
-                // Simulate API call
-                setTimeout(() => {
-                    btnText.innerText = "LINK SENT";
-                    gsap.to(btn, { backgroundColor: '#22c55e', color: '#fff', duration: 0.3 });
+                try {
+                    const res = await fetch(API_FORGOT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
 
+                    if(res.ok) {
+                        // Success -> Move to OTP Reset Screen
+                        btnText.innerText = "OTP_SENT";
+                        gsap.to(btn, { backgroundColor: '#22c55e', color: '#fff' });
+                        
+                        setTimeout(() => {
+                             switchSection(forgotSection, resetSection, 1);
+                             // Reset button styles
+                             btnText.innerText = originalText;
+                             gsap.to(btn, { backgroundColor: '', color: '' });
+                        }, 500);
+
+                    } else {
+                        throw new Error(data.message || 'Dispatch Failed');
+                    }
+
+                } catch (error) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'RECOVERY INITIATED',
-                        text: 'If the credentials exist, a reset link has been dispatched to your secure inbox.',
+                        icon: 'error',
+                        title: 'TRANSMISSION_ERROR',
+                        text: error.message,
                         background: '#0a0a0a',
                         color: '#fff',
                         confirmButtonColor: '#ff2a00'
-                    }).then(() => {
-                        // Return to login automatically
-                        showLoginBtn.click();
-                        // Reset button state after transition
-                        setTimeout(() => {
-                            btnText.innerText = originalText;
-                            gsap.to(btn, { backgroundColor: '', color: '', duration: 0.3 }); // Reset styles
-                        }, 500);
                     });
-                }, 1500);
+                    btnText.innerText = "RETRY_DISPATCH";
+                }
+            });
+
+            // --- 2. Reset Password Logic (Verify OTP) ---
+            document.getElementById('resetForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('resetBtn');
+                const btnText = btn.querySelector('span');
+                
+                const email = document.getElementById('forgotEmail').value; // Get saved email
+                const otp = document.getElementById('otpCode').value;
+                const newPassword = document.getElementById('newPassword').value;
+
+                btnText.innerText = "VERIFYING_HASH...";
+                gsap.to(btn, { opacity: 0.8 });
+
+                try {
+                    const res = await fetch(API_RESET, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, otp, newPassword })
+                    });
+                    const data = await res.json();
+
+                    if(res.ok) {
+                        btnText.innerText = "ACCESS_UPDATED";
+                        gsap.to(btn, { backgroundColor: '#22c55e', color: '#fff' });
+
+                        Swal.fire({
+                             icon: 'success',
+                             title: 'PROTOCOL_COMPLETE',
+                             text: 'Access Hash Updated. Redirecting to Gateway.',
+                             background: '#0a0a0a',
+                             color: '#fff',
+                             timer: 2000,
+                             showConfirmButton: false
+                        }).then(() => {
+                             switchSection(resetSection, loginSection, 1);
+                        });
+
+                    } else {
+                         throw new Error(data.message || 'Verification Failed');
+                    }
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'INVALID_HASH',
+                        text: error.message,
+                        background: '#0a0a0a',
+                        color: '#fff',
+                        confirmButtonColor: '#ff2a00'
+                    });
+                    btnText.innerText = "RETRY_UPDATE";
+                }
             });
 
             // --- Authenticate Logic ---
