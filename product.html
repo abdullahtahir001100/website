@@ -4,134 +4,738 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ink by hand product page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/produt.css">
-    <link rel="icon" href="images/logo.jpg" />
-    <link rel="stylesheet" href="css/global.css">
+    <title>INKBYHAND | Infinite Archive</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+
+    <style>
+        :root {
+            --bg: #050505;
+            --text: #ffffff;
+            --accent: #ff3c00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            opacity: 0;
+            /* Fade in on load */
+            transition: opacity 0.5s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-syne {
+            font-family: 'Syne', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            background: none;
+            border: none;
+            color: inherit;
+            outline: none;
+            cursor: none;
+        }
+
+        /* --- LENIS SMOOTH SCROLL --- */
+        html.lenis {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-circle {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+
+        body.hovering .cursor-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: transparent;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            transition: transform 0.3s;
+            margin-left: 20px;
+        }
+
+        .svg-icon:hover {
+            transform: scale(1.3);
+            stroke: #fff;
+        }
+
+        .marquee-wrapper {
+            padding-top: 20vh;
+            padding-bottom: 5vh;
+            border-bottom: 1px solid #222;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-item {
+            font-family: 'Syne', sans-serif;
+            font-size: 8vw;
+            font-weight: 800;
+            margin-right: 4vw;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            transition: color 0.3s;
+        }
+
+        .marquee-item:hover {
+            color: #fff;
+        }
+
+        /* --- FILTER BAR --- */
+        .filter-bar {
+            padding: 2vh 5%;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #111;
+            position: sticky;
+            top: 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 90;
+        }
+
+        .filter-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #666;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            color: #fff;
+        }
+
+        .filter-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #fff;
+        }
+
+        /* --- GRID --- */
+        .grid-section {
+            padding: 5vh 4vw;
+            min-height: 100vh;
+        }
+
+        .parallax-columns {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        /* Column Stagger for Parallax Feel */
+        .column:nth-child(2) {
+            margin-top: 10vh;
+        }
+
+        .column:nth-child(3) {
+            margin-top: 5vh;
+        }
+
+        .product-card {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            background: #111;
+            overflow: hidden;
+            display: block;
+            opacity: 0;
+            /* Hidden initially for GSAP */
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: grayscale(100%);
+        }
+
+        .product-card:hover .card-img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+        }
+
+        .product-card:hover .card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SEARCH OVERLAY --- */
+        .search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.98);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .search-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .search-input {
+            width: 70%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 4vw;
+            padding: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .parallax-columns {
+                flex-direction: column;
+            }
+
+            .column {
+                margin-top: 0 !important;
+                width: 100%;
+            }
+
+            .product-card {
+                height: 60vh; /* Taller images on mobile for impact */
+                margin-bottom: 2vh;
+                opacity: 1;
+            }
+            
+            /* Hide Cursor on Touch */
+            .cursor-dot, .cursor-circle {
+                display: none;
+            }
+
+            /* Adjust Marquee */
+            .marquee-item {
+                font-size: 15vw; /* Bigger on mobile */
+            }
+
+            /* Adjust Search */
+            .search-input {
+                font-size: 8vw;
+                width: 90%;
+            }
+
+            /* Adjust Footer */
+            .glitch-text {
+                font-size: 18vw !important;
+            }
+            
+            .footer-btn-wrapper a {
+                padding: 15px 30px !important;
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
 </head>
-    <meta name="description" content="Discover the art of calligraphy. Learn modern brush lettering, traditional copperplate, and engrosser's script. Shop premium pens, inks, and supplies for beginners and masters."/>
-    <meta name="keywords" content="calligraphy, calligraphy art, modern calligraphy, traditional calligraphy, hand lettering, brush lettering, brush script, copperplate, copperplate calligraphy, Spencerian script, engrosser's script, gothic calligraphy, blackletter, italic script, chancery script, foundational hand, uncial, ruling pen, pointed pen, broad-edge pen, dip pen, fountain pen, calligraphy pens, brush pens, water brush, nibs, calligraphy nibs, pointed nibs, broad nibs, oblique holder, straight holder, pen holders, calligraphy ink, india ink, sumi ink, watercolor, gouache, metallic ink, practice paper, tracing paper, parchment paper, calligraphy pad, light box, beginner calligraphy, learn calligraphy, calligraphy classes, calligraphy workshops, online calligraphy course, calligraphy tutorials, how to start calligraphy, calligraphy for beginners, calligraphy supplies, best calligraphy pens, calligraphy tools, penmanship, beautiful handwriting, fine art, decorative writing, wedding invitations, envelope addressing, custom stationery, bespoke design, logo design, signature style, vintage script, flourishing, ornamental calligraphy, calligraphy guides, letter forms, script styles, art materials, art and craft, creative hobbies, drawing and design, typography, hand drawn type, script lettering, sign painting, artistic writing, copperplate masters, Spencerian practice, modern brush script, bounce lettering, monoline, faux calligraphy, pointed pen skills, thick and thin strokes, upstrokes, downstrokes, ink flow, pen angle, x-height, ascenders, descenders, pressure control, digitizing calligraphy, calligraphy resources, calligraphy exercises, practice drills, free templates, professional calligrapher, artist studio, handmade cards, gift tags, certificates, illumination, medieval manuscripts, ancient scripts, Western calligraphy, Eastern calligraphy, Japanese calligraphy, Chinese calligraphy, Arabic calligraphy, Thuluth, Naskh, Diwani, Kufic, artistic expression, relaxation, mindfulness, creative outlet, DIY projects, wedding calligraphy services, event signage, menu design, personalized gifts, art instruction, calligraphy books, digital calligraphy, iPad lettering, Procreate brushes, vectorizing artwork, vector graphics, calligraphy workshops near me, lettering styles, fancy writing, decorative fonts, artistic handwriting, beautiful scripts, elegant design, handwritten text, artistic fonts, cursive, elegant writing, fine details, personalized items, art prints, inspirational quotes, custom artwork, drawing lessons, graphic design elements, creative writing, artistic techniques, ink mixing, storage solutions, paper selection, handmade paper, calligraphy paper weight, desk setup, ergonomic pen holder, professional artist supplies, creative entrepreneurship, small business art, commission work, unique gifts, custom apparel, calligraphy mastery, advanced techniques, composition, layout, historical scripts, illumination techniques, gilded lettering, gold leaf, decorative borders, scrollwork, ornamental designs, artistic flair, fine script, legible writing, expressive lines, handmade quality, artistic home decor, creative passions, art education, skills development, manual dexterity, visual arts, design aesthetics, refined taste, premium stationery, luxury goods, high-end design, elegant invitations, wedding stationery suite, bespoke paper goods, event branding, brand identity design, unique logotype, handwritten logos, italic hand, roman capitals, versals, Lombardic versals, half-uncial, Insular minuscule, Carolingian minuscule, Humanist minuscule, Textura, Fraktur, Rotunda, Scheveningen, Gillott nibs, Nikko G nibs, Zebra G nibs, Brause nibs, Speedball nibs, automatic pens, parallel pens, acrylic ink, pigment ink, iron gall ink, archival ink, shimmer ink, pearlescent ink, white ink calligraphy, black paper lettering, wedding place cards, seating charts, chalkboard art, mirror calligraphy, glass engraving, foiled calligraphy, letterpress design, stationery suite design, custom vows, poem transcription, calligraphy coaching, certification program, advanced flourishing, decorative capitals, brush pen practice sheets, modern wedding stationery, minimalist calligraphy, watercolor calligraphy, dip pen cleaning, pen rest, slant guides, line guides, how to write beautiful script, vintage style lettering, hand-painted signs, commission a calligrapher, calligraphy artist portfolio, calligraphy services pricing, brush marker tutorials, Procreate lettering guides, digital brush pen, pointed pen versus brush pen, oblique vs straight holder, beginner ink recommendations, calligraphy paper brands, practicing proper form, consistency drills, letter connection, baseline bouncing, free calligraphy worksheets, best paper for dip pen ink, wedding envelope addressing cost, custom poem handwritten, art of beautiful writing, calligraphy for stress relief, creative lettering ideas, inkbyhand, i nkbyhand, in k by hand, ink by han ds, ink-by-hands, ink by hands, ink byhand, inkby hands, inkbyhand calligraphy, inkbyhand art, ink by hand tutorials, ink by hand supplies" />
+
 <body>
-    <header class="navbar" id="mainHeader">
-        <div class="logo">
-            <a href="index.html">
-                <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="ARTIFY Logo">
-            </a>
-        </div>
 
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="product.html">Shop</a>
-            <a href="contect.html">Contacts</a>
-        </nav>
+    <!-- UI -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
 
-        <div class="user-actions">
-            <div class="search-bar-container">
-                <div class="search-bar" id="searchBar">
-                    <input type="text" id="searchInput" placeholder="Search by title, artist, or style...">
-                    <button class="search-icon" id="searchIconBtn" aria-label="Search">
-                        <img src="images/search.png" alt="Search" style="width: 20px;">
-                    </button>
-                </div>
-                <button class="close-search-btn" id="closeSearchBtn">×</button>
-            </div>
-
-            <a href="cart.html" class="icon-btn" aria-label="Cart">
-                <img src="images/trolley.png" alt="Cart">
-            </a>
-
-            <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu">
-                <img src="images/ui.png" alt="Menu" style="width: 20px;">
-            </button>
-        </div>
-
-        <div class="mobile-nav-overlay" id="mobileNav">
-               <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="product.html">Shop</a>
-            <a href="contect.html">Contacts</a>
+    <header class="fixed-header">
+        <a href="index.html" class="logo">INKBYHAND</a>
+        <div style="display: flex; align-items: center;">
+            <svg id="searchTrigger" class="svg-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <a href="checkout.html"><svg class="svg-icon" viewBox="0 0 24 24">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                </svg></a>
         </div>
     </header>
 
-    <main class="content-container">
-        <aside class="sidebar" id="sidebar">
-            <div class="filters-wrapper">
-                <p style="text-align: center; padding: 10px;">Loading Filters...</p>
+    <div id="searchOverlay" class="search-overlay">
+        <div id="searchClose" style="position:absolute; top:40px; right:40px; cursor:pointer;">✕ CLOSE</div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Start Typing...">
+        <div id="searchStats" style="margin-top:20px; color:#666;"></div>
+    </div>
+
+    <!-- Scroll Wrapper -->
+    <div id="main-wrapper">
+        <div class="marquee-wrapper">
+            <div class="marquee-content" style="display:inline-block; animation: marquee 20s linear infinite;">
+                <span class="marquee-item">THE COLLECTION • SELECTED WORKS • INK & PAPER • </span>
+                <span class="marquee-item">THE COLLECTION • SELECTED WORKS • INK & PAPER • </span>
             </div>
-        </aside>
+        </div>
+        <style>
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0)
+                }
 
-        <section class="product-view">
-            <div class="product-controls-row">
-                <button class="sort-pill filter-toggle-pill" id="filterTogglePill" aria-expanded="true">
-                    <span class="icon-toggle">✖</span> Hide Filters
-                </button>
-                
-                <div class="sort-controls">
-                    <label>Sort By:</label>
-                    <div class="sort-options" id="sortOptions">
-                        <input type="radio" id="sort-popular" name="sortOrder" value="popular" checked>
-                        <label for="sort-popular" class="sort-pill">Most Popular</label>
+                100% {
+                    transform: translateX(-50%)
+                }
+            }
+        </style>
 
-                        <input type="radio" id="sort-newest" name="sortOrder" value="newest">
-                        <label for="sort-newest" class="sort-pill">Newest Arrivals</label>
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Abstract">Abstract</button>
+            <button class="filter-btn" data-filter="Calligraphy">Calligraphy</button>
+            <button class="filter-btn" data-filter="Digital">Digital</button>
+            <button class="filter-btn" data-filter="Print">Print</button>
+        </div>
 
-                        <input type="radio" id="sort-price-asc" name="sortOrder" value="price-asc">
-                        <label for="sort-price-asc" class="sort-pill">Price: Low to High</label>
-
-                        <input type="radio" id="sort-price-desc" name="sortOrder" value="price-desc">
-                        <label for="sort-price-desc" class="sort-pill">Price: High to Low</label>
-                    </div>
-                </div>
+        <section class="grid-section">
+            <div class="parallax-columns">
+                <div id="col1" class="column"></div>
+                <div id="col2" class="column"></div>
+                <div id="col3" class="column"></div>
             </div>
-            
-            <section class="art-gallery product-grid" id="artGallery">
-                <p style="padding: 20px;">Loading artwork...</p>
-            </section>
         </section>
-    </main>
 
-    <footer>
-        <div class="align">
-            <div class="sec-1">
-                <div class="logo">
-                    <img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-3-e1756815921648.png"
-                        class="logos" alt="Footer Logo">
-                </div>
-                <div class="pera">
-                    InkByHand is creative home where calligraphy becomes more than writing…It is art,faith and expression.
+        <!-- HIGH-END FOOTER -->
+        <div id="footer-trigger" style="height: 1px;"></div>
+        <footer id="webgl-footer" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <canvas id="canvas-webgl" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; pointer-events: none;"></canvas>
+            <div class="footer-content" style="z-index: 10; text-align: center;">
+                <h1 class="glitch-text" style="font-size: 10vw; line-height: 0.8; font-weight: 900; letter-spacing: -0.05em; margin: 0; opacity: 0; transform: translateY(100px);">NEXT<br>LEVL</h1>
+                <div class="footer-btn-wrapper" style="margin-top: 50px; opacity: 0; transform: translateY(50px);">
+                    <a href="contact.html" style="color: #fff; text-decoration: none; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.3); padding: 20px 40px; border-radius: 100px; transition: all 0.3s ease; display: inline-block;">START A CONVERSATION</a>
                 </div>
             </div>
-            <div class="sec-1">
-                <ul>
-                    <li>Service</li>
-                    <li><a href=""> Supply</a></li>
-                    <li><a href="">Communities</a></li>
-                </ul>
+            <div style="position: absolute; bottom: 40px; width: 90%; display: flex; justify-content: space-between; z-index: 10; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #666;">
+                <span>© 2026 INKBYHAND</span>
+                <span class="scroll-top" style="cursor: pointer;">SCROLL TO TOP</span>
             </div>
-            <div class="sec-1">
-                <ul>
-                    <li>Further Links</li>
-                    <li><a href="">Term & Condition</a></li>
-                    <li><a href="">News</a></li>
-                </ul>
-            </div>
-            <div class="sec-1">
-                <ul>
-                    <li>Get In Touch</li>
-                    <li><a href="">instagram.com/ink_by_hand_12</a></li>
-                    <li><a href="">+92-310-7581250</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="copy">
-            Copyright © 2025 inkbyhand.com | Powered by inkbyhand.com
-        </div>
-    </footer>
+        </footer>
+    </div>
 
-    <script src="js/product.js"></script>
-    <script src="js/dashboadover.js"></script>
-    <script src="js/cockees.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- SETUP ---
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Skew Effect on Scroll
+        let proxy = { skew: 0 }, skewSetter = gsap.quickSetter(".product-card", "skewY", "deg"), clamp = gsap.utils.clamp(-10, 10);
+        lenis.on('scroll', (e) => {
+            skewSetter(clamp(e.velocity / 2)); // Dynamic Skew
+        });
+
+        // --- DATA ---
+        let allProducts = [];
+        const cols = [document.getElementById('col1'), document.getElementById('col2'), document.getElementById('col3')];
+
+        const fallback = [
+            { title: "Geometric Flow", category: "Abstract", price: 1200, mainImage: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800" },
+            { title: "Silent Ink", category: "Calligraphy", price: 800, mainImage: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800" },
+            { title: "Noir Series", category: "Print", price: 450, mainImage: "https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?auto=format&fit=crop&w=800" },
+            { title: "Echoes", category: "Abstract", price: 2100, mainImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800" },
+            { title: "Modern Script", category: "Calligraphy", price: 950, mainImage: "https://images.unsplash.com/photo-1515405295579-ba7b454901fa?auto=format&fit=crop&w=800" },
+            { title: "Vortex", category: "Digital", price: 1500, mainImage: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=800" }
+        ];
+
+        // --- LOGIC ---
+        async function init() {
+            try {
+                const res = await fetch('https://backend-web-1-yb6q.vercel.app/api/products');
+                if (!res.ok) throw new Error("API");
+                const data = await res.json();
+
+                if (Array.isArray(data) && data.length > 0) {
+                    allProducts = [...data];
+                    while (allProducts.length < 15) allProducts = [...allProducts, ...data]; // Fill grid
+                    render(allProducts);
+                    document.body.classList.add('loaded');
+                } else throw new Error("Empty");
+
+            } catch (e) {
+                console.log("Fallback mode");
+                allProducts = [...fallback, ...fallback, ...fallback];
+                render(allProducts);
+                document.body.classList.add('loaded');
+            }
+        }
+
+        function render(items) {
+            cols.forEach(c => c.innerHTML = ''); // Clear
+
+            items.forEach((p, i) => {
+                const el = document.createElement('a');
+                el.href = p._id ? `detaiindex.html?id=${p._id}` : '#';
+                el.className = 'product-card'; 
+                el.innerHTML = `
+                    <div class="img-wrapper" style="width:100%; height:100%; overflow:hidden;">
+                        <img src="${p.mainImage || 'https://via.placeholder.com/600x800'}" class="card-img" loading="lazy">
+                    </div>
+                    <div class="card-overlay" style="padding: 30px;">
+                        <div style="overflow:hidden;"><h3 class="split-text">${p.title}</h3></div>
+                        <div style="overflow:hidden;"><p class="split-text" style="color:#aaa; font-size:0.9rem;">${p.category}</p></div>
+                        <div class="view-btn-wrapper" style="margin-top: 20px; overflow: hidden;">
+                            <button class="view-btn" style="border: 1px solid white; padding: 10px 20px; background: transparent; color: white; transform: translateY(100%); transition: transform 0.4s;">
+                                VIEW PROJECT <span style="margin-left:5px">→</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Cursor & Animation events
+                el.addEventListener('mouseenter', () => {
+                   document.body.classList.add('hovering');
+                   // Anime.js Button Reveal
+                   anime({ 
+                       targets: el.querySelector('.view-btn'), 
+                       translateY: ['100%', '0%'], 
+                       opacity: [0, 1],
+                       duration: 400, 
+                       easing: 'easeOutQuad' 
+                   });
+                   // Text Stagger
+                   anime({
+                       targets: el.querySelectorAll('.split-text'),
+                       translateY: [20, 0],
+                       opacity: [0, 1],
+                       delay: anime.stagger(100),
+                       easing: 'easeOutExpo'
+                   });
+                });
+
+                el.addEventListener('mouseleave', () => {
+                   document.body.classList.remove('hovering');
+                   anime({ 
+                       targets: el.querySelector('.view-btn'), 
+                       translateY: '100%', 
+                       opacity: 0,
+                       duration: 300, 
+                       easing: 'easeInQuad' 
+                   });
+                });
+
+                cols[i % 3].appendChild(el);
+            });
+
+            // Animate In with ScrollTrigger
+            ScrollTrigger.batch(".product-card", {
+                onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power3.out" }),
+                start: "top 90%"
+            });
+            // Initial Set
+            gsap.set(".product-card", { y: 100, opacity: 0 });
+        }
+
+        // --- FILTERING ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const cat = btn.dataset.filter;
+                const filtered = cat === 'all' ? allProducts : allProducts.filter(p => (p.category || '').includes(cat));
+                render(filtered);
+            });
+        });
+
+        // --- SEARCH ---
+        const searchInput = document.getElementById('searchInput');
+        const searchStats = document.getElementById('searchStats');
+
+        document.getElementById('searchTrigger').addEventListener('click', () => {
+            document.getElementById('searchOverlay').classList.add('active');
+            searchInput.focus();
+        });
+        document.getElementById('searchClose').addEventListener('click', () => {
+            document.getElementById('searchOverlay').classList.remove('active');
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const res = allProducts.filter(p => p.title.toLowerCase().includes(val) || p.category.toLowerCase().includes(val));
+            searchStats.innerText = `Found ${res.length} items`;
+            render(res);
+        });
+
+        // --- PARALLAX EFFECT ---
+        ScrollTrigger.matchMedia({
+            "(min-width: 769px)": function() {
+                gsap.to("#col2", { y: -100, ease: "none", scrollTrigger: { trigger: ".grid-section", scrub: true } });
+                gsap.to("#col3", { y: 50, ease: "none", scrollTrigger: { trigger: ".grid-section", scrub: true } });
+            }
+        });
+
+        // --- CURSOR ---
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(circle, { x: e.clientX, y: e.clientY, duration: 0.15 });
+        });
+
+        // --- THREE.JS FOOTER ANIMATION ---
+        function initFooter3D() {
+            const canvas = document.querySelector('#canvas-webgl');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Particles Geometry
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 700;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 15; // Spread
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            // Material
+            const material = new THREE.PointsMaterial({
+                size: 0.02,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.8,
+            });
+
+            // Mesh
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            // Light
+            const pointLight = new THREE.PointLight(0xffffff, 0.1);
+            pointLight.position.x = 2;
+            pointLight.position.y = 3;
+            pointLight.position.z = 4;
+            scene.add(pointLight);
+
+            camera.position.z = 4;
+
+            // Interactive Mouse
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            const clock = new THREE.Clock();
+
+            const tick = () => {
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                const elapsedTime = clock.getElapsedTime();
+
+                // Gentle Rotation
+                particlesMesh.rotation.y = .1 * elapsedTime;
+                particlesMesh.rotation.x += .05 * (targetY - particlesMesh.rotation.x);
+                particlesMesh.rotation.y += .05 * (targetX - particlesMesh.rotation.y);
+
+                // Wave effect
+                if (window.scrollY > document.body.scrollHeight - window.innerHeight * 1.5) {
+                     particlesMesh.rotation.z += 0.002;
+                }
+
+                renderer.render(scene, camera);
+                window.requestAnimationFrame(tick);
+            }
+            tick();
+
+            // Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        initFooter3D();
+
+        // Footer Text Reveal
+        gsap.to(".glitch-text", {
+             scrollTrigger: {
+                 trigger: "#webgl-footer",
+                 start: "top 60%",
+             },
+             opacity: 1,
+             y: 0,
+             duration: 1.5,
+             ease: "power4.out"
+        });
+        
+        gsap.to(".footer-btn-wrapper", {
+             scrollTrigger: {
+                 trigger: "#webgl-footer",
+                 start: "top 50%",
+             },
+             opacity: 1,
+             y: 0,
+             duration: 1.5,
+             delay: 0.2,
+             ease: "power4.out"
+        });
+
+        // Scroll Top
+        document.querySelector('.scroll-top').addEventListener('click', () => {
+             lenis.scrollTo(0);
+        });
+
+        init();
+    </script>
 </body>
+
 </html>
