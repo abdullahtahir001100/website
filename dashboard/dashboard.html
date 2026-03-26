@@ -205,6 +205,9 @@
            .gas{
                 font-size: 5vw !important;
             }
+            .hiddene{
+                display: none !important;
+            }
            }
         
     </style>
@@ -366,6 +369,11 @@
         background: white;
         color: black;
     }
+    @media (max-width: 550px) {
+        .gas{
+             font-size: 5vw !important;
+         }
+        }
 
     /* Preview Boxes */
     #main-preview, .gallery-item {
@@ -385,9 +393,9 @@
         <div class="flex justify-between items-end mb-10 border-b border-white/10 pb-6">
             <div>
                 <span class="text-accent font-mono text-[10px] tracking-[0.3em] uppercase block mb-2">System_Entry</span>
-                <h2 class="font-display text-4xl font-black uppercase tracking-tighter" id="modal-title">New Product</h2>
+                <h2 class="font-display text-4xl font-black uppercase gas tracking-tighter" id="modal-title">New Product</h2>
             </div>
-            <button onclick="closeModal()" class="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-accent hover:text-white transition-all duration-300">
+            <button onclick="closeModal()" class="w-12 h-12 hiddene border border-white/10 flex items-center justify-center hover:bg-accent hover:text-white transition-all duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
             </button>
         </div>
