@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api'; 
+    const API_BASE_URL = 'https://backend-web-1.vercel.app/api'; 
     
     // --- Elements ---
     const savedAddressGrid = document.getElementById('saved-addresses-container');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initCheckout() {
         if (localCart.length === 0) {
             alert("Your cart is empty.");
-            window.location.href = 'l.html';
+            window.location.href = 'index.html';
             return;
         }
 
@@ -347,9 +347,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (res.ok && data.success) {
                     localStorage.removeItem('cart');
+                    // Store ID for Order View
+                    localStorage.setItem('pendingOrderId', data.data._id);
+                    
+                    // Add to Local History Array
+                    let orderHistory = JSON.parse(localStorage.getItem('myOrderIds')) || [];
+                    if(!orderHistory.includes(data.data._id)){
+                         orderHistory.push(data.data._id);
+                         localStorage.setItem('myOrderIds', JSON.stringify(orderHistory));
+                    }
+                    
                     // Success Message
-                    alert(`Order Placed Successfully! Order ID: ${data.data._id || 'Confirmed'}`);
-                    window.location.href = 'l.html';
+                    alert(`Order Placed Successfully! Redirecting to details...`);
+                    window.location.href = 'order.html';
                 } else {
                     throw new Error(data.message || "Order submission failed on server.");
                 }

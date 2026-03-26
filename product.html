@@ -365,6 +365,19 @@
                 font-size: 0.9rem !important;
             }
         }
+
+        /* Burger & Nav */
+        .burger { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+        .burger div { width: 30px; height: 2px; background: #fff; transition: 0.3s; }
+        
+        .nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000; z-index: 2100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.5s;
+        }
+        .nav-overlay.active { opacity: 1; pointer-events: all; }
+        .nav-link { font-size: 3rem; color: #fff; text-decoration: none; margin: 10px; font-family: 'Syne'; opacity: 0; transform: translateY(20px); transition: 0.5s; }
+        .nav-overlay.active .nav-link { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 
@@ -376,17 +389,28 @@
 
     <header class="fixed-header">
         <a href="index.html" class="logo">INKBYHAND</a>
-        <div style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 20px;">
             <svg id="searchTrigger" class="svg-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <a href="checkout.html"><svg class="svg-icon" viewBox="0 0 24 24">
+            <a href="cart.html"><svg class="svg-icon" viewBox="0 0 24 24">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                 </svg></a>
+            <div class="burger" id="burger">
+                <div></div><div></div>
+            </div>
         </div>
     </header>
+
+    <div class="nav-overlay" id="nav">
+        <a href="index.html" class="nav-link" style="transition-delay: 0.1s">HOME</a>
+        <a href="product.html" class="nav-link" style="transition-delay: 0.2s">ARCHIVE</a>
+        <a href="order.html" class="nav-link" style="transition-delay: 0.3s">ORDERS</a>
+        <a href="about.html" class="nav-link" style="transition-delay: 0.4s">ABOUT</a>
+        <a href="contact.html" class="nav-link" style="transition-delay: 0.5s">CONTACT</a>
+    </div>
 
     <div id="searchOverlay" class="search-overlay">
         <div id="searchClose" style="position:absolute; top:40px; right:40px; cursor:pointer;">✕ CLOSE</div>
@@ -616,6 +640,22 @@
             gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
             gsap.to(circle, { x: e.clientX, y: e.clientY, duration: 0.15 });
         });
+
+        // --- MENU ---
+        const burger = document.getElementById('burger');
+        const nav = document.getElementById('nav');
+        let navOpen = false;
+        burger.onclick = () => {
+            navOpen = !navOpen;
+            nav.classList.toggle('active');
+            const lines = burger.querySelectorAll('div');
+            if(navOpen){
+                gsap.to(lines[0], { y: 4, rotation: 45 });
+                gsap.to(lines[1], { y: -4, rotation: -45 });
+            } else {
+                gsap.to(lines, { y: 0, rotation: 0 });
+            }
+        };
 
         // --- THREE.JS FOOTER ANIMATION ---
         function initFooter3D() {

@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INKBYHAND | Secure Checkout</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,140 +23,322 @@
             --bg-card: #111;
             --text-main: #fff;
             --text-muted: #888;
-            --border-color: rgba(255,255,255,0.1);
+            --border-color: rgba(255, 255, 255, 0.1);
             --accent: #fff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* For locomotive scroll */
+            overflow: hidden;
+            /* For locomotive scroll */
         }
 
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-        img { max-width: 100%; display: block; }
-        input, button { font-family: inherit; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+           max-width: 60%;
+            display: block;
+        }
+
+        input,
+        button {
+            font-family: inherit;
+        }
 
         /* Typography */
-        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
         .h-xl {
             font-size: 6vw;
             line-height: 0.95;
             text-transform: uppercase;
             letter-spacing: -0.02em;
         }
-        .h-md { font-size: 2rem; margin-bottom: 20px; }
-        .text-sm { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+        .h-md {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .text-sm {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
 
         /* Utility */
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
-        body.is-loading { opacity: 0; transition: opacity 0.5s ease; }
-        body.is-loading.loaded { opacity: 1; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        body.is-loading {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.is-loading.loaded {
+            opacity: 1;
+        }
 
         /* --- HEADER (Synced with index.html) --- */
         .main-header {
-            position: fixed; top: 0; width: 100%; z-index: 2200;
-            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px);
-            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2200;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
         }
+
         /* Burger Menu (Synced with index.html) */
-        .burger { cursor: pointer; z-index: 2300; padding: 10px; }
-        .burger div { width: 25px; height: 1px; background: white; margin: 6px; transition: 0.4s; }
-        
+        .burger {
+            cursor: pointer;
+            z-index: 2300;
+            padding: 10px;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 1px;
+            background: white;
+            margin: 6px;
+            transition: 0.4s;
+        }
+
         /* Menu Overlay (Synced with index.html) */
         .nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000;
-            z-index: 2100; display: flex; align-items: center; justify-content: center;
-            transform: scale(1.1); opacity: 0; pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(1.1);
+            opacity: 0;
+            pointer-events: none;
             transition: all 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
-        .nav-overlay.active { transform: scale(1); opacity: 1; pointer-events: all; }
-        .nav-links { text-align: center; }
+
+        .nav-overlay.active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .nav-links {
+            text-align: center;
+        }
+
         .nav-links a {
-            display: block; font-size: 5vw; color: white; text-decoration: none; margin: 10px 0;
-            font-family: 'Playfair Display'; opacity: 0; transform: translateY(50px); transition: 0.6s;
+            display: block;
+            font-size: 5vw;
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            font-family: 'Playfair Display';
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.6s;
         }
+
         .nav-overlay.active .nav-links a {
-            opacity: 1; transform: translateY(0); transition-delay: calc(0.1s * var(--i));
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(0.1s * var(--i));
         }
-        
+
         /* New Address Card Style */
         .address-card-new {
             border: 1px solid var(--border-color);
-            padding: 25px; margin-bottom: 20px;
-            background: rgba(255,255,255,0.02);
-            position: relative; transition: all 0.3s ease;
+            padding: 25px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
-        .address-card-new:hover { border-color: rgba(255,255,255,0.3); }
-        .address-card-new.selected {
-            border-color: #fff; background: rgba(255,255,255,0.05);
+
+        .address-card-new:hover {
+            border-color: rgba(255, 255, 255, 0.3);
         }
-        .addr-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .addr-name-tag { font-size: 1.1rem; font-weight: 500; color: #fff; letter-spacing: 0.5px; }
+
+        .address-card-new.selected {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .addr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .addr-name-tag {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
 
         /* Custom Radio Style */
         .radio-wrapper {
-            width: 20px; height: 20px; border: 1px solid #777; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #777;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
         }
-        .address-card-new.selected .radio-wrapper { border-color: #fff; }
-        .radio-dot { width: 10px; height: 10px; background: #fff; border-radius: 50%; opacity: 0; transform: scale(0); transition: 0.3s; }
-        .address-card-new.selected .radio-dot { opacity: 1; transform: scale(1); }
 
-        .addr-body { font-size: 0.95rem; line-height: 1.6; color: #aaa; margin-top: 10px; }
-        .addr-line { display: block; }
-        .addr-phone { margin-top: 10px; display: block; color: #888; font-size: 0.85rem; }
-        .remove-link {
-            display: inline-block; margin-top: 15px; font-size: 0.75rem; color: #d63031; 
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid transparent; transition: 0.2s; font-weight: 600;
+        .address-card-new.selected .radio-wrapper {
+            border-color: #fff;
         }
-        .remove-link:hover { border-bottom-color: #d63031; }
+
+        .radio-dot {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0);
+            transition: 0.3s;
+        }
+
+        .address-card-new.selected .radio-dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .addr-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .addr-line {
+            display: block;
+        }
+
+        .addr-phone {
+            margin-top: 10px;
+            display: block;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .remove-link {
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 0.75rem;
+            color: #d63031;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid transparent;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .remove-link:hover {
+            border-bottom-color: #d63031;
+        }
 
         /* --- HERO SECTION --- */
         .hero-section {
             padding: 200px 5% 100px;
             min-height: 70vh;
-            display: flex; flex-direction: column; justify-content: flex-end;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
             border-bottom: 1px solid var(--border-color);
         }
-        .hero-title span { display: block; overflow: hidden; }
+
+        .hero-title span {
+            display: block;
+            overflow: hidden;
+        }
+
         .hero-title span i {
-            display: block; font-style: normal;
+            display: block;
+            font-style: normal;
             transform: translateY(110%);
             transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .is-inview .hero-title span i { transform: translateY(0); }
+
+        .is-inview .hero-title span i {
+            transform: translateY(0);
+        }
 
         .hero-desc {
-            max-width: 400px; margin-top: 40px; margin-left: auto;
-            border-left: 1px solid var(--border-color); padding-left: 20px;
+            max-width: 400px;
+            margin-top: 40px;
+            margin-left: auto;
+            border-left: 1px solid var(--border-color);
+            padding-left: 20px;
         }
 
         /* --- TRUST BADGES --- */
         .trust-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             border-bottom: 1px solid var(--border-color);
         }
+
         .trust-item {
             padding: 60px 40px;
             border-right: 1px solid var(--border-color);
-            display: flex; flex-direction: column; gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .trust-item:last-child { border-right: none; }
-        .trust-icon { font-size: 1.8rem; margin-bottom: 10px; opacity: 0.8; }
-        
+
+        .trust-item:last-child {
+            border-right: none;
+        }
+
+        .trust-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
         /* --- CHECKOUT LAYOUT --- */
         .checkout-wrapper {
             display: flex;
             min-height: 100vh;
         }
-        
+
         /* Left: Form Area */
         .left-panel {
             width: 60%;
@@ -167,66 +352,135 @@
             position: relative;
             background: #0d0d0d;
         }
-        
+
         /* Sticky Summary Wrapper */
         .sticky-summary {
             padding: 80px 40px;
             height: 100vh;
-            display: flex; flex-direction: column; justify-content: flex-start;
-            position: sticky; top: 0; /* Fallback */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: sticky;
+            top: 0;
+            /* Fallback */
         }
 
         /* Address Selection */
-        .addr-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 30px; }
+        .addr-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
         .addr-card {
-            border: 1px solid var(--border-color); padding: 25px;
-            cursor: pointer; transition: 0.3s;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            cursor: pointer;
+            transition: 0.3s;
             position: relative;
         }
-        .addr-card:hover { border-color: #555; background: rgba(255,255,255,0.02); }
-        .addr-card.active { border-color: #fff; background: rgba(255,255,255,0.05); }
+
+        .addr-card:hover {
+            border-color: #555;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .addr-card.active {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
 
         .btn-add-addr {
-            width: 100%; padding: 20px; border: 1px dashed var(--border-color);
-            background: transparent; color: #fff; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 1px;
+            width: 100%;
+            padding: 20px;
+            border: 1px dashed var(--border-color);
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             transition: 0.3s;
         }
-        .btn-add-addr:hover { border-color: #fff; }
+
+        .btn-add-addr:hover {
+            border-color: #fff;
+        }
 
         /* New Address Form (Hidden initially) */
         .addr-form {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            height: 0; overflow: hidden; opacity: 0; margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            margin-top: 20px;
             transition: all 0.5s ease;
         }
-        .addr-form.open { height: auto; opacity: 1; padding-bottom: 20px; }
-        
-        .form-input {
-            background: transparent; border: 1px solid var(--border-color);
-            color: #fff; padding: 15px; width: 100%;
+
+        .addr-form.open {
+            height: auto;
+            opacity: 1;
+            padding-bottom: 20px;
         }
-        .form-input::placeholder { color: #555; }
-        .span-2 { grid-column: span 2; }
-        
+
+        .form-input {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 15px;
+            width: 100%;
+        }
+
+        .form-input::placeholder {
+            color: #555;
+        }
+
+        .span-2 {
+            grid-column: span 2;
+        }
+
         .btn-save {
-            grid-column: span 2; background: #fff; color: #000;
-            border: none; padding: 15px; font-weight: 600; cursor: pointer;
+            grid-column: span 2;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         /* Payment Methods */
         .payment-option {
-            border: 1px solid var(--border-color); padding: 25px;
-            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
             transition: 0.3s;
         }
-        .payment-option:hover { background: rgba(255,255,255,0.02); }
-        .radio-circle {
-            width: 18px; height: 18px; border: 1px solid #666; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+
+        .payment-option:hover {
+            background: rgba(255, 255, 255, 0.02);
         }
+
+        .radio-circle {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .payment-option.selected .radio-circle div {
-            width: 10px; height: 10px; background: #fff; border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
         }
 
         /* Summary Box with SVG Border */
@@ -238,35 +492,75 @@
         }
 
         .summary-svg-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 10;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
+
         .summary-rect {
-            fill: none; stroke: #fff; stroke-width: 1; opacity: 0.6;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 1;
+            opacity: 0.6;
         }
 
         .cart-items {
-            max-height: 250px; overflow-y: auto;
-            margin: 20px 0; padding-right: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
         }
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; }
-        .cart-item span:first-child { color: #ccc; }
-        
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .cart-item span:first-child {
+            color: #ccc;
+        }
+
         .totals-row {
-            display: flex; justify-content: space-between;
-            margin-top: 15px; padding-top: 15px; 
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 1px solid var(--border-color);
         }
-        .total-final { font-size: 1.3rem; margin-top: 20px; font-weight: 600; color: #fff; border-top: none; }
+
+        .total-final {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #fff;
+            border-top: none;
+        }
 
         .btn-confirm {
-            width: 100%; background: #fff; color: #000;
-            padding: 20px; border: none; font-weight: 700;
-            margin-top: 30px; cursor: pointer; letter-spacing: 1px;
-            position: relative; overflow: hidden;
+            width: 100%;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            border: none;
+            font-weight: 700;
+            margin-top: 30px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
             transition: 0.4s;
         }
-        .btn-confirm:hover { background: #e0e0e0; letter-spacing: 2px; }
+
+        .btn-confirm:hover {
+            background: #e0e0e0;
+            letter-spacing: 2px;
+        }
 
         /* --- MANIFESTO / COMMITMENT --- */
         .manifesto-section {
@@ -275,85 +569,179 @@
             border-top: 1px solid var(--border-color);
             background: #0d0d0d;
         }
+
         .manifesto-text {
-            font-family: 'Playfair Display'; font-style: italic; font-size: 2.2rem;
-            line-height: 1.3; margin-bottom: 40px;
+            font-family: 'Playfair Display';
+            font-style: italic;
+            font-size: 2.2rem;
+            line-height: 1.3;
+            margin-bottom: 40px;
         }
+
         .signature {
-            font-family: 'Playfair Display', serif; font-style: italic;
-            font-size: 3rem; color: #666;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 3rem;
+            color: #666;
         }
 
         /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 1024px) {
-            .h-xl { font-size: 8vw; }
-            .hero-section { padding-top: 150px; min-height: 60vh; }
-            .container { padding: 0 40px; }
-            .nav-links a { font-size: 6vw; }
+            .h-xl {
+                font-size: 8vw;
+            }
+
+            .hero-section {
+                padding-top: 150px;
+                min-height: 60vh;
+            }
+
+            .container {
+                padding: 0 40px;
+            }
+
+            .nav-links a {
+                font-size: 6vw;
+            }
         }
 
         @media (max-width: 900px) {
-            .h-xl { font-size: 11vw; letter-spacing: -0.04em; }
-            .trust-grid { grid-template-columns: 1fr; }
-            .trust-item { 
-                border-right: none; 
-                border-bottom: 1px solid var(--border-color); 
+            .h-xl {
+                font-size: 11vw;
+                letter-spacing: -0.04em;
+            }
+
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trust-item {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
                 padding: 40px 20px;
                 text-align: center;
                 align-items: center;
             }
-            .checkout-wrapper { flex-direction: column; }
-            .left-panel, .right-panel { width: 100%; border-right: none; }
-            .left-panel { padding: 60px 5%; order: 2; }
-            .right-panel { padding: 0; order: 1; background: #0f0f0f; }
-            
+
+            .checkout-wrapper {
+                flex-direction: column;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100%;
+                border-right: none;
+            }
+
+            .left-panel {
+                padding: 60px 5%;
+                order: 2;
+            }
+
+            .right-panel {
+                padding: 0;
+                order: 1;
+                background: #0f0f0f;
+            }
+
             /* Sticky summary becomes relative on mobile */
-            .sticky-summary { 
-                height: auto; 
-                padding: 40px 20px; 
-                position: relative; 
+            .sticky-summary {
+                height: auto;
+                padding: 40px 20px;
+                position: relative;
                 top: 0;
             }
-            .summary-svg-container { display: none; } /* Simplify on mobile */
-            .summary-card { 
-                border: none; 
-                border-bottom: 1px solid var(--border-color); 
+
+            .summary-svg-container {
+                display: none;
+            }
+
+            /* Simplify on mobile */
+            .summary-card {
+                border: none;
+                border-bottom: 1px solid var(--border-color);
                 padding: 20px 0;
             }
-            
-            .manifesto-section { padding: 80px 5%; }
-            .manifesto-text { font-size: 1.5rem; }
-            
+
+            .manifesto-section {
+                padding: 80px 5%;
+            }
+
+            .manifesto-text {
+                font-size: 1.5rem;
+            }
+
             /* Address Form Stack */
-            .addr-form { grid-template-columns: 1fr; }
-            .span-2 { grid-column: span 1; }
-            
+            .addr-form {
+                grid-template-columns: 1fr;
+            }
+
+            .span-2 {
+                grid-column: span 1;
+            }
+
             /* Footer Stack */
-            footer { flex-direction: column; gap: 30px; text-align: center; }
+            footer {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
         }
 
         @media (max-width: 480px) {
-            .main-header { padding: 20px; }
-            .header-logo img { width: 80px; }
-            .h-md { font-size: 1.6rem; }
-            .nav-links a { font-size: 8vh; }
-            
-            .addr-card-new { padding: 20px; }
-            .addr-header { gap: 10px; }
-            .addr-name-tag { font-size: 1rem; }
+            .main-header {
+                padding: 20px;
+            }
+
+            .header-logo img {
+                width: 40px !important;
+                max-width: 80px 
+                !important;
+            }
+
+            .h-md {
+                font-size: 1.6rem;
+            }
+
+            .nav-links a {
+                font-size: 8vh;
+            }
+
+            .addr-card-new {
+                padding: 20px;
+            }
+
+            .addr-header {
+                gap: 10px;
+            }
+
+            .addr-name-tag {
+                font-size: 1rem;
+            }
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
 
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
     </style>
 </head>
+
 <body class="is-loading">
 
     <header class="main-header">
-        <a href="index.html" class="header-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo" style="filter:invert(1)"></a>
+        <a href="index.html" class="header-logo"><img
+                src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"
+                style="filter:invert(1)"></a>
         <div class="burger" id="burger">
             <div class="line1"></div>
             <div class="line2"></div>
@@ -362,9 +750,12 @@
 
     <nav class="nav-overlay" id="menu">
         <div class="nav-links">
-            <a href="index.html" style="--i:1">HOME</a>
+            <a href="index.html" style="--i:0">HOME</a>
+            <a href="product.html" style="--i:1">ARCHIVE</a>
+            <a href="order.html" style="--i:1.5">ORDERS</a>
             <a href="about.html" style="--i:2">ABOUT</a>
-            <a href="#" style="--i:3">CONTACT</a>
+            <a href="cart.html" style="--i:3">CART</a>
+            <a href="contact.html" style="--i:4">CONTACT</a>
         </div>
     </nav>
 
@@ -378,7 +769,8 @@
             </h1>
             <div class="hero-desc">
                 <p class="text-sm">
-                    Complete your collection. Securely providing museum-grade prints and original works to collectors worldwide.
+                    Complete your collection. Securely providing museum-grade prints and original works to collectors
+                    worldwide.
                 </p>
             </div>
         </section>
@@ -404,18 +796,18 @@
 
         <!-- MAIN CHECKOUT -->
         <div class="checkout-wrapper" data-scroll-section>
-            
+
             <!-- FORM -->
             <div class="left-panel">
-                
+
                 <h2 class="h-md font-playfair">01. Destination</h2>
-                
+
                 <div id="saved-addresses-container" class="addr-grid">
                     <!-- Injected via JS -->
                 </div>
-                
+
                 <button id="toggle-new-address" class="btn-add-addr">+ Add New Address</button>
-                
+
                 <form id="new-address-form" class="addr-form">
                     <input type="text" id="addr-name" class="form-input span-2" placeholder="Full Name" required>
                     <input type="text" id="addr-street" class="form-input span-2" placeholder="Street Address" required>
@@ -430,7 +822,9 @@
 
                 <h2 class="h-md font-playfair">02. Value Exchange</h2>
                 <div class="payment-option selected">
-                    <div class="radio-circle"><div></div></div>
+                    <div class="radio-circle">
+                        <div></div>
+                    </div>
                     <div>
                         <div style="font-weight: 600;">Cash On Delivery</div>
                         <div class="text-sm">Pay securely upon receipt.</div>
@@ -448,7 +842,7 @@
             <!-- SUMMARY (STICKY) -->
             <div class="right-panel" data-scroll data-scroll-sticky data-scroll-target=".checkout-wrapper">
                 <div class="sticky-summary">
-                    
+
                     <div class="summary-card" id="summary-card-el">
                         <!-- SVG Animation -->
                         <svg class="summary-svg-container" width="100%" height="100%">
@@ -456,7 +850,7 @@
                         </svg>
 
                         <h3 class="font-playfair" style="font-size:1.5rem; margin-bottom:20px;">Order Summary</h3>
-                        
+
                         <div id="order-items-preview" class="cart-items custom-scroll">
                             <!-- Items go here -->
                         </div>
@@ -475,7 +869,7 @@
                         </div>
 
                         <button id="place-order-btn" class="btn-confirm">COMPLETE ORDER</button>
-                        
+
                         <div style="margin-top: 15px; text-align: center; font-size: 0.8rem; color: #555;">
                             All personal data is encrypted.
                         </div>
@@ -488,21 +882,24 @@
 
         <!-- MANIFESTO -->
         <section class="manifesto-section" data-scroll-section>
-            <p class="text-sm" style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Artist Statement</p>
+            <p class="text-sm" style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Artist
+                Statement</p>
             <div class="manifesto-text">
                 "Art is not what you see, but what you make others see. Thank you for supporting independent creation."
             </div>
             <div class="signature font-playfair">InkByHand</div>
         </section>
 
-        <footer style="padding: 40px 5%; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 0.8rem; color: #666;" data-scroll-section>
+        <footer
+            style="padding: 40px 5%; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 0.8rem; color: #666;"
+            data-scroll-section>
             <div>&copy; 2026 INKBYHAND STUDIOS</div>
             <div style="display:flex; gap: 20px;">
                 <a href="#">Shipping Policy</a>
                 <a href="#">Terms & Conditions</a>
             </div>
         </footer>
-    
+
     </div>
 
     <!-- SCRIPTS -->
@@ -526,7 +923,7 @@
         // Burger Menu (Synced with index.html)
         const burger = document.getElementById('burger');
         const menu = document.getElementById('menu');
-        if(burger && menu) {
+        if (burger && menu) {
             burger.onclick = () => {
                 menu.classList.toggle('active');
                 const lines = burger.querySelectorAll('div');
@@ -538,23 +935,23 @@
         // Address Form Toggle
         const toggleBtn = document.getElementById('toggle-new-address');
         const form = document.getElementById('new-address-form');
-        
-        if(toggleBtn && form){
+
+        if (toggleBtn && form) {
             toggleBtn.addEventListener('click', () => {
                 form.classList.toggle('open');
                 // Update locomotive scroll because height changed
                 setTimeout(() => scroll.update(), 600);
             });
         }
-        
+
         // SVG Animation
         const rect = document.querySelector('.summary-rect');
-        
-        if(rect) {
+
+        if (rect) {
             // Need to set stroke-dasharray/offset so anime.js can animate "drawing" it
             // For simple rect, we can approximate or use anime setDashoffset if supported on rect
             // But anime.js `strokeDashoffset` typically needs path/line/polyline or exact rect length
-            
+
             // Let's create an animation loop
             anime.set(rect, { strokeDashoffset: anime.setDashoffset });
 
@@ -571,4 +968,5 @@
     </script>
     <script src="js/paymant.js"></script> <!-- Core Logic -->
 </body>
+
 </html>

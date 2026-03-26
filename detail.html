@@ -549,46 +549,121 @@
         }
 
         @media (max-width: 900px) {
-            .page-spacer { height: 100px; }
-            .product-hero { padding-top: 20px; gap: 30px; }
-            .details-container { padding-left: 0; height: auto; margin-top: 40px; }
-            .main-image-frame { height: 50vh; }
-            .product-title { font-size: 10vw; margin-top: 10px; }
-            .product-price { font-size: 1.2rem; margin-bottom: 25px; }
-            
+            .page-spacer {
+                height: 100px;
+            }
+
+            .product-hero {
+                padding-top: 20px;
+                gap: 30px;
+            }
+
+            .details-container {
+                padding-left: 0;
+                height: auto;
+                margin-top: 40px;
+            }
+
+            .main-image-frame {
+                height: 50vh;
+            }
+
+            .product-title {
+                font-size: 10vw;
+                margin-top: 10px;
+            }
+
+            .product-price {
+                font-size: 1.2rem;
+                margin-bottom: 25px;
+            }
+
             /* Better mobile touch targets */
-            .add-btn, .native-select, .thumb { cursor: default; } 
-            
+            .add-btn,
+            .native-select,
+            .thumb {
+                cursor: default;
+            }
+
             /* Swiper Mobile */
-            .swiper-slide { width: 85vw !important; height: 400px; }
-            .swiper-main { height: 500px; padding: 30px 0; }
-            
+            .swiper-slide {
+                width: 85vw !important;
+                height: 400px;
+            }
+
+            .swiper-main {
+                height: 500px;
+                padding: 30px 0;
+            }
+
             /* Accordion Mobile */
-            .info-accordion-section { padding: 60px 20px; }
-            .accordion-header h3 { font-size: 1.5rem; }
-            .accordion-inner { padding-left: 0; }
-            .content-line { display: none; } /* Simplify on mobile */
-            
+            .info-accordion-section {
+                padding: 60px 20px;
+            }
+
+            .accordion-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .accordion-inner {
+                padding-left: 0;
+            }
+
+            .content-line {
+                display: none;
+            }
+
+            /* Simplify on mobile */
+
             /* Footer Mobile */
-            footer { padding: 60px 20px; }
-            .footer-cta { font-size: 12vw; }
-            .footer-bottom { flex-direction: column; gap: 20px; margin-top: 40px; }
+            footer {
+                padding: 60px 20px;
+            }
+
+            .footer-cta {
+                font-size: 12vw;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                margin-top: 40px;
+            }
 
             /* Modal */
-            .modal-box { width: 90%; padding: 25px; }
+            .modal-box {
+                width: 90%;
+                padding: 25px;
+            }
 
             /* Hide Custom Cursor on Touch */
-            .cursor, .cursor-follower { display: none !important; }
+            .cursor,
+            .cursor-follower {
+                display: none !important;
+            }
         }
-        
+
         @media (max-width: 480px) {
-           .marquee-line { font-size: 10vw; }
-           .gallery-thumbnails { justify-content: flex-start; overflow-x: auto; padding-bottom: 10px; }
-           .product-title { font-size: 13vw; }
+            .marquee-line {
+                font-size: 10vw;
+            }
+
+            .gallery-thumbnails {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .product-title {
+                font-size: 13vw;
+            }
         }
-        
+
         @media (max-width: 900px) {
-            .nav-overlay .nav-links a { font-size: 12vw; margin: 15px 0; }
+            .nav-overlay .nav-links a {
+                font-size: 12vw;
+                margin: 15px 0;
+            }
         }
     </style>
 </head>
@@ -608,10 +683,12 @@
 
     <nav class="nav-overlay" id="menu">
         <div class="nav-links">
-            <a href="index.html" style="--i:1">WORK</a>
-            <a href="#" style="--i:2">STUDIO</a>
-            <a href="#" style="--i:3">PROCESS</a>
-            <a href="#" style="--i:4">CONTACT</a>
+            <a href="index.html" style="--i:0">HOME</a>
+            <a href="product.html" style="--i:1">ARCHIVE</a>
+            <a href="order.html" style="--i:1.5">ORDERS</a>
+            <a href="about.html" style="--i:2">ABOUT</a>
+            <a href="cart.html" style="--i:3">CART</a>
+            <a href="contact.html" style="--i:4">CONTACT</a>
         </div>
     </nav>
 
@@ -802,12 +879,12 @@
         locoScroll.on("scroll", ScrollTrigger.update);
         ScrollTrigger.scrollerProxy("[data-scroll-container]", {
             scrollTop(value) {
-                return arguments.length 
-                    ? locoScroll.scrollTo(value, 0, 0) 
+                return arguments.length
+                    ? locoScroll.scrollTo(value, 0, 0)
                     : (locoScroll.scroll && locoScroll.scroll.instance && locoScroll.scroll.instance.scroll.y) || window.pageYOffset;
             },
-            getBoundingClientRect() { 
-                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; 
+            getBoundingClientRect() {
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
             },
             pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
         });

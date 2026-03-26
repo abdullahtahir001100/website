@@ -806,10 +806,12 @@
 
     <nav class="nav-overlay" id="menu">
         <div class="nav-links">
-            <a href="#" style="--i:1">WORK</a>
-            <a href="#" style="--i:2">STUDIO</a>
-            <a href="#" style="--i:3">PROCESS</a>
-            <a href="#" style="--i:4">CONTACT</a>
+            <a href="index.html" style="--i:0">HOME</a>
+            <a href="product.html" style="--i:1">ARCHIVE</a>
+            <a href="order.html" style="--i:1.5">ORDERS</a>
+            <a href="about.html" style="--i:2">ABOUT</a>
+            <a href="cart.html" style="--i:3">CART</a>
+            <a href="contact.html" style="--i:4">CONTACT</a>
         </div>
     </nav>
 
@@ -985,10 +987,11 @@
 
                     <div class="footer-col">
                         <h4>SITEMAP</h4>
-                        <a href="#" class="footer-link">Home</a>
-                        <a href="#" class="footer-link">Work</a>
-                        <a href="#" class="footer-link">Studio</a>
-                        <a href="#" class="footer-link">Journal</a>
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="product.html" class="footer-link">Archive</a>
+                        <a href="order.html" class="footer-link">Order Status</a>
+                        <a href="about.html" class="footer-link">About</a>
+                        <a href="contact.html" class="footer-link">Contact</a>
                     </div>
 
                     <div class="footer-col">
@@ -1158,7 +1161,7 @@
                             <div class="slide-overlay">
                                 <h3 class="slide-title">${item.title || 'Untitled'}</h3>
                                 <p class="slide-desc">${item.description || 'No description available.'}</p>
-                                <a href="https://inkbyhand.store/detail.html?id=${item._id}" class="slide-btn">VIEW DETAILS</a>
+                                <a href="detaiindex.html?id=${item._id}" class="slide-btn">VIEW DETAILS</a>
                             </div>
                         </div>
                     `).join('');

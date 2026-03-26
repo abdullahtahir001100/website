@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="text-align: center; padding: 50px;">
                         <h2 class="playfair" style="font-size: 2rem; margin-bottom: 20px; color: #fff;">Your Collection is Empty</h2>
                         <p style="margin-bottom: 30px; color: #888;">The archive awaits your selection.</p>
-                        <a href="l.html" style="background-color: #fff; color: #000; padding: 15px 30px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; display: inline-block; font-weight: 700;">
+                        <a href="index.html" style="background-color: #fff; color: #000; padding: 15px 30px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; display: inline-block; font-weight: 700;">
                             View Works
                         </a>
                     </div>

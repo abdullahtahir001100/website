@@ -271,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${p.image}" alt="${p.title}">
                 <div class="slide-overlay">
                     <h4 class="slide-title">${p.title}</h4>
-                    <p class="slide-desc">$${p.price}</p>
-                    <a href="detail.html?id=${p.id}" class="slide-btn">View Work</a>
+                    <p class="slide-desc">${p.description}</p>
+                    <a href="detaiindex.html?id=${p.id}" class="slide-btn">View Work</a>
                 </div>
             `;
             els.relatedWrapper.appendChild(slide);
