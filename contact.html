@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INKBYHAND | Contact</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,56 +23,141 @@
             --text-main: #fff;
             --text-muted: #888;
             --accent: #d6b598;
-            --border-color: rgba(255,255,255,0.1);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* For Locomotive Scroll */
+            overflow: hidden;
+            /* For Locomotive Scroll */
             /* Removed opacity: 0 for safety - elements will animate mostly from JS */
         }
-        body.loaded { }
 
-        a { text-decoration: none; color: inherit; }
-        
+        body.loaded {}
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
         /* Typography */
-        .playfair { font-family: 'Playfair Display', serif; }
-        .h-xl { font-size: 8vw; line-height: 0.9; text-transform: uppercase; letter-spacing: -2px; }
-        .h-md { font-size: 2rem; margin-bottom: 20px; font-weight: 400; }
-        .text-body { font-size: 1rem; line-height: 1.6; color: var(--text-muted); }
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .h-xl {
+            font-size: 8vw;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .h-md {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .text-body {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
 
         /* Utilities */
-        .split-reveal { overflow: hidden; display: block; }
-        .split-reveal span { display: block; /* Removed CSS transform/transition to rely on GSAP .from() */ }
-        
+        .split-reveal {
+            overflow: hidden;
+            display: block;
+        }
+
+        .split-reveal span {
+            display: block;
+            /* Removed CSS transform/transition to rely on GSAP .from() */
+        }
+
         /* --- HEADER (Consistent) --- */
         .main-header {
-            position: fixed; top: 0; width: 100%; z-index: 2200;
-            background: rgba(5,5,5,0.8); backdrop-filter: blur(10px);
-            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2200;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
         }
-        .header-logo img { width: 100px; filter: invert(1); }
-        
+
+        .header-logo img {
+            width: 100px;
+            filter: invert(1);
+        }
+
         /* Burger & Nav */
-        .burger { cursor: pointer; z-index: 2300; padding: 10px; }
-        .burger div { width: 25px; height: 1px; background: white; margin: 6px; transition: 0.4s; }
-        
+        .burger {
+            cursor: pointer;
+            z-index: 2300;
+            padding: 10px;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 1px;
+            background: white;
+            margin: 6px;
+            transition: 0.4s;
+        }
+
         .nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000;
-            z-index: 2100; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transform: translateY(-100%); transition: 0.8s cubic-bezier(0.7,0,0.3,1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-100%);
+            transition: 0.8s cubic-bezier(0.7, 0, 0.3, 1);
         }
-        .nav-overlay.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .nav-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
         .nav-links a {
-            display: block; font-size: 4vw; color: white; margin: 15px 0;
-            font-family: 'Playfair Display'; opacity: 0; transform: translateY(50px); transition: 0.6s; text-align: center;
+            display: block;
+            font-size: 4vw;
+            color: white;
+            margin: 15px 0;
+            font-family: 'Playfair Display';
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.6s;
+            text-align: center;
         }
-        .nav-overlay.active .nav-links a { opacity: 1; transform: translateY(0); transition-delay: calc(0.1s * var(--i)); }
+
+        .nav-overlay.active .nav-links a {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(0.1s * var(--i));
+        }
 
         /* --- CONTENT --- */
         .contact-container {
@@ -82,115 +170,259 @@
         }
 
         /* Left Side: Info */
-        .contact-info-col { position: relative; }
-        .info-group { margin-bottom: 60px; /* Removed opacity: 0 for safety */ }
-        .info-label { 
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
-            color: #666; margin-bottom: 15px; display: block;
+        .contact-info-col {
+            position: relative;
         }
-        .info-val { font-size: 1.5rem; color: #fff; font-family: 'Playfair Display'; display: block; transition: 0.3s; }
-        .info-val:hover { color: var(--accent); transform: translateX(10px); }
 
-        .social-links a { margin-right: 20px; font-size: 1.2rem; color: #fff; transition: 0.3s; }
-        .social-links a:hover { color: var(--accent); }
+        .info-group {
+            margin-bottom: 60px;
+            /* Removed opacity: 0 for safety */
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #666;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .info-val {
+            font-size: 1.5rem;
+            color: #fff;
+            font-family: 'Playfair Display';
+            display: block;
+            transition: 0.3s;
+        }
+
+        .info-val:hover {
+            color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .social-links a {
+            margin-right: 20px;
+            font-size: 1.2rem;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
 
         /* Right Side: Form */
         .contact-form-col {
             position: relative;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             padding: 40px;
             border: 1px solid var(--border-color);
             /* Removed opacity/transform for safety */
         }
 
-        .form-group { margin-bottom: 40px; position: relative; } /* Removed overflow: hidden to fix label clipping */
-        
+        .form-group {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* Removed overflow: hidden to fix label clipping */
+
         .form-input {
-            width: 100%; background: transparent; border: none;
-            border-bottom: 1px solid #333; color: #fff;
-            padding: 15px 0; font-size: 1.1rem; outline: none;
-            font-family: 'Inter'; transition: 0.3s;
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: #fff;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            outline: none;
+            font-family: 'Inter';
+            transition: 0.3s;
         }
-        .form-input:focus { border-bottom-color: #fff; }
-        
+
+        .form-input:focus {
+            border-bottom-color: #fff;
+        }
+
         .form-label {
-            position: absolute; top: 15px; left: 0; color: #666; pointer-events: none;
-            transition: 0.3s; font-size: 1rem;
+            position: absolute;
+            top: 15px;
+            left: 0;
+            color: #666;
+            pointer-events: none;
+            transition: 0.3s;
+            font-size: 1rem;
         }
-        .form-input:focus ~ .form-label,
-        .form-input:valid ~ .form-label {
-            top: -20px; font-size: 0.8rem; color: var(--accent); /* Adjusted top position */
+
+        .form-input:focus~.form-label,
+        .form-input:valid~.form-label {
+            top: -20px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            /* Adjusted top position */
         }
 
         .submit-btn {
-            background: #fff; color: #000; border: none;
-            padding: 20px 50px; text-transform: uppercase;
-            letter-spacing: 2px; font-weight: 600; cursor: pointer;
-            transition: 0.4s; display: inline-block; width: 100%;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 20px 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.4s;
+            display: inline-block;
+            width: 100%;
         }
-        .submit-btn:hover { background: var(--accent); color: #fff; }
+
+        .submit-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
 
         /* Big Background Text */
         .bg-text {
-            position: absolute; top: 150px; left: -2vw;
-            font-size: 20vw; font-weight: 900; color: rgba(255,255,255,0.03);
-            pointer-events: none; white-space: nowrap; z-index: -1;
+            position: absolute;
+            top: 150px;
+            left: -2vw;
+            font-size: 20vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: -1;
             font-family: 'Inter';
         }
 
         /* Cursor */
-        .cursor-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
 
         /* FOOTER */
         footer {
-            padding: 50px 5%; border-top: 1px solid var(--border-color);
-            color: #666; font-size: 0.9rem; text-align: center;
+            padding: 50px 5%;
+            border-top: 1px solid var(--border-color);
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
         }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
-            .contact-container { 
-                grid-template-columns: 1fr; 
-                padding-top: 140px; 
-                gap: 50px; 
+            .contact-container {
+                grid-template-columns: 1fr;
+                padding-top: 140px;
+                gap: 50px;
             }
-            .h-xl { font-size: 15vw; line-height: 0.9; } /* Larger title on mobile */
-            .bg-text { font-size: 25vw; top: 100px; opacity: 0.05; }
-            
+
+            .h-xl {
+                font-size: 15vw;
+                line-height: 0.9;
+            }
+
+            /* Larger title on mobile */
+            .bg-text {
+                font-size: 25vw;
+                top: 100px;
+                opacity: 0.05;
+            }
+
             /* Form Area */
-            .contact-form-col { padding: 25px 20px; border: none; background: transparent; padding: 0; }
-            .form-input { font-size: 16px; } /* Prevents iOS zoom */
-            
+            .contact-form-col {
+                padding: 25px 20px;
+                border: none;
+                background: transparent;
+                padding: 0;
+            }
+
+            .form-input {
+                font-size: 16px;
+            }
+
+            /* Prevents iOS zoom */
+
             /* Name Row Stacking */
-            .name-row { grid-template-columns: 1fr !important; gap: 0 !important; }
-            .name-row .form-group { margin-bottom: 30px !important; }
+            .name-row {
+                grid-template-columns: 1fr !important;
+                gap: 0 !important;
+            }
+
+            .name-row .form-group {
+                margin-bottom: 30px !important;
+            }
 
             /* Info Section */
-            .info-group { margin-bottom: 40px; }
-            .info-val { font-size: 1.2rem; }
+            .info-group {
+                margin-bottom: 40px;
+            }
 
-            /* Mobile Locomotive Fixes */
-            html, body { height: 100% !important; overflow: hidden !important; }
-            #scroll-container { min-height: 100vh; padding-bottom: 0px !important; }
-            .cursor-dot { display: none; }
-            .nav-overlay .nav-links a { font-size: 2rem; margin: 10px 0; }
+            .info-val {
+                font-size: 1.2rem;
+            }
+
+            /* Mobile Locomotive Fixes - ENABLE NATIVE SCROLL */
+            html,
+            body {
+                height: auto !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+            }
+
+            #scroll-container {
+                min-height: 100vh;
+                padding-bottom: 0px !important;
+                overflow: visible !important;
+            }
+
+            .cursor-dot {
+                display: none;
+            }
+
+            .nav-overlay .nav-links a {
+                font-size: 2rem;
+                margin: 10px 0;
+            }
         }
 
         @media (max-width: 450px) {
-            .contact-container { padding-top: 120px; }
-            .h-xl { font-size: 18vw; }
-            .submit-btn { width: 100%; text-align: center; padding: 18px; }
-            .info-group { margin-bottom: 30px; }
-        }
+            .contact-container {
+                padding-top: 120px;
+            }
 
+            .h-xl {
+                font-size: 18vw;
+            }
+
+            .submit-btn {
+                width: 100%;
+                text-align: center;
+                padding: 18px;
+            }
+
+            .info-group {
+                margin-bottom: 30px;
+            }
+        }
     </style>
 </head>
+
 <body class="is-loading">
-    
+
     <div class="cursor-dot"></div>
 
     <header class="main-header">
-        <a href="index.html" class="header-logo"><img src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
+        <a href="index.html" class="header-logo"><img
+                src="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png" alt="Logo"></a>
         <div class="burger" id="burger">
             <div class="line1"></div>
             <div class="line2"></div>
@@ -208,11 +440,11 @@
     </nav>
 
     <div id="scroll-container" data-scroll-container style="overflow: hidden;">
-        
+
         <div class="bg-text" data-scroll data-scroll-speed="-2" data-scroll-direction="horizontal">REACH OUT</div>
 
         <section class="contact-container" data-scroll-section>
-            
+
             <!-- Left: Info -->
             <div class="contact-info-col">
                 <h1 class="h-xl playfair" style="margin-bottom: 60px;">
@@ -243,7 +475,7 @@
             <!-- Right: Form -->
             <div class="contact-form-col">
                 <form id="contactForm" onsubmit="event.preventDefault();">
-                    
+
                     <div class="name-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
                             <input type="text" class="form-input" name="firstName" required>
@@ -254,7 +486,7 @@
                             <label class="form-label">Last Name</label>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <input type="email" class="form-input" name="email" required>
                         <label class="form-label">Email Address</label>
@@ -264,9 +496,12 @@
                         <input type="tel" class="form-input" name="contactDetails" required>
                         <label class="form-label">Contact Details (Phone)</label>
                     </div>
-                    
+
                     <div class="form-group">
-                        <textarea class="form-input" id="message" name="message" rows="1" style="resize:none; height:auto;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" required></textarea>
+                        <textarea class="form-input" id="message" name="message" rows="1"
+                            style="resize:none; height:auto;"
+                            oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                            required></textarea>
                         <label class="form-label">Your Message</label>
                     </div>
 
@@ -310,18 +545,18 @@
                 getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
                 pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
             });
-        } catch(e) { console.error("Locomotive/GSAP Error:", e); }
+        } catch (e) { console.error("Locomotive/GSAP Error:", e); }
 
         // 2. Animations using .from() for safety
         let animationsInitialized = false;
         function initAnimations() {
-            if(animationsInitialized) return;
+            if (animationsInitialized) return;
             animationsInitialized = true;
-            
+
             document.body.classList.add('loaded'); // Just for backup
-            
+
             // Force loco update
-            setTimeout(() => { if(scroller) scroller.update(); ScrollTrigger.refresh(); }, 500);
+            setTimeout(() => { if (scroller) scroller.update(); ScrollTrigger.refresh(); }, 500);
 
             // ANIMATION CHANGE: Use .from() so default CSS state is visible
             // Reveal Title
@@ -346,11 +581,11 @@
         } else {
             window.addEventListener('load', initAnimations);
             // Fallback safety
-            setTimeout(initAnimations, 1000); 
+            setTimeout(initAnimations, 1000);
         }
 
         // 3. Form Logic (REAL)
-        const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api/contact'; 
+        const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api/contact';
 
         const contactForm = document.getElementById('contactForm');
         const formStatus = document.getElementById('form-status');
@@ -363,7 +598,7 @@
         wordCountMessage.id = 'word-count-message';
         wordCountMessage.style.fontSize = '0.75rem';
         wordCountMessage.style.marginTop = '8px';
-        wordCountMessage.style.color = '#666'; 
+        wordCountMessage.style.color = '#666';
         textarea.parentElement.appendChild(wordCountMessage); // Insert below textarea
 
         function updateWordCount() {
@@ -392,12 +627,12 @@
         const displayMessage = (message, type) => {
             formStatus.textContent = message;
             formStatus.style.display = 'block';
-            formStatus.style.color = type === 'success' ? '#4caf50' : '#ff4444'; 
+            formStatus.style.color = type === 'success' ? '#4caf50' : '#ff4444';
             setTimeout(() => { formStatus.style.display = 'none'; }, 5000);
         };
 
         contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); 
+            e.preventDefault();
             const originalBtnText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
@@ -437,7 +672,7 @@
         burger.onclick = () => {
             menu.classList.toggle('active');
             const lines = burger.querySelectorAll('div');
-            if(menu.classList.contains('active')){
+            if (menu.classList.contains('active')) {
                 gsap.to(lines[0], { y: 4, rotation: 45, duration: 0.3 });
                 gsap.to(lines[1], { y: -3, rotation: -45, duration: 0.3 });
                 // Stagger links
@@ -457,4 +692,5 @@
 
     </script>
 </body>
+
 </html>

@@ -1,1042 +1,397 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
+    <script>if(!localStorage.getItem('authToken')) window.location.replace('login.html');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API-Simulated Analytics Dashboard</title>
+    <title>Analytics | INKBYHAND Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    
-    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#050505',
+                        card: '#111111',
+                        accent: '#ff3c00',
+                        text: '#ffffff',
+                        muted: '#888888',
+                        border: 'rgba(255, 255, 255, 0.08)'
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+     <script>
+        if (!localStorage.getItem('authToken')) {
+            window.location.replace('login.html');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
     <style>
-        /* --- CSS Variables and Global Styles --- */
-        :root {
-            --color-primary: #3b82f6; /* Blue */
-            --color-secondary: #22c55e; /* Green */
-            --color-danger: #ef4444; /* Red */
-            --color-warning: #f59e0b; /* Amber/Orange */
-            --color-background: #f4f7f9;
-            --color-card-bg: #ffffff;
-            --color-text-dark: #1f2937;
-            --color-text-light: #6b7280;
-            --color-table-header: #f9fafb;
-            --color-chart-gray: #d1d5db; /* Gray-300 */
-            --border-radius: 0.5rem;
+        /* Sharp Production Aesthetic: NO RADIUS, NO SHADOWS */
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
         }
 
-        /* Applying global font and background */
-        body {
-            font-family: light;
-            background-color: var(--color-background);
-            color: var(--color-text-dark);
-        }
-
-        /* Utility classes that override standard Tailwind (for theme consistency) */
-        .card {
-            background-color: var(--color-card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-        }
-
-        .card-title {
-            color: var(--color-text-dark);
-            font-weight: 700;
-        }
-
-        /* Growth Indicators */
-        .growth-positive { color: var(--color-secondary); font-weight: 600; }
-        .growth-negative { color: var(--color-danger); font-weight: 600; }
-
-        /* Progress Bars */
-        .progress-bar {
-            height: 6px;
-            border-radius: 9999px; /* Full rounded */
-            background-color: var(--color-chart-gray);
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 9999px;
-            transition: width 0.5s ease;
-        }
-        .progress-blue { background-color: var(--color-primary); }
-        .progress-green { background-color: var(--color-secondary); }
-        .progress-red { background-color: var(--color-danger); }
-        .progress-orange { background-color: var(--color-warning); }
-
-        /* Specific List/Table Styles */
-        .traffic-item {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .page-list-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 0.5rem;
-            padding: 0.5rem 0;
-            font-size: 0.875rem;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .page-list-item:first-child { font-weight: 700; color: var(--color-text-light); border-bottom: 2px solid #e5e7eb; }
-        .page-list-item:last-child { border-bottom: none; }
-        .page-list-item-url { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--color-primary); }
-
-        /* Table Styling */
-        .data-table th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--color-text-light);
-            background-color: var(--color-table-header);
-            border-bottom: 2px solid #e5e7eb;
-        }
-        .data-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.875rem;
-        }
-
-        /* Layout for view switching */
-        .hidden-view { display: none !important; }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            .stat-card-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-        }
+        body { background-color: #050505; color: #ffffff; cursor: default; overflow-x: hidden; }
         
-        /* Loading overlay for better UX */
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--color-primary);
-            z-index: 1000;
+        @media (min-width: 1024px) {
+            body { cursor: none; }
         }
-        .spinner {
-            border: 4px solid var(--color-primary);
-            border-top: 4px solid transparent;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-right: 1rem;
+
+        /* Custom Scrollbar - Sharp */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff3c00; }
+
+        /* Cursor - Only for Desktop */
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: white; pointer-events: none; z-index: 9999; mix-blend-mode: difference; display: none; }
+        .cursor-circle { position: fixed; top: 0; left: 0; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.3); pointer-events: none; z-index: 9998; transition: transform 0.1s; display: none; }
+        
+        @media (min-width: 1024px) {
+            .cursor-dot, .cursor-circle { display: block; }
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .glass-card {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.4s ease;
         }
-        header{
-            position: relative;
-            background: transparent;
-            box-shadow: none;
+        .glass-card:hover { border-color: #ff3c00; }
+
+        .nav-link { position: relative; opacity: 0.6; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { opacity: 1; color: #ff3c00; }
+
+        /* Mobile Menu Overlay */
+        #mobile-menu {
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        #mobile-menu.active { transform: translateY(0); }
+        @media (max-width: 550px) {
+            .font-display{
+                font-size: 1.2rem !important;
+            }
         }
     </style>
 </head>
-<body class="p-4 sm:p-8">
-<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            
-            <div class="flex-shrink-0">
-                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
-                    <span class="text-blue-600">Pro</span>Dashboard
-                </a>
-            </div>
+<body class="antialiased font-sans">
 
-            <nav class="hidden md:block">
-                <div class="flex items-baseline space-x-6">
-                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
-                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
-                    <a href="dashboard_user.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
-                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
-                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
-                    
-                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
-                        Profile
-                    </a>
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <div id="mobile-menu" class="fixed inset-0 bg-black z-[60] flex flex-col justify-center items-center p-8 lg:hidden">
+        <button id="close-menu" class="absolute top-8 right-8 text-white uppercase text-xs font-bold tracking-widest">Close [X]</button>
+        <nav class="flex flex-col space-y-8 text-center">
+            <a href="#" class="text-3xl font-display font-black uppercase tracking-tighter text-accent">Analytics</a>
+            <a href="#" class="text-3xl font-display font-black uppercase tracking-tighter">Inventory</a>
+            <a href="#" class="text-3xl font-display font-black uppercase tracking-tighter">Operations</a>
+            <a href="#" class="text-3xl font-display font-black uppercase tracking-tighter">Security</a>
+        </nav>
+    </div>
+
+    <header class="fixed w-full top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 flex items-center justify-between h-20">
+            <div class="flex items-center gap-8">
+                <div class="font-display text-xl md:text-2xl font-black tracking-tighter">
+                    INK<span class="text-accent">DASH</span>
                 </div>
-            </nav>
-
-            <div class="md:hidden">
-                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </label>
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="overview.html" class="nav-link active text-sm font-bold uppercase tracking-widest">Analytics</a>
+                    <a href="dashboard.html" class="nav-link text-sm font-bold uppercase tracking-widest">Inventory</a>
+                    <a href="orer.html" class="nav-link text-sm font-bold uppercase tracking-widest">Orders</a>
+                    <a href="contactdash.html" class="nav-link text-sm font-bold uppercase tracking-widest">Messages</a>
+                </nav>
             </div>
-        </div>
-    </div>
-
-    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
-
-    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
-            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
-            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
-            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
-            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
-        </div>
-    </div>
-</header>
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        Data API calls load ho rahe hain... (Loading data from 4 APIs...)
-    </div>
-
-    <header class="mb-6 flex justify-between items-center">
-        <h1 class="dashboard-title text-2xl font-extrabold text-dark">Real-Time Analytics Dashboard</h1>
-        <div class="text-sm text-light hidden sm:block">
-            API Status: <span id="apiStatusDisplay" class="font-semibold text-secondary">Ready</span>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="hidden sm:flex flex-col items-end">
+                    <span class="text-[10px] text-muted font-mono leading-none">SERVER_STATUS</span>
+                    <span class="text-xs text-green-500 font-mono tracking-tighter uppercase">Operational</span>
+                </div>
+                <button id="open-menu" class="lg:hidden w-10 h-10 border border-white/10 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-width="1.5"/></svg>
+                </button>
+                <div class="hidden sm:flex w-10 h-10 bg-white/5 border border-white/10 items-center justify-center cursor-pointer hover:bg-accent transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="1.5"/></svg>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div id="mainDashboardView">
-        <div class="grid dashboard-grid lg:grid-cols-4 gap-6">
-
-            <div class="lg:col-span-3">
-                
-                <div class="grid stat-card-grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                    
-                    <div class="card p-5">
-                        <div class="text-sm text-light mb-1">Website Traffic (API 1)</div>
-                        <div id="websiteTrafficValue" class="text-2xl font-bold">--</div>
-                        <div class="mt-2 text-xs">
-                            <span id="trafficGrowth" class="growth-positive">--%</span> pichle period se (vs. previous period)
-                        </div>
-                    </div>
-
-                    <div class="card p-5">
-                        <div class="text-sm text-light mb-1">Conversion Rate (API 1)</div>
-                        <div id="conversionRateValue" class="text-2xl font-bold">--</div>
-                        <div class="mt-2 text-xs">
-                            <span id="conversionGrowth" class="growth-negative">--%</span> pichle period se (vs. previous period)
-                        </div>
-                    </div>
-
-                    <div class="card p-5">
-                        <div class="text-sm text-light mb-1">Active Users (API 1)</div>
-                        <div id="activeUsersValue" class="text-2xl font-bold">--</div>
-                        <div class="progress-bar mt-3">
-                            <div id="usersProgress" class="progress-fill progress-blue" style="width: 0%;"></div>
-                        </div>
-                        <div class="mt-2 text-xs">
-                            <span id="usersGrowth" class="growth-positive">--%</span> lakshya prapt (target achieved)
-                        </div>
-                    </div>
-
-                    <div class="card p-5">
-                        <div class="text-sm text-light mb-1">Avg Session Duration (API 1)</div>
-                        <div id="sessionDurationValue" class="text-2xl font-bold">--</div>
-                        <div class="progress-bar mt-3">
-                            <div id="sessionProgress" class="progress-fill progress-secondary" style="width: 0%;"></div>
-                        </div>
-                        <div class="mt-2 text-xs">
-                            <span id="sessionGrowth" class="growth-negative">--%</span> badlav (change)
-                        </div>
-                    </div>
+    <main class="pt-28 md:pt-32 px-4 md:px-8 max-w-[1600px] mx-auto pb-20">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-6">
+            <div>
+                <h1 class="font-display text-4xl md:text-6xl font-black tracking-tighter mb-2 gsap-reveal">DATA_STREAM</h1>
+                <div class="flex items-center gap-4">
+                    <p class="text-muted text-[10px] font-mono uppercase tracking-[0.2em] gsap-reveal">Session Active: Admin_01</p>
+                    <span class="h-[1px] w-8 md:w-12 bg-white/10"></span>
+                    <p class="text-accent text-[10px] font-mono uppercase tracking-[0.2em] gsap-reveal" id="live-clock">00:00:00</p>
                 </div>
-
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Earning Reports (Monthly Sales)</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-center">
-                        <div class="p-3 rounded-lg bg-blue-50/70">
-                            <div class="text-xs text-light">Total Earnings</div>
-                            <div id="earningsValue" class="font-bold text-sm text-primary">--</div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-green-50/70">
-                            <div class="text-xs text-light">Net Profit</div>
-                            <div id="profitValue" class="font-bold text-sm text-secondary">--</div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-yellow-50/70">
-                            <div class="text-xs text-light">Tax</div>
-                            <div id="taxValue" class="font-bold text-sm text-warning">--</div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-red-50/70">
-                            <div class="text-xs text-light">Expenses</div>
-                            <div id="expenseValue" class="font-bold text-sm text-danger">--</div>
-                        </div>
-                    </div>
-                    <div class="h-64">
-                        <canvas id="earningReportsChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Top Campaign Sources</h2>
-                    <div class="overflow-x-auto">
-                        <table class="data-table w-full border-collapse">
-                            <thead>
-                                <tr>
-                                    <th class="rounded-tl-lg">Source (Srot)</th>
-                                    <th>Medium (Madhyam)</th>
-                                    <th>Campaign (Abhiyan)</th>
-                                    <th class="text-right">Clicks (Click)</th>
-                                    <th class="text-right rounded-tr-lg">Conv. Rate (Badlav Dar)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="campaignTableBody">
-                                <tr><td colspan="5" class="text-center text-light py-4">Campaign data load ho raha hai...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card p-5">
-                        <h2 class="card-title text-lg mb-4">Top Performing Pages</h2>
-                        <div id="topPagesList" class="flex flex-col gap-2">
-                            <div class="page-list-item">
-                                <div class="font-bold">Page URL</div>
-                                <div class="text-right">Clicks</div>
-                                <div class="text-right">Avg. Pos</div>
-                            </div>
-                            <div class="text-center text-light py-4">Pages load ho rahe hain...</div>
-                        </div>
-                    </div>
-
-                    <div class="card p-5">
-                        <h2 class="card-title text-lg mb-4">Top Leads Sources</h2>
-                        <div class="h-64">
-                            <canvas id="topLeadsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-            
-            <div class="lg:col-span-1">
-                
-                <div class="grid grid-cols-2 lg:grid-cols-1 gap-6 mb-6">
-                    <div class="card p-4">
-                        <div class="text-xs text-light">Avg. Daily Sales</div>
-                        <div id="avgDailySalesValue" class="text-xl font-bold text-primary mt-1">--</div>
-                    </div>
-                    <div class="card p-4">
-                        <div class="text-xs text-light">Total Page Visits</div>
-                        <div id="totalPageVisitValue" class="text-xl font-bold text-secondary mt-1">--</div>
-                    </div>
-                </div>
-
-                <div class="card p-5 mb-6">
-                    <h3 class="card-title text-sm mb-3">Operational Health (NEW)</h3>
-                    
-                    <div class="flex justify-between items-center mb-3 border-b pb-2 border-gray-100">
-                        <span class="text-xs text-light">Server Uptime</span>
-                        <span id="serverUptimeValue" class="font-bold text-sm text-secondary">--</span>
-                    </div>
-
-                    <div class="flex justify-between items-center mb-3 border-b pb-2 border-gray-100">
-                        <span class="text-xs text-light">API Latency</span>
-                        <span id="apiLatencyValue" class="font-bold text-sm text-primary">--</span>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-light">NPS Score</span>
-                        <span id="npsScoreValue" class="font-bold text-sm text-warning">--</span>
-                    </div>
-                </div>
-                
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Top Sales by Country</h2>
-                    <div id="salesCountriesList">
-                        <div class="text-center text-light py-4">Sales data load ho raha hai...</div>
-                    </div>
-                    <button id="viewAllSalesButton" class="mt-4 w-full bg-primary hover:bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors">
-                        Sabhi Deshon ki Sales Dekhein (View All Countries)
-                    </button>
-                </div>
-
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Traffic Sources</h2>
-                    <div id="trafficSourceList">
-                        <div class="text-center text-light py-4">Traffic data load ho raha hai...</div>
-                    </div>
-                </div>
-
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Visits by Device</h2>
-                    <div class="flex flex-col gap-4">
-                        <div class="device-item">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-semibold">Mobile</span>
-                                <span id="mobilePercent" class="text-primary">--%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div id="mobileProgress" class="progress-fill progress-blue" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="device-item">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-semibold">Web (Desktop)</span>
-                                <span id="webPercent" class="text-secondary">--%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div id="webProgress" class="progress-fill progress-green" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="device-item">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-semibold">Tablet</span>
-                                <span id="tabletPercent" class="text-warning">--%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div id="tabletProgress" class="progress-fill progress-orange" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-5 mb-6">
-                    <h2 class="card-title text-lg mb-4">Top Session Types</h2>
-                    <div class="h-64">
-                        <canvas id="topSessionChart"></canvas>
-                    </div>
-                </div>
-
+            <div class="flex w-full md:w-auto gap-1">
+                <button class="flex-1 md:flex-none px-4 py-2 border border-white/10 text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all">Today</button>
+                <button class="flex-1 md:flex-none px-4 py-2 border border-white/10 text-[9px] md:text-[10px] font-bold tracking-widest uppercase bg-white text-black">7 Days</button>
+                <button class="flex-1 md:flex-none px-4 py-2 border border-white/10 text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all">30 Days</button>
             </div>
-
         </div>
-    </div> <div id="detailedSalesView" class="hidden-view">
-        <div class="card p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-dark">Detailed Sales by Country</h2>
-                <button id="backToDashboardButton" class="text-sm text-primary hover:text-blue-700 font-semibold p-2 rounded-lg transition-colors border border-primary">
-                    ← Dashboard par wapas jaayen (Back to Dashboard)
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 mb-8">
+            <div class="glass-card p-6 md:p-8 gsap-card">
+                <p class="text-[9px] md:text-[10px] text-muted font-bold uppercase tracking-widest mb-4 md:mb-6">Gross Volume</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-3xl md:text-4xl font-display font-bold tabular-nums" id="stat-revenue">$0</h3>
+                    <span class="text-green-500 text-[10px] font-mono mb-1">+14.2%</span>
+                </div>
+                <div class="mt-6 h-1 w-full bg-white/5 relative overflow-hidden">
+                    <div class="absolute h-full bg-accent w-3/4"></div>
+                </div>
+            </div>
+            <div class="glass-card p-6 md:p-8 gsap-card">
+                <p class="text-[9px] md:text-[10px] text-muted font-bold uppercase tracking-widest mb-4 md:mb-6">Net Customers</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-3xl md:text-4xl font-display font-bold tabular-nums" id="stat-users">0</h3>
+                    <span class="text-green-500 text-[10px] font-mono mb-1">+2.1%</span>
+                </div>
+                <div class="mt-6 h-1 w-full bg-white/5 relative overflow-hidden">
+                    <div class="absolute h-full bg-white w-1/2"></div>
+                </div>
+            </div>
+            <div class="glass-card p-6 md:p-8 gsap-card">
+                <p class="text-[9px] md:text-[10px] text-muted font-bold uppercase tracking-widest mb-4 md:mb-6">Avg Session</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-3xl md:text-4xl font-display font-bold tabular-nums">4m 32s</h3>
+                    <span class="text-red-500 text-[10px] font-mono mb-1">-0.4%</span>
+                </div>
+                <div class="mt-6 h-1 w-full bg-white/5 relative overflow-hidden">
+                    <div class="absolute h-full bg-white w-1/3"></div>
+                </div>
+            </div>
+            <div class="glass-card p-6 md:p-8 gsap-card">
+                <p class="text-[9px] md:text-[10px] text-muted font-bold uppercase tracking-widest mb-4 md:mb-6">System Load</p>
+                <div class="flex items-end justify-between">
+                    <h3 class="text-3xl md:text-4xl font-display font-bold tabular-nums">24%</h3>
+                    <span class="text-muted text-[10px] font-mono mb-1">Optimal</span>
+                </div>
+                <div class="mt-6 h-1 w-full bg-white/5 relative overflow-hidden">
+                    <div class="absolute h-full bg-green-500 w-[24%]"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 glass-card p-6 md:p-8 gsap-reveal">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+                    <h2 class="font-display text-lg md:text-xl font-bold tracking-tight uppercase">Revenue Forecast</h2>
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-accent"></span>
+                            <span class="text-[9px] text-muted uppercase font-bold tracking-widest">Actual</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-white/20"></span>
+                            <span class="text-[9px] text-muted uppercase font-bold tracking-widest">Projected</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-[300px] md:h-[400px]">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 md:p-8 flex flex-col gsap-reveal h-[400px] lg:h-auto">
+                <h2 class="font-display text-lg md:text-xl font-bold tracking-tight uppercase mb-8">System Activity</h2>
+                <div class="space-y-6 flex-1 overflow-y-auto pr-2" id="activity-log">
+                </div>
+                <button class="w-full mt-8 py-4 border border-white/10 text-[10px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all">
+                    View Complete Audit
                 </button>
             </div>
-            <div class="overflow-x-auto">
-                <table class="data-table w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th class="rounded-tl-lg">Country (Desh)</th>
-                            <th>Total Sales (Kul Bikri)</th>
-                            <th class="text-center">Total Orders (Kul Order)</th>
-                            <th class="text-center rounded-tr-lg">Avg. Order Value (Average Order Value)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="detailedSalesTableBody">
-                        <tr><td colspan="4" class="text-center text-light py-4">Detailed sales data load ho raha hai...</td></tr>
-                    </tbody>
-                </table>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="glass-card p-6 md:p-8 gsap-reveal">
+                <h3 class="text-xs font-bold text-muted uppercase tracking-widest mb-6">Traffic Origin</h3>
+                <div class="h-48 relative">
+                    <canvas id="originChart"></canvas>
+                </div>
+            </div>
+            <div class="md:col-span-2 glass-card p-6 md:p-8 gsap-reveal">
+                <h3 class="text-xs font-bold text-muted uppercase tracking-widest mb-6">High Value Acquisitions</h3>
+                <div class="overflow-x-auto -mx-2">
+                    <table class="w-full text-left text-sm font-mono min-w-[500px]">
+                        <thead>
+                            <tr class="border-b border-white/5 text-muted uppercase text-[9px] md:text-[10px] tracking-widest">
+                                <th class="pb-4 px-2 font-normal">Entity</th>
+                                <th class="pb-4 px-2 font-normal">Source</th>
+                                <th class="pb-4 px-2 font-normal">Value</th>
+                                <th class="pb-4 px-2 font-normal text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        const BASE_URL = 'https://backend-web-1-yb6q.vercel.app';
-        const API_PREFIX = BASE_URL + '/api/v1'; 
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
 
-        // --- API REQUEST FUNCTION (Real API Calls) ---
+        // Mobile Menu Toggles
+        const openBtn = document.getElementById('open-menu');
+        const closeBtn = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        async function realApiRequest(endpoint) {
-            try {
-                // Endpoint must start with /
-                const fullPath = endpoint.startsWith('/') ? `${BASE_URL}${endpoint}` : `${API_PREFIX}/${endpoint}`;
-                const response = await fetch(fullPath);
-                
-                if (!response.ok) {
-                    const errorDetails = await response.text();
-                    console.error(`API error: ${response.status} for endpoint ${fullPath}`, errorDetails);
-                    throw new Error(`API error: ${response.status} for endpoint ${fullPath}`);
-                }
-                return await response.json();
-            } catch (error) {
-                console.error(`Fetch error for ${endpoint}:`, error);
-                throw error; 
+        openBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+        closeBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+        }, 1000);
+
+        // Desktop Cursor
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+        window.addEventListener('mousemove', (e) => {
+            if (window.innerWidth >= 1024) {
+                gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
+                gsap.to(circle, { x: e.clientX - 17, y: e.clientY - 17, duration: 0.2 });
             }
-        }
-        
-        // --- FETCH FUNCTIONS FOR INDIVIDUAL ENDPOINTS ---
-        // All endpoints are correctly mapped to /api/v1/... in dashboardRoutes.js
+        });
 
-        async function fetchStats() { return await realApiRequest('/api/v1/stats'); }
-        async function fetchEarningsReport() { return await realApiRequest('/api/v1/earnings-report'); }
-        async function fetchDeviceVisits() { return await realApiRequest('/api/v1/device-visits'); }
-        async function fetchTrafficSourceData() { return await realApiRequest('/api/v1/traffic-source'); }
-        async function fetchSalesCountries() { return await realApiRequest('/api/v1/sales-countries'); }
-        async function fetchCampaignSource() { return await realApiRequest('/api/v1/campaign-source'); }
-        async function fetchTopPages() { return await realApiRequest('/api/v1/top-pages'); }
-        async function fetchTopLeads() { return await realApiRequest('/api/v1/top-leads'); }
-        async function fetchTopSession() { return await realApiRequest('/api/v1/top-session'); }
+        // Activity and Table logic (Same as original)
+        const activities = [
+            { time: '14:20', msg: 'New Order #8829 — $420' },
+            { time: '13:45', msg: 'Stock Alert: Viking Blade' },
+            { time: '12:10', msg: 'User Signup: @johndoe_art' },
+            { time: '11:05', msg: 'Database Optimization' },
+            { time: '09:30', msg: 'Payment Processed: Stripe' }
+        ];
 
-
-        // --- TRAFFIC RECORDING LOGIC ---
-
-        function getDeviceInfo() {
-            const userAgent = navigator.userAgent;
-            let device = 'Web'; 
-            let browser = 'Unknown';
-
-            if (/(Mobi|Android|iPhone)/i.test(userAgent) && !/(Tablet|iPad)/i.test(userAgent)) {
-                device = 'Mobile';
-            } else if (/(Tablet|iPad)/i.test(userAgent)) {
-                device = 'Tablet';
-            }
-            
-            // Simplified browser detection
-            if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
-                browser = 'Chrome';
-            } else if (userAgent.includes('Firefox')) {
-                browser = 'Firefox';
-            } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
-                browser = 'Safari';
-            } else if (userAgent.includes('Edg')) {
-                browser = 'Edge';
-            } else if (userAgent.includes('OPR') || userAgent.includes('Opera')) {
-                browser = 'Opera';
-            }
-            
-            return { device, browser };
-        }
-
-        function getTrafficSource() {
-            const referrer = document.referrer;
-            if (!referrer) return 'direct';
-
-            try {
-                const currentHost = window.location.host;
-                const referrerHost = new URL(referrer).host;
-
-                if (referrerHost === currentHost) return 'direct';
-                
-                if (referrerHost.includes('google') || referrerHost.includes('bing')) {
-                    return 'Search Engine';
-                }
-                if (referrerHost.includes('facebook') || referrerHost.includes('twitter') || referrerHost.includes('linkedin')) {
-                    return 'Social Media';
-                }
-
-                return referrerHost; 
-            } catch (e) {
-                return 'direct'; 
-            }
-        }
-
-        /**
-         * The crucial function that sends traffic data to the backend.
-         * The URL is FIXED here to '/api/v1/traffic-source' to match the corrected backend route.
-         */
-        function recordUserTraffic() {
-            const { device, browser } = getDeviceInfo();
-            const source = getTrafficSource();
-            const pageUrl = window.location.pathname;
-
-            const trafficData = {
-                device,
-                browser,
-                source,
-                pageUrl
-            };
-
-            fetch(`${API_PREFIX}/traffic-source`, { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(trafficData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    // This logs the 404 error if the backend path is still wrong.
-                    console.warn(`Failed to record traffic: Status ${response.status}. Check Network tab for 404 on /api/v1/traffic-source.`);
-                } else {
-                    console.log('Traffic recorded successfully (Status 201).');
-                }
-            })
-            .catch(error => {
-                console.error('Network error during traffic recording (Server down?):', error);
-            });
-        }
-
-        // --- GLOBAL STATE & UTILITIES ---
-
-        const MAIN_VIEW_ID = 'mainDashboardView';
-        const DETAILED_SALES_VIEW_ID = 'detailedSalesView';
-        let chartInstances = {};
-        let cachedDetailedSalesData = [];
-
-        function formatCurrency(value) {
-            if (value === undefined || value === null) return '$0.00';
-            const roundedValue = Math.round(parseFloat(value) * 100) / 100; 
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(roundedValue);
-        }
-
-        function formatNumber(value) {
-            if (value === undefined || value === null) return '0';
-            const numValue = typeof value === 'string' ? parseFloat(value.replace(/[^\d.-]/g, '')) : value; 
-            if (isNaN(numValue)) return '0';
-            
-            const absValue = Math.abs(numValue);
-            if (absValue >= 1000000) {
-                return (numValue / 1000000).toFixed(1) + 'M';
-            }
-            if (absValue >= 1000) {
-                return new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(numValue);
-            }
-            return new Intl.NumberFormat('en-US').format(Math.round(numValue));
-        }
-        
-        // --- DATA PROCESSING AND RENDERING FUNCTIONS ---
-
-        function processOrderDataForChart(data) {
-            const summary = data.summary || {};
-            // Parse strings back to numbers for safety before re-formatting
-            const totalEarnings = parseFloat(summary.earnings?.replace('$', '') || 0);
-            const totalProfit = parseFloat(summary.profit?.replace('$', '') || 0);
-            const totalTax = parseFloat(summary.tax?.replace('$', '') || 0);
-            const totalExpense = parseFloat(summary.expense?.replace('$', '') || 0);
-
-            return { 
-                labels: data.labels, 
-                dataA: data.dataA, 
-                dataB: data.dataB, 
-                summary: {
-                    earnings: formatCurrency(totalEarnings),
-                    profit: formatCurrency(totalProfit),
-                    tax: formatCurrency(totalTax),
-                    expense: formatCurrency(totalExpense)
-                } 
-            };
-        }
-
-
-        function loadStatCards(data) {
-            if (!data) return;
-            
-            document.getElementById('websiteTrafficValue').innerText = formatNumber(data.websiteTraffic);
-            document.getElementById('trafficGrowth').innerText = data.trafficGrowth;
-            document.getElementById('trafficGrowth').className = parseFloat(data.trafficGrowth) >= 0 ? 'growth-positive' : 'growth-negative';
-
-            document.getElementById('conversionRateValue').innerText = data.conversionRate;
-            document.getElementById('conversionGrowth').innerText = data.conversionGrowth;
-            document.getElementById('conversionGrowth').className = parseFloat(data.conversionGrowth) >= 0 ? 'growth-positive' : 'growth-negative';
-
-            document.getElementById('activeUsersValue').innerText = formatNumber(data.activeUsers);
-            document.getElementById('usersGrowth').innerText = data.usersGrowth;
-            document.getElementById('usersGrowth').className = parseFloat(data.usersGrowth) >= 0 ? 'growth-positive' : 'growth-negative';
-            
-            // Progress bar logic (assuming a max value, e.g., 500 for demo)
-            const activeUsersCount = parseInt(data.activeUsers.replace(/,/g, '') || 0);
-            document.getElementById('usersProgress').style.width = `${Math.min(activeUsersCount / 500 * 100, 100)}%`; 
-
-            document.getElementById('sessionDurationValue').innerText = data.sessionDuration;
-            document.getElementById('sessionGrowth').innerText = data.sessionGrowth;
-            document.getElementById('sessionGrowth').className = parseFloat(data.sessionGrowth) >= 0 ? 'growth-positive' : 'growth-negative';
-            
-            // Progress bar logic (assuming a max value, e.g., 120 seconds for demo)
-            const sessionDurationSeconds = parseInt(data.sessionDuration.replace(' Sec', '') || 0);
-            document.getElementById('sessionProgress').style.width = `${Math.min(sessionDurationSeconds / 120 * 100, 100)}%`; 
-            
-            document.getElementById('avgDailySalesValue').innerText = formatCurrency(data.avgDailySales || 0);
-            document.getElementById('totalPageVisitValue').innerText = formatNumber(data.websiteTraffic || 0);
-
-            // Operational Health
-            document.getElementById('serverUptimeValue').innerText = data.serverUptime || '99.9%';
-            document.getElementById('apiLatencyValue').innerText = data.apiLatencyMs ? `${data.apiLatencyMs}ms` : '45ms';
-            document.getElementById('npsScoreValue').innerText = data.npsScore || '7.8';
-        }
-
-        function loadEarningReportsChart(chartData) {
-            // ... (Earning Reports Chart rendering logic remains the same) ...
-            const labels = chartData.labels || [];
-            const dataA = chartData.dataA || [];
-            const dataB = chartData.dataB || [];
-            const summary = chartData.summary || {};
-            
-            document.getElementById('earningsValue').innerText = summary.earnings || '--';
-            document.getElementById('profitValue').innerText = summary.profit || '--';
-            document.getElementById('taxValue').innerText = summary.tax || '--';
-            document.getElementById('expenseValue').innerText = summary.expense || '--';
-
-            const ctx = document.getElementById('earningReportsChart').getContext('2d');
-            
-            if (chartInstances.earningsChart) {
-                chartInstances.earningsChart.data.labels = labels;
-                chartInstances.earningsChart.data.datasets[0].data = dataA;
-                chartInstances.earningsChart.data.datasets[1].data = dataB;
-                chartInstances.earningsChart.update();
-                return;
-            }
-
-            chartInstances.earningsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Gross Sales (Kul Bikri)',
-                        data: dataA,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderRadius: 4
-                    }, {
-                        label: 'Net Profit',
-                        data: dataB,
-                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, 
-                    plugins: {
-                        legend: { display: true, position: 'bottom' },
-                        tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}` } }
-                    },
-                    scales: { y: { beginAtZero: true, ticks: { callback: (v) => formatCurrency(v) } } }
-                }
-            });
-        }
-
-        function loadCampaignTable(tableData) {
-            // ... (Campaign Table rendering logic remains the same) ...
-            const campaignData = tableData || [];
-            const tbody = document.getElementById('campaignTableBody');
-            
-            if (campaignData.length === 0) {
-                 tbody.innerHTML = `<tr><td colspan="5" class="text-center text-light py-4">Koi campaign data nahi mila.</td></tr>`;
-                 return;
-            }
-
-            tbody.innerHTML = campaignData.map(item => `
-                <tr>
-                    <td class="text-primary font-semibold">${item.source}</td>
-                    <td>${item.medium}</td>
-                    <td>${item.campaign}</td>
-                    <td class="text-right">${formatNumber(item.clicks)}</td>
-                    <td class="text-right">${item.conversion}</td>
-                </tr>
-            `).join('');
-        }
-
-        function loadTopPagesList(tableData) {
-            // ... (Top Pages List rendering logic remains the same) ...
-            const pagesData = tableData || [];
-            const container = document.getElementById('topPagesList');
-            
-            const header = container.querySelector('.page-list-item:first-child')?.outerHTML || '';
-            
-            if (pagesData.length === 0) {
-                 container.innerHTML = header + `<div class="text-center text-light py-4">Koi top page data nahi mila.</div>`;
-                 return;
-            }
-            
-            const dataHtml = pagesData.map(item => `
-                <div class="page-list-item">
-                    <div class="page-list-item-url">${item.url}</div>
-                    <div class="page-list-item-clicks text-right">${formatNumber(item.clicks)}</div>
-                    <div class="page-list-item-pos text-right">${(parseFloat(item.position) || 0).toFixed(2)}</div>
+        const logContainer = document.getElementById('activity-log');
+        activities.forEach(item => {
+            logContainer.innerHTML += `
+                <div class="flex gap-4 border-l border-white/5 pl-4 py-1 hover:border-accent transition-colors group">
+                    <span class="text-[10px] font-mono text-muted mt-1">${item.time}</span>
+                    <p class="text-xs text-white/80 group-hover:text-white transition-colors uppercase tracking-tight font-medium">${item.msg}</p>
                 </div>
-            `).join('');
-            
-            container.innerHTML = header + dataHtml;
-        }
-        
-        function loadTopLeadsChart(chartData) {
-            // ... (Top Leads Chart rendering logic remains the same) ...
-            const labels = chartData.labels || [];
-            const data = chartData.data || [];
-            
-            const ctx = document.getElementById('topLeadsChart').getContext('2d');
-            
-            if (chartInstances.leadsChart) {
-                chartInstances.leadsChart.data.labels = labels;
-                chartInstances.leadsChart.data.datasets[0].data = data;
-                chartInstances.leadsChart.update();
-                return;
-            }
+            `;
+        });
 
-            chartInstances.leadsChart = new Chart(ctx, {
-                type: 'bar', 
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Leads Count (Leads Ki Sankhya)',
-                        data: data,
-                        backgroundColor: 'rgba(59, 130, 246, 0.6)', 
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 1,
-                        borderRadius: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: (c) => `${c.label}: ${formatNumber(c.parsed.x)} leads` } }
-                    },
-                    scales: { x: { beginAtZero: true, ticks: { callback: (v) => formatNumber(v) } } }
-                }
-            });
-        }
-        
-        function loadSalesAndTraffic(deviceVisitsData, trafficSourceData, salesCountriesData) {
-            const salesByCountry = salesCountriesData || [];
-            const trafficSources = trafficSourceData || [];
-            const deviceVisits = deviceVisitsData || {}; 
+        const entities = [
+            { name: 'Collector_88', src: 'Direct', val: '$12,400', status: 'PAID' },
+            { name: 'Studio_Nova', src: 'Referral', val: '$8,200', status: 'PENDING' },
+            { name: 'Private_Client', src: 'Instagram', val: '$2,100', status: 'PAID' }
+        ];
 
-            // 1. Sales by Country List 
-            const container = document.getElementById('salesCountriesList');
-            if (salesByCountry.length === 0) {
-                 container.innerHTML = `<div class="text-light text-sm text-center">Koi sales data nahi mila.</div>`;
-            } else {
-                const topSales = salesByCountry.sort((a, b) => parseFloat(b.value.replace(/[^\d.]/g, '')) - parseFloat(a.value.replace(/[^\d.]/g, ''))).slice(0, 5);
-                container.innerHTML = topSales.map(item => `
-                    <div class="sales-country-item flex items-center py-2 border-b border-gray-100 last:border-b-0">
-                        <span class="country-flag text-xl mr-4">${item.flag}</span>
-                        <div class="country-info flex-grow flex justify-between items-center">
-                            <div class="country-name font-semibold text-sm">${item.name}</div>
-                            <div class="country-value text-sm font-bold text-primary">${item.value}</div>
-                        </div>
-                    </div>
-                `).join('');
-                cachedDetailedSalesData = salesByCountry.map(item => ({
-                    country: item.name,
-                    sales: parseFloat(item.value.replace(/[^\d.]/g, '')) * (item.value.includes('K') ? 1000 : 1), 
-                    orders: Math.floor(Math.random() * 500) + 10, // Mock orders for detailed view
-                    flag: item.flag
-                }));
-            }
-            
-            // 2. Traffic Source List 
-            const trafficContainer = document.getElementById('trafficSourceList');
-            if (trafficSources.length === 0) {
-                 trafficContainer.innerHTML = `<div class="text-light text-sm text-center">Koi traffic data nahi mila.</div>`;
-            } else {
-                const maxClicks = trafficSources.reduce((max, item) => Math.max(max, item.clicks), 0);
-                trafficContainer.innerHTML = trafficSources.map(item => {
-                    const percentage = maxClicks > 0 ? (item.clicks / maxClicks) * 100 : 0;
-                    return `
-                        <div class="traffic-item">
-                            <div class="source-name">${item.source}</div>
-                            <div class="click-count">${formatNumber(item.clicks)}</div>
-                            <div class="traffic-progress-bar w-full progress-bar">
-                                <div class="progress-fill progress-orange" style="width: ${percentage}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-            
-            // 3. Device Visits 
-            // The backend should return the calculated percentages, but the frontend needs to handle the structure.
-            const mobileVisits = parseInt(deviceVisits.mobile) || 0;
-            const tabletVisits = parseInt(deviceVisits.tablet) || 0;
-            const webVisits = parseInt(deviceVisits.web) || 0;
-            
-            const deviceDataMap = {
-                mobile: mobileVisits,
-                web: webVisits, 
-                tablet: tabletVisits,
-            };
-
-            ['mobile', 'web', 'tablet'].forEach(device => {
-                const visits = deviceDataMap[device];
-                const percentString = `${visits}%`; // Backend returns percentage as number
-                
-                const percentEl = document.getElementById(`${device}Percent`);
-                const progressEl = document.getElementById(`${device}Progress`);
-
-                if (percentEl) {
-                    percentEl.innerText = percentString;
-                }
-                
-                if (progressEl) {
-                    progressEl.style.width = percentString;
-                }
-            });
-        }
-        
-        function loadDetailedSalesTable(salesData) {
-            // ... (Detailed Sales Table rendering logic remains the same) ...
-            const salesByCountry = salesData || cachedDetailedSalesData;
-            const tbody = document.getElementById('detailedSalesTableBody');
-            
-            if (salesByCountry.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-light text-center py-4">Koi detailed sales data nahi mila.</td></tr>`;
-                return;
-            }
-            
-            const allSales = salesByCountry.sort((a, b) => b.sales - a.sales);
-
-            tbody.innerHTML = allSales.map(item => `
-                <tr>
-                    <td>${item.flag} ${item.country}</td>
-                    <td class="font-semibold">${formatCurrency(item.sales)}</td>
-                    <td class="text-center">${formatNumber(item.orders)}</td>
-                    <td class="text-center">${formatCurrency(item.sales / item.orders || 0)}</td>
+        const tableBody = document.getElementById('table-body');
+        entities.forEach(row => {
+            tableBody.innerHTML += `
+                <tr class="border-b border-white/5 hover:bg-white/5 transition-colors group cursor-pointer">
+                    <td class="py-4 px-2 font-bold text-white uppercase text-xs">${row.name}</td>
+                    <td class="py-4 px-2 text-muted text-[10px] uppercase font-bold">${row.src}</td>
+                    <td class="py-4 px-2 text-white font-bold text-xs">${row.val}</td>
+                    <td class="py-4 px-2 text-right"><span class="text-[8px] px-2 py-1 bg-white/10 ${row.status === 'PAID' ? 'text-green-500' : 'text-accent'} border border-white/5 font-black uppercase">${row.status}</span></td>
                 </tr>
-            `).join('');
-        }
-        
-        function loadTopSessionChart(chartData) {
-            // ... (Top Session Chart rendering logic remains the same) ...
-            const labels = chartData.labels || [];
-            const data = chartData.data || [];
-            
-            const ctx = document.getElementById('topSessionChart').getContext('2d');
-            const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444']; 
-            
-            if (chartInstances.sessionChart) {
-                chartInstances.sessionChart.data.labels = labels;
-                chartInstances.sessionChart.data.datasets[0].data = data;
-                chartInstances.sessionChart.update();
-                return;
-            }
+            `;
+        });
 
-            chartInstances.sessionChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors.slice(0, data.length),
-                        hoverBackgroundColor: colors.slice(0, data.length),
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: { display: true, position: 'bottom', labels: { boxWidth: 10, padding: 15, font: { size: 12 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: (c) => {
-                                    // Data from backend is already percentage, so just format it as a percentage string
-                                    return `${c.label}: ${c.parsed}%`; 
-                                }
-                            }
-                        }
-                    }
+        // Charts
+        const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRevenue, {
+            type: 'line',
+            data: {
+                labels: ['01', '05', '10', '15', '20', '25', '30'],
+                datasets: [{
+                    label: 'Actual',
+                    data: [32000, 41000, 39000, 48000, 52000, 58000, 64000],
+                    borderColor: '#ff3c00',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(255, 60, 0, 0.05)'
+                }, {
+                    label: 'Projected',
+                    data: [30000, 35000, 40000, 45000, 50000, 55000, 60000],
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#666', font: { size: 9, family: 'Space Grotesk' } } },
+                    x: { grid: { display: false }, ticks: { color: '#666', font: { size: 9, family: 'Space Grotesk' } } }
                 }
-            });
-        }
-        
-        // --- DATA FETCHING & INITIALIZATION ---
-
-        async function fetchAllData() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('apiStatusDisplay').innerText = 'Loading...';
-            document.getElementById('apiStatusDisplay').classList.replace('text-secondary', 'text-warning');
-
-            try {
-                // Fetch all data concurrently
-                const [statsData, earningsData, deviceVisitsData, trafficSourceData, salesCountriesData, campaignData, topPagesData, topLeadsData, topSessionData] = await Promise.all([
-                    fetchStats(), 
-                    fetchEarningsReport(), 
-                    fetchDeviceVisits(), 
-                    fetchTrafficSourceData(), 
-                    fetchSalesCountries(), 
-                    fetchCampaignSource(), 
-                    fetchTopPages(), 
-                    fetchTopLeads(), 
-                    fetchTopSession()
-                ]);
-                
-                // Log data for all components
-                console.log("1. Stats (Stat Cards):", statsData);
-                console.log("2. Earnings Report (Bar Chart):", earningsData);
-                console.log("3. Device Visits (Progress Bars):", deviceVisitsData);
-                console.log("4. Traffic Source (Traffic List):", trafficSourceData);
-                console.log("5. Sales Countries (Sales List):", salesCountriesData);
-                console.log("6. Campaign Source (Campaign Table):", campaignData);
-                console.log("7. Top Pages (Page List):", topPagesData);
-                console.log("8. Top Leads (Leads Chart):", topLeadsData);
-                console.log("9. Top Session (Pie Chart):", topSessionData);
-
-                // Load data into components
-                loadStatCards(statsData);
-                
-                const processedEarningsData = processOrderDataForChart(earningsData);
-                loadEarningReportsChart(processedEarningsData);
-                
-                loadTopLeadsChart(topLeadsData);
-                loadTopSessionChart(topSessionData);
-                loadCampaignTable(campaignData);
-                loadTopPagesList(topPagesData);
-                
-                // This function uses data from traffic POST which is now fixed
-                loadSalesAndTraffic(deviceVisitsData, trafficSourceData, salesCountriesData); 
-
-                document.getElementById('apiStatusDisplay').innerText = 'Success';
-                document.getElementById('apiStatusDisplay').classList.replace('text-warning', 'text-secondary');
-
-
-            } catch (error) {
-                console.error("Data fetching error:", error);
-                document.getElementById('apiStatusDisplay').innerText = 'Error';
-                document.getElementById('apiStatusDisplay').classList.replace('text-warning', 'text-danger');
-            } finally {
-                document.getElementById('loadingOverlay').style.display = 'none';
             }
-        }
+        });
 
-        // --- VIEW SWITCHING ---
-
-        function showView(viewId) {
-            const mainView = document.getElementById(MAIN_VIEW_ID);
-            const detailedView = document.getElementById(DETAILED_SALES_VIEW_ID);
-
-            if (viewId === DETAILED_SALES_VIEW_ID) {
-                mainView.classList.add('hidden-view');
-                detailedView.classList.remove('hidden-view');
-                loadDetailedSalesTable(cachedDetailedSalesData); 
-            } else {
-                detailedView.classList.add('hidden-view');
-                mainView.classList.remove('hidden-view');
+        const ctxOrigin = document.getElementById('originChart').getContext('2d');
+        new Chart(ctxOrigin, {
+            type: 'doughnut',
+            data: {
+                labels: ['Direct', 'Referral', 'Social'],
+                datasets: [{
+                    data: [55, 25, 20],
+                    backgroundColor: ['#ffffff', '#ff3c00', '#333333'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: { legend: { display: false } }
             }
-        }
-        
-        // --- INITIALIZATION ---
+        });
 
-        function initDashboard() {
-            // 🚀 STEP 1: Record the page visit immediately
-            recordUserTraffic(); 
-            
-            document.getElementById('viewAllSalesButton').addEventListener('click', () => showView(DETAILED_SALES_VIEW_ID));
-            document.getElementById('backToDashboardButton').addEventListener('click', () => showView(MAIN_VIEW_ID));
-            
-            // STEP 2: Fetch all data to populate the dashboard
-            fetchAllData();
+        // GSAP
+        gsap.from('.gsap-reveal', { y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: 'power4.out' });
+        gsap.from('.gsap-card', { scale: 0.98, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power2.out', delay: 0.3 });
+
+        function animateValue(id, start, end, duration, prefix = '') {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = prefix + Math.floor(progress * (end - start) + start).toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
 
-        window.onload = function () {
-            // Give a small delay to ensure Chart.js is fully loaded
-            setTimeout(() => {
-                if (typeof Chart !== 'undefined') {
-                    initDashboard();
-                } else {
-                    console.error("Chart.js failed to load. Dashboard cannot start.");
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                }
-            }, 500);
-        }
+        setTimeout(() => {
+            animateValue("stat-revenue", 0, 84200, 1500, '$');
+            animateValue("stat-users", 0, 1240, 1500);
+        }, 800);
     </script>
 </body>
 </html>

@@ -444,6 +444,24 @@
                 margin: 20px 0;
             }
         }
+        /* Fix for About Page Scrolling */
+body {
+    overflow-x: hidden !important;
+}
+
+@media (max-width: 768px) {
+    /* Locomotive mobile par disable hota hai, isliye native scroll enable karna parta hai */
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        position: relative !important;
+    }
+    
+    [data-scroll-container] {
+        transform: none !important;
+        height: auto !important;
+    }
+}
     </style>
 </head>
 
@@ -549,68 +567,73 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
 
-        // 1. Locomotive Scroll Setup
-        const scroller = new LocomotiveScroll({
-            el: document.querySelector('[data-scroll-container]'),
-            smooth: true,
-            smartphone: { smooth: false },
-            tablet: { smooth: false }
-        });
+    // 1. Locomotive Scroll Setup
+    const scroller = new LocomotiveScroll({
+        el: document.querySelector('[data-scroll-container]'),
+        smooth: true,
+        multiplier: 1,
+        lerp: 0.05,
+        smartphone: { smooth: false }, 
+        tablet: { smooth: false }      
+    });
 
-        // Add resize observer to fix blank space issues
-        new ResizeObserver(() => scroller.update()).observe(document.querySelector('[data-scroll-container]'));
+    // 2. Sync GSAP with Locomotive
+    scroller.on("scroll", ScrollTrigger.update);
 
-        // Sync GSAP to Locomotive (Only needed if smooth is true, but safe to keep)
-        ScrollTrigger.scrollerProxy('[data-scroll-container]', {
-            scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
-            getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
-            pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
-        });
-        ScrollTrigger.addEventListener('refresh', () => scroller.update());
+    ScrollTrigger.scrollerProxy('[data-scroll-container]', {
+        scrollTop(value) {
+            return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y;
+        },
+        getBoundingClientRect() {
+            return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+        },
+        pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
+    });
+
+    // 3. Automated Refresh (Fixes Blank Spaces)
+    const updateEverything = () => {
+        scroller.update();
         ScrollTrigger.refresh();
+    };
 
-        // 2. Load Animations
-        window.onload = () => {
-            document.body.classList.add('loaded');
+    ScrollTrigger.addEventListener('refresh', () => scroller.update());
+    
+    // Watch for dynamic height changes (images, etc)
+    const resizeObserver = new ResizeObserver(() => updateEverything());
+    resizeObserver.observe(document.querySelector('[data-scroll-container]'));
 
-            // --- CRITICAL LOCOMOTIVE FIX ---
-            // Force update after images and layout stabilize
-            setTimeout(() => {
-                scroller.update();
-                ScrollTrigger.refresh();
-            }, 100);
-            
-            // Second update for slower devices/images
-            setTimeout(() => {
-                scroller.update();
-                ScrollTrigger.refresh();
-            }, 1000);
+    // 4. Load & Init Animations
+    window.addEventListener("load", () => {
+        document.body.classList.add('loaded');
+        
+        // Hero Text Reveal
+        const splitLines = document.querySelectorAll('.split-line span');
+        gsap.to(splitLines, {
+            y: 0,
+            duration: 1.5,
+            stagger: 0.1,
+            ease: 'power4.out',
+            delay: 0.2
+        });
 
-            // Hero Text Reveal
-            const splitLines = document.querySelectorAll('.split-line span');
-            gsap.to(splitLines, {
-                y: 0,
-                duration: 1.5,
-                stagger: 0.1,
-                ease: 'power4.out',
-                delay: 0.2
-            });
+        gsap.to('#hero-sub', {
+            y: 0, opacity: 1, duration: 1, delay: 1, ease: 'power3.out'
+        });
 
-            gsap.to('#hero-sub', {
-                y: 0, opacity: 1, duration: 1, delay: 1, ease: 'power3.out'
-            });
-        };
+        // Final sync
+        setTimeout(updateEverything, 500);
+    });
 
-        // 3. Burger Menu
-        const burger = document.getElementById('burger');
-        const menu = document.getElementById('menu');
+    // 5. Burger Menu
+    const burger = document.getElementById('burger');
+    const menu = document.getElementById('menu');
+    if(burger) {
         burger.onclick = () => {
             menu.classList.toggle('active');
             const lines = burger.querySelectorAll('div');
-            // Simple X animation
             if (menu.classList.contains('active')) {
                 gsap.to(lines[0], { y: 4, rotation: 45, duration: 0.3 });
                 gsap.to(lines[1], { y: -3, rotation: -45, duration: 0.3 });
@@ -619,41 +642,47 @@
                 gsap.to(lines[1], { y: 0, rotation: 0, duration: 0.3 });
             }
         };
+    }
 
-        // 4. Text Highlighter Effect (Manifesto)
-        const textSpan = document.querySelectorAll('.big-para span');
-        textSpan.forEach(span => {
-            gsap.to(span, {
-                color: '#d6b598',
-                scrollTrigger: {
-                    trigger: span,
-                    scroller: '[data-scroll-container]',
-                    start: 'top 80%',
-                    end: 'top 50%',
-                    scrub: true
-                }
-            });
+    // 6. Text Highlighter Effect (Manifesto)
+    const textSpan = document.querySelectorAll('.big-para span');
+    textSpan.forEach(span => {
+        gsap.to(span, {
+            color: '#d6b598',
+            scrollTrigger: {
+                trigger: span,
+                scroller: '[data-scroll-container]',
+                start: 'top 85%',
+                end: 'top 55%',
+                scrub: true
+            }
         });
+    });
 
-        // 5. Marquee Animation
-        gsap.to('.marquee-inner', {
-            xPercent: -50,
-            ease: "none",
-            duration: 10,
-            repeat: -1
-        });
+    // 7. Marquee Animation
+    gsap.to('.marquee-inner', {
+        xPercent: -50,
+        ease: "none",
+        duration: 15, // Smooth speed
+        repeat: -1
+    });
 
-        // 6. Custom Cursor
-        const cursor = document.querySelector('.cursor-dot');
+    // 8. Custom Cursor
+    const cursor = document.querySelector('.cursor-dot');
+    if(cursor) {
         window.addEventListener('mousemove', (e) => {
             gsap.to(cursor, {
                 x: e.clientX,
                 y: e.clientY,
-                duration: 0.1
+                duration: 0.1,
+                ease: "power2.out"
             });
         });
+    }
 
-    </script>
+    // Critical: Refresh when everything is fully settled
+    window.addEventListener("resize", updateEverything);
+</script>
 </body>
 
 </html>

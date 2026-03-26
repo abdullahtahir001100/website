@@ -1,42 +1,12 @@
-// -----------------------------------------------------------------------------------
-// 1. FIREBASE INITIALIZATION BLOCK
-// -----------------------------------------------------------------------------------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
 
-setLogLevel('debug'); 
-
-let db, auth, userId;
-const apiKey = ""; 
-
-async function initializeFirebase() {
-    try {
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
-
-        if (typeof __initial_auth_token !== 'undefined') {
-            await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-            await signInAnonymously(auth);
-        }
-        
-        userId = auth.currentUser?.uid || crypto.randomUUID(); 
-        console.log("Firebase initialized. User ID:", userId);
-    } catch (error) {
-        console.error("Firebase initialization failed:", error);
-        userId = 'fallback-' + Math.random().toString(36).substring(2, 10);
-    }
-}
-initializeFirebase();
+    let loading = false;
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // ----------------------------------------------------
     // API & STATE
     // ----------------------------------------------------
-    const API_URL = 'https://backend-web-1.vercel.app/api/products'; 
+    const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products'; 
     const REVIEWS_API_URL = 'https://backend-web-1.vercel.app/api/reviews';
     let ALL_PRODUCTS_DATA = [];
 
@@ -76,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const productId = params.get('id');
 
         try {
+            if (loading) return;
+            loading = true;
+
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error("Network Error");
             
@@ -100,8 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             console.error(e);
             els.title.innerText = "Error Loading Product";
+        } finally {
+            loading = false;
+            // Hide Loader
+            const loaderOverlay = document.getElementById('loader-overlay');
+            if (loaderOverlay) {
+                setTimeout(() => {
+                    loaderOverlay.classList.add('hidden');
+                }, 500); // slight delay for smooth transition
+            }
         }
     }
+   
+
 
     // ----------------------------------------------------
     // 2. RENDER MAIN INFO
@@ -271,8 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${p.image}" alt="${p.title}">
                 <div class="slide-overlay">
                     <h4 class="slide-title">${p.title}</h4>
-                    <p class="slide-desc">${p.description}</p>
-                    <a href="detaiindex.html?id=${p.id}" class="slide-btn">View Work</a>
+                    <p class="slide-desc">$${p.description}</p>
+                    <a href="detail.html?id=${p.id}" class="slide-btn">View Work</a>
                 </div>
             `;
             els.relatedWrapper.appendChild(slide);

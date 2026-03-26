@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATEWAY | INKBYHAND SYSTEM</title>
+    
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#030303',
+                        accent: '#ff2a00',
+                        metal: '#1a1a1a',
+                        text: '#e6e6e6'
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { 
+            background-color: #030303; 
+            color: #ffffff; 
+            margin: 0; 
+            overflow: hidden; 
+            cursor: none; /* Custom cursor only */
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .input-group {
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid #333;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: #ff2a00;
+            transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .input-group:focus-within::after {
+            width: 100%;
+        }
+
+        .input-group:focus-within {
+            border-color: transparent;
+        }
+
+        input {
+            background: transparent;
+            width: 100%;
+            padding: 16px 0;
+            color: white;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 16px;
+            outline: none;
+            letter-spacing: 0.05em;
+        }
+        
+        input::placeholder {
+            color: #444;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Custom Cursor */
+        .cursor-main {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff2a00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.15s ease-out;
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #030303;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            5% { clip: rect(70px, 9999px, 14px, 0); }
+            10% { clip: rect(25px, 9999px, 60px, 0); }
+            15% { clip: rect(6px, 9999px, 83px, 0); }
+            20% { clip: rect(81px, 9999px, 47px, 0); }
+            25% { clip: rect(54px, 9999px, 98px, 0); }
+            30% { clip: rect(93px, 9999px, 32px, 0); }
+            35% { clip: rect(11px, 9999px, 5px, 0); }
+            40% { clip: rect(49px, 9999px, 98px, 0); }
+            45% { clip: rect(70px, 9999px, 20px, 0); }
+            50% { clip: rect(27px, 9999px, 86px, 0); }
+            55% { clip: rect(34px, 9999px, 10px, 0); }
+            60% { clip: rect(9px, 9999px, 50px, 0); }
+            65% { clip: rect(61px, 9999px, 84px, 0); }
+            70% { clip: rect(10px, 9999px, 65px, 0); }
+            75% { clip: rect(93px, 9999px, 66px, 0); }
+            80% { clip: rect(30px, 9999px, 96px, 0); }
+            85% { clip: rect(51px, 9999px, 29px, 0); }
+            90% { clip: rect(56px, 9999px, 78px, 0); }
+            95% { clip: rect(28px, 9999px, 51px, 0); }
+            100% { clip: rect(48px, 9999px, 63px, 0); }
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Scene Layer -->
+    <div id="canvas-container"></div>
+    
+    <!-- VFX Scanlines -->
+    <div class="scanlines"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-main"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Main Content Layer -->
+    <main class="relative z-10 w-full min-h-screen flex items-center justify-center p-4">
+        
+        <div class="glass-panel w-full max-w-[500px] p-10 md:p-14 relative overflow-hidden group">
+            
+            <!-- Animated Border Gradient using Anime.js target later -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-50 transform -translate-x-full" id="top-border"></div>
+
+            <div class="flex justify-between items-start mb-12">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-display font-black tracking-tighter uppercase glitch-text" data-text="INKBYHAND">INKBYHAND</h1>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="w-2 h-2 bg-green-500 animate-pulse"></div>
+                        <p class="text-[10px] font-mono tracking-[0.3em] text-muted">SECURE_GATEWAY_V.3.0</p>
+                    </div>
+                </div>
+                <!-- Lottie Lock Placeholder -->
+                <div id="lottie-lock" style="width: 60px; height: 60px;"></div>
+            </div>
+
+            <form id="loginForm" class="space-y-8 relative z-20">
+                
+                <div class="space-y-2 group/input">
+                    <label class="text-[9px] uppercase font-bold tracking-widest text-muted block mb-1 group-focus-within/input:text-accent transition-colors">Admin_Identity</label>
+                    <div class="input-group">
+                        <input type="email" id="email" required placeholder="ENTER_CREDENTIALS" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="space-y-2 group/input">
+                    <label class="text-[9px] uppercase font-bold tracking-widest text-muted block mb-1 group-focus-within/input:text-accent transition-colors">Access_Hash</label>
+                    <div class="input-group">
+                        <input type="password" id="password" required placeholder="ENCRYPTED_KEY" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="loginBtn" class="w-full bg-white text-black font-display font-black text-lg uppercase py-5 hover:bg-accent hover:text-white transition-all hover:scale-[1.02] active:scale-95 tracking-widest relative overflow-hidden group/btn">
+                        <span class="relative z-10 group-hover/btn:text-white transition-colors duration-300">Authenticate</span>
+                        <div class="absolute inset-0 bg-accent transform translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
+                    </button>
+                    <p class="text-xs text-center mt-4 text-gray-500 font-mono tracking-wider cursor-pointer hover:text-accent transition-colors">FORGOT CREDENTIALS?</p>
+                </div>
+
+            </form>
+
+            <div class="mt-10 pt-6 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-muted text-gray-400">
+                <span>ENCRYPTED: TLS 1.3</span>
+                <span>NODE: SVR_01</span>
+            </div>
+
+            <!-- Decorative corner pieces -->
+            <div class="absolute top-0 left-0 w-4 h-4 border-l border-t border-white/20"></div>
+            <div class="absolute top-0 right-0 w-4 h-4 border-r border-t border-white/20"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 border-l border-b border-white/20"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-r border-b border-white/20"></div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 1. Three.js Background ---
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x030303, 0.002);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 20;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Create Particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 3000;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i++) {
+                // Spread particles in a wide area
+                posArray[i] = (Math.random() - 0.5) * 80;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.03,
+                color: 0xff3c00, // Accent color
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // Create a Grid (Retro vibe)
+            const gridHelper = new THREE.GridHelper(100, 50, 0x333333, 0x111111);
+            gridHelper.position.y = -10;
+            scene.add(gridHelper);
+
+            // Geometric Shape (Icosahedron)
+            const icoGeometry = new THREE.IcosahedronGeometry(8, 0);
+            const icoMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x222222, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.2
+            });
+            const icoMesh = new THREE.Mesh(icoGeometry, icoMaterial);
+            scene.add(icoMesh);
+
+
+            // Animation Logic
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            const clock = new THREE.Clock();
+
+            const animate = () => {
+                const elapsedTime = clock.getElapsedTime();
+
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                // Rotate entire scene slightly based on mouse
+                particlesMesh.rotation.y += 0.001;
+                particlesMesh.rotation.x += 0.0005;
+
+                icoMesh.rotation.x += 0.002;
+                icoMesh.rotation.y += 0.002;
+
+                // Floating sine wave effect for particles
+                particlesMesh.rotation.y += 0.05 * (targetX - particlesMesh.rotation.y);
+                particlesMesh.rotation.x += 0.05 * (targetY - particlesMesh.rotation.x);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            };
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        // --- 2. Custom Cursor (GSAP) ---
+        const initCursor = () => {
+            const cursor = document.querySelector('.cursor-main');
+            const follower = document.querySelector('.cursor-follower');
+            
+            gsap.set(cursor, {xPercent: -50, yPercent: -50});
+            gsap.set(follower, {xPercent: -50, yPercent: -50});
+
+            window.addEventListener('mousemove', e => {
+                gsap.to(cursor, {x: e.clientX, y: e.clientY, duration: 0.1});
+                gsap.to(follower, {x: e.clientX, y: e.clientY, duration: 0.3});
+            });
+
+            const hoverTargets = document.querySelectorAll('input, button, a');
+            hoverTargets.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(follower, {
+                        scale: 2, 
+                        backgroundColor: 'rgba(255, 60, 0, 0.1)', 
+                        borderColor: '#ff3c00', 
+                        duration: 0.3
+                    });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(follower, {
+                        scale: 1, 
+                        backgroundColor: 'transparent', 
+                        borderColor: 'rgba(255,255,255,0.3)', 
+                        duration: 0.3
+                    });
+                });
+            });
+        };
+
+        // --- 3. Lottie Animation ---
+        const initLottie = () => {
+            // Using a simple lock animation (replace URL if needed for a specific style)
+            lottie.loadAnimation({
+                container: document.getElementById('lottie-lock'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://lottie.host/8b724128-0689-408a-a4be-21cb8861498b/4K6Q7w3qj5.json' 
+            });
+        };
+
+        // --- 4. Intro Animations (GSAP + Anime.js) ---
+        const initIntro = () => {
+            // Top border scan
+            anime({
+                targets: '#top-border',
+                translateX: ['-100%', '100%'],
+                easing: 'linear',
+                duration: 2500,
+                loop: true
+            });
+
+            const tl = gsap.timeline();
+            
+            // Panel Entrance
+            tl.fromTo('.glass-panel', 
+                { opacity: 0, scale: 0.9, rotateX: 10, y: 50 },
+                { opacity: 1, scale: 1, rotateX: 0, y: 0, duration: 1.2, ease: "power4.out" }
+            )
+            // Staggered Text & Inputs
+            .from('.glitch-text', {
+                opacity: 0, x: -20, duration: 0.8, ease: "power2.out"
+            }, "-=0.8")
+            .from('form > div', {
+                opacity: 0, y: 20, stagger: 0.2, duration: 0.8, ease: "back.out(1.7)"
+            }, "-=0.6")
+            .from('.input-group::after', {
+                width: 0, duration: 0.8, ease: "power2.inOut"
+            }, "-=0.4");
+        };
+
+        // --- 5. Lenis Smooth Scroll ---
+        const initLenis = () => {
+            const lenis = new Lenis();
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+        };
+
+
+        // --- MAIN INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initThreeJS();
+            initCursor();
+            initLottie();
+            initIntro();
+            initLenis();
+
+            // --- Authenticate Logic ---
+            const API_URL = 'https://backend-web-1.vercel.app/api/auth/login';
+
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('loginBtn');
+                const btnText = btn.querySelector('span');
+
+                // State: Loading
+                btnText.innerText = "AUTHENTICATING...";
+                gsap.to(btn, { backgroundColor: '#ffffff', color: '#000', duration: 0.3 }); // Flash white
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        localStorage.setItem('authToken', data.token || 'demo-token');
+                        if(data.user) localStorage.setItem('user', JSON.stringify(data.user));
+
+                        // State: Success
+                        btnText.innerText = "ACCESS GRANTED";
+                        gsap.to(btn, { backgroundColor: '#22c55e', color: '#fff', duration: 0.5 }); // Green
+                        
+                        // Warp Out Animation
+                        const timeline = gsap.timeline();
+                        timeline.to('.glass-panel', { 
+                            scale: 1.5, 
+                            opacity: 0, 
+                            filter: 'blur(20px)',
+                            duration: 0.8, 
+                            ease: "power2.in" 
+                        })
+                        .to('#canvas-container canvas', {
+                            scale: 5,
+                            opacity: 0,
+                            duration: 1,
+                            ease: "power2.in"
+                        }, "-=0.8");
+
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        throw new Error(data.message || 'Invalid Credentials');
+                    }
+                } catch (error) {
+                    // State: Error
+                    // Shake Effect
+                    gsap.fromTo('.glass-panel', 
+                        { x: -10 },
+                        { x: 10, duration: 0.08, repeat: 5, yoyo: true, ease: "none", onComplete: () => {
+                            gsap.to('.glass-panel', { x: 0, duration: 0.1 });
+                        }}
+                    );
+                    
+                    // Flash Red
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.inset = '0';
+                    overlay.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                    overlay.style.zIndex = '40';
+                    overlay.style.pointerEvents = 'none';
+                    document.body.appendChild(overlay);
+                    gsap.to(overlay, { opacity: 0, duration: 0.5, onComplete: () => overlay.remove() });
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ACCESS DENIED',
+                        text: error.message,
+                        background: '#0a0a0a',
+                        color: '#fff',
+                        confirmButtonColor: '#ff2a00',
+                        customClass: {
+                            popup: 'border border-red-900'
+                        }
+                    });
+                    
+                    btnText.innerText = "Authenticate";
+                    gsap.to(btn, { backgroundColor: '#fff', color: '#000', duration: 0.3 });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -317,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     productName: p.title,
                     quantity: p.qty,
                     price: p.price,
+                    image: p.image,
                     variant: p.option || 'Standard'
                 })),
                 subtotalAmount: orderSubtotal,
@@ -359,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Success Message
                     alert(`Order Placed Successfully! Redirecting to details...`);
-                    window.location.href = 'order.html';
+                    // window.location.href = 'order.html';
                 } else {
                     throw new Error(data.message || "Order submission failed on server.");
                 }

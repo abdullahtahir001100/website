@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll(".qty-minus").forEach(button => {
-            button.addEventListener("click", (e) => {
+            button.addEventListener("click",   (e) => {
                 const idx = parseInt(e.target.getAttribute('data-index'));
                 if (cart[idx]) {
                     if (cart[idx].qty > 1) {

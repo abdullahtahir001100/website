@@ -15,6 +15,7 @@
 
     <style>
         :root {
+    /* overflow-x: hidden; */
             --bg-deep: #0a0a0a;
             --bg-mid: #141414;
             --bg-light: #f4f4f4;
@@ -25,6 +26,7 @@
 
         /* Global Reset - Strict Sharp Edges */
         * {
+                /* overflow-x: hidden; */
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -37,9 +39,12 @@
             background: var(--bg-deep);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            /* overflow-x: hidden !important; */
         }
-
+     #scroll-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
         h1,
         h2,
         h3,
@@ -663,6 +668,9 @@
 
         /* Mobile Optimization (extended to 550px) */
         @media (max-width: 550px) {
+            .swiper-section h2{
+                font-size: 10vw !important;
+            }
             
             /* --- Performance Fixes --- */
             * {
@@ -787,6 +795,26 @@
                 gap: 40px;
             }
         }
+        @media (max-width: 768px) {
+    .horizontal-outer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 20px; /* Space for scrollbar if visible */
+    }
+    .horizontal-inner {
+        padding-left: 5vw;
+        padding-right: 5vw;
+        width: max-content; /* Forces it to scroll natively */
+    }
+    .horizontal-scroll-container {
+        height: auto;
+        padding-bottom: 60px;
+        padding-top: 80px;
+    }
+    .scroller-pin-fix {
+        height: auto;
+    }
+}
     </style>
 </head>
 
@@ -1025,86 +1053,90 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger);
 
-        // 1. Locomotive Init
-        const locoScroll = new LocomotiveScroll({
-            el: document.querySelector("[data-scroll-container]"),
-            smooth: true, 
-            multiplier: 1, 
-            lerp: 0.05,
-            smartphone: { smooth: false }, // Disables smooth scrolling on mobile for better performance
-            tablet: { smooth: false }      // Disables on tablets
-        });
+    // 1. Locomotive Init
+    const locoScroll = new LocomotiveScroll({
+        el: document.querySelector("[data-scroll-container]"),
+        smooth: true, 
+        multiplier: 1, 
+        lerp: 0.05,
+        smartphone: { smooth: false }, // Disables smooth scrolling on mobile for better performance
+        tablet: { smooth: false }      // Disables on tablets
+    });
 
-        locoScroll.on("scroll", ScrollTrigger.update);
-        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
-            scrollTop(value) { return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y; },
-            getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
-            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
-        });
+    locoScroll.on("scroll", ScrollTrigger.update);
+    ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+        scrollTop(value) { return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y; },
+        getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
+        pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
+    });
 
-        // 2. Cursor
-        const cursor = document.querySelector(".cursor");
-        const follower = document.querySelector(".cursor-follower");
-        window.addEventListener("mousemove", e => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
-        });
+    // 2. Cursor
+    const cursor = document.querySelector(".cursor");
+    const follower = document.querySelector(".cursor-follower");
+    window.addEventListener("mousemove", e => {
+        gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+        gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
+    });
 
-        // 3. Burger Menu
-        const burger = document.getElementById('burger');
-        const menu = document.getElementById('menu');
+    // 3. Burger Menu
+    const burger = document.getElementById('burger');
+    const menu = document.getElementById('menu');
+    if (burger && menu) {
         burger.onclick = () => {
             menu.classList.toggle('active');
             const lines = burger.querySelectorAll('div');
             lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
             lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
         };
+    }
 
-        // 4. FAQ Animations (Alternating)
-        gsap.utils.toArray('.faq-item').forEach(item => {
-            const direction = item.getAttribute('data-faq-anim');
-            const xVal = direction === 'left' ? -100 : 100;
+    // 4. FAQ Animations (Alternating)
+    gsap.utils.toArray('.faq-item').forEach(item => {
+        const direction = item.getAttribute('data-faq-anim');
+        const xVal = direction === 'left' ? -100 : 100;
 
-            gsap.from(item, {
-                scrollTrigger: {
-                    trigger: item,
-                    scroller: "[data-scroll-container]",
-                    start: "top 90%",
-                },
-                x: xVal,
-                opacity: 0,
-                duration: 1,
-                ease: "power4.out"
-            });
+        gsap.from(item, {
+            scrollTrigger: {
+                trigger: item,
+                scroller: "[data-scroll-container]",
+                start: "top 90%",
+            },
+            x: xVal,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out"
         });
+    });
 
-        // 5. Scroll Animations for Process Section
-        gsap.utils.toArray('.process-card').forEach((card, i) => {
-            gsap.from(card, {
-                scrollTrigger: {
-                    trigger: ".process-section",
-                    scroller: "[data-scroll-container]",
-                    start: "top 80%"
-                },
-                y: 100,
-                opacity: 0,
-                duration: 1,
-                delay: i * 0.2,
-                ease: "power4.out"
-            });
+    // 5. Scroll Animations for Process Section
+    gsap.utils.toArray('.process-card').forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: ".process-section",
+                scroller: "[data-scroll-container]",
+                start: "top 80%"
+            },
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            delay: i * 0.2,
+            ease: "power4.out"
         });
+    });
 
-        // 6. Horizontal Scroll - Fixed Pinning (Strict Mode)
-        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+    // 6. Horizontal Scroll - Fixed Pinning with MatchMedia for Mobile Stability
+    ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
 
+    let mm = gsap.matchMedia();
+
+    // Only run GSAP horizontal pinning on Desktop/Tablet
+    mm.add("(min-width: 769px)", () => {
         const horizontalSection = document.querySelector('.horizontal-scroll-container');
         const horizontalInner = document.querySelector('.horizontal-inner');
 
         if (horizontalSection && horizontalInner) {
-
-            // Distance Calculation
             const getScrollAmount = () => {
                 let totalWidth = horizontalInner.scrollWidth;
                 let viewportWidth = window.innerWidth;
@@ -1120,8 +1152,6 @@
                 trigger: horizontalSection,
                 scroller: "[data-scroll-container]",
                 pin: true,
-                // CRITICAL: Forces GSAP to use transform-based pinning
-                // This prevents the section from scrolling vertically with the page
                 pinType: "transform",
                 animation: tween,
                 scrub: 1,
@@ -1130,55 +1160,76 @@
                 invalidateOnRefresh: true
             });
         }
+    });
 
-        // Ensure layout updates after images/content load
-        window.addEventListener("load", () => {
-            ScrollTrigger.refresh();
-        });
-
-        // 7. Swiper
-        new Swiper(".mySwiper", {
-            effect: "coverflow",
-            centeredSlides: true,
-            slidesPerView: "auto",
-            slideToClickedSlide: true, // Allows clicking side images to center them
-            coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
-            loop: true,
-            autoplay: { delay: 2500, disableOnInteraction: false }
-        });
-
-        // 8. Dynamic Data
+    // Ensure layout updates after static images load
+    window.addEventListener("load", () => {
         ScrollTrigger.refresh();
+    });
 
-        fetch('https://backend-web-1.vercel.app/api/products')
-            .then(res => res.json())
-            .then(data => {
-                const wrapper = document.getElementById('fetch');
-                if (wrapper && Array.isArray(data)) {
-                    wrapper.innerHTML = data.map(item => `
-                        <div class="swiper-slide">
-                            <img src="${item.mainImage}" alt="${item.title || 'Artwork'}" loading="lazy" />
-                            <div class="slide-overlay">
-                                <h3 class="slide-title">${item.title || 'Untitled'}</h3>
-                                <p class="slide-desc">${item.description || 'No description available.'}</p>
-                                <a href="detaiindex.html?id=${item._id}" class="slide-btn">VIEW DETAILS</a>
-                            </div>
+    // 7. Dynamic Data Fetch & Swiper Init
+    fetch('https://backend-web-1.vercel.app/api/products')
+        .then(res => res.json())
+        .then(data => {
+            const wrapper = document.getElementById('fetch');
+            if (wrapper && Array.isArray(data)) {
+                wrapper.innerHTML = data.map(item => `
+                    <div class="swiper-slide">
+                        <img src="${item.mainImage}" alt="${item.title || 'Artwork'}" loading="lazy" />
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">${item.title || 'Untitled'}</h3>
+                            <p class="slide-desc">${item.description || 'No description available.'}</p>
+                            <a href="detail.html?id=${item._id}" class="slide-btn">VIEW DETAILS</a>
                         </div>
-                    `).join('');
+                    </div>
+                `).join('');
 
-                    // CRITICAL FIX: Update Scroll height after dynamic content is added
-                    // This ensures the footer is pushed down correctly
-                    setTimeout(() => {
-                        locoScroll.update();
-                        ScrollTrigger.refresh();
-                    }, 500); // Small delay to allow DOM to settle
+                // Initialize Swiper AFTER elements exist in DOM
+                new Swiper(".mySwiper", {
+                    effect: "coverflow",
+                    centeredSlides: true,
+                    slidesPerView: "auto",
+                    slideToClickedSlide: true,
+                    coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
+                    loop: true,
+                    autoplay: { delay: 2500, disableOnInteraction: false }
+                });
 
+                // Image load checker to fix Locomotive blank space issue
+                const images = wrapper.querySelectorAll('img');
+                let imagesLoadedCount = 0;
+
+                if (images.length === 0) {
+                    locoScroll.update();
+                    ScrollTrigger.refresh();
                 } else {
-                    console.log('No data or element missing');
+                    images.forEach(img => {
+                        if (img.complete) {
+                            imageLoaded();
+                        } else {
+                            img.addEventListener('load', imageLoaded);
+                            img.addEventListener('error', imageLoaded);
+                        }
+                    });
                 }
-            })
-            .catch(err => console.error('Fetch error:', err));
-    </script>
+
+                function imageLoaded() {
+                    imagesLoadedCount++;
+                    if (imagesLoadedCount === images.length) {
+                        // All dynamic images loaded, safely recalculate height
+                        setTimeout(() => {
+                            locoScroll.update();
+                            ScrollTrigger.refresh();
+                        }, 100);
+                    }
+                }
+
+            } else {
+                console.log('No data or element missing');
+            }
+        })
+        .catch(err => console.error('Fetch error:', err));
+</script>
 </body>
 
 </html>

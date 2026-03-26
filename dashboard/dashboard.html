@@ -1,613 +1,900 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art Product Management Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/global.css">
+    <title>Inventory | INKBYHAND Dashboard</title>
+    
+    <!-- Auth Guard: Redirects to login if no token is found in localStorage -->
+    <script>
+        if (!localStorage.getItem('authToken')) {
+            window.location.replace('login.html');
+        }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#050505',
+                        card: '#111111',
+                        accent: '#ff3c00',
+                        text: '#ffffff',
+                        muted: '#888888',
+                        border: 'rgba(255, 255, 255, 0.08)'
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <!-- SweetAlert2 for nice alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body { background-color: #050505; color: #ffffff; cursor: none; overflow-x: hidden; }
+        
+        /* Sharp Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff3c00; }
+
+        /* Custom Cursor */
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: white; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+        .cursor-circle { position: fixed; top: 0; left: 0; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.3); pointer-events: none; z-index: 9998; transition: transform 0.1s; }
+
+        /* Theme Components */
+        .glass-card {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.4s ease;
+        }
+        .glass-card:hover { border-color: #ff3c00; }
+
+        .nav-link { position: relative; opacity: 0.6; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { opacity: 1; color: #ff3c00; }
+
+        .btn-sharp {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .btn-sharp:hover { background: white; color: black; border-color: white; }
+        .btn-accent { background: #ff3c00; border-color: #ff3c00; color: white; }
+        .btn-accent:hover { background: white; color: black; border-color: white; }
+        .btn-danger { border-color: #dc2626; color: #dc2626; }
+        .btn-danger:hover { background: #dc2626; color: white; border-color: #dc2626; }
+
+        /* Product Image Container */
+        .product-img-box {
+            position: relative;
+            background: #111;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        /* Mobile: Show colors by default (no hover needed) */
+        @media (max-width: 1024px) {
+            .product-img-box img {
+                filter: grayscale(0);
+            }
+        }
+        .glass-card:hover .product-img-box img {
+            filter: grayscale(0);
+            scale: 1.1;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 0;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal.active .modal-content { transform: scale(1); }
+        
+        input, select, textarea {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 0.75rem;
+            width: 100%;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.875rem;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff3c00;
+            background: rgba(255,255,255,0.05);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #888;
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #mobile-menu.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-nav-link {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            margin: 1rem 0;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+        .mobile-nav-link:hover, .mobile-nav-link.active {
+            opacity: 1;
+            color: #ff3c00;
+        }
+        #close-menu {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        @media (max-width: 550px) {
+           .gas{
+                font-size: 5vw !important;
+            }
+           }
+        
+    </style>
 </head>
+<body class="antialiased font-sans">
 
-<body>
-<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            
-            <div class="flex-shrink-0">
-                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
-                    <span class="text-blue-600">Pro</span>Dashboard
-                </a>
-            </div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
 
-            <nav class="hidden md:block">
-                <div class="flex items-baseline space-x-6">
-                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
-                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
-                    <a href="dashboard_user.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
-                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
-                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
-                    
-                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
-                        Profile
-                    </a>
+     <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 flex items-center justify-between h-20">
+            <div class="flex items-center gap-8">
+                <div class="font-display text-xl md:text-2xl font-black tracking-tighter">
+                    INK<span class="text-accent">DASH</span>
                 </div>
-            </nav>
-
-            <div class="md:hidden">
-                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </label>
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="overview.html" class="nav-link text-sm font-bold uppercase tracking-widest">Analytics</a>
+                    <a href="dashboard.html" class="nav-link active text-sm font-bold uppercase tracking-widest">Inventory</a>
+                    <a href="orer.html" class="nav-link text-sm font-bold uppercase tracking-widest">Orders</a>
+                    <a href="contactdash.html" class="nav-link text-sm font-bold uppercase tracking-widest">Messages</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="hidden sm:flex flex-col items-end">
+                    <span class="text-[10px] text-muted font-mono leading-none">SERVER_STATUS</span>
+                    <span class="text-xs text-green-500 font-mono tracking-tighter uppercase">Operational</span>
+                </div>
+                <button id="open-menu" class="lg:hidden w-10 h-10 border border-white/10 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-width="1.5"/></svg>
+                </button>
+                <div class="hidden sm:flex w-10 h-10 bg-white/5 border border-white/10 items-center justify-center cursor-pointer hover:bg-accent transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="1.5"/></svg>
+                </div>
             </div>
         </div>
+    </header>
+
+     <!-- Mobile Menu -->
+    <div id="mobile-menu">
+        <button id="close-menu">✕</button>
+        <a href="overview.html" class="mobile-nav-link">Analytics</a>
+        <a href="dashboard.html" class="mobile-nav-link active">Inventory</a>
+        <a href="orer.html" class="mobile-nav-link">Orders</a>
+        <a href="contactdash.html" class="mobile-nav-link">Messages</a>
     </div>
 
-    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
-
-    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
-            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
-            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
-            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
-            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
+    <main class="pt-24 md:pt-32 px-4 md:px-6 max-w-[1600px] mx-auto pb-20">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+            <div>
+                <h1 class="font-display text-4xl md:text-6xl font-black tracking-tighter mb-2 gsap-reveal gas">INVENTORY_CORE</h1>
+                <div class="flex items-center gap-4">
+                    <p class="text-muted text-xs font-mono uppercase tracking-[0.2em] gsap-reveal" id="total-count">Total Items: --</p>
+                    <span class="h-[1px] w-12 bg-white/10"></span>
+                    <p class="text-accent text-xs font-mono uppercase tracking-[0.2em] gsap-reveal">Server: Online</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button class="btn-sharp px-6 py-3" onclick="fetchProducts()">Sort Grid</button>
+                <button class="btn-sharp btn-accent px-6 py-3" onclick="openModal('create')">+ New Product</button>
+            </div>
         </div>
-    </div>
-</header>
-    <div class="dashboard-container">
 
-        <main class="main-content">
+        <div class="glass-card mb-8 flex flex-wrap gap-4 p-4 gsap-reveal">
+            <input type="text" id="search-input" placeholder="SEARCH_DATABASE..." class="bg-white/5 border border-white/10 px-4 py-2 text-xs font-mono uppercase tracking-widest focus:outline-none focus:border-accent flex-1">
+            <button class="btn-sharp px-6" onclick="filterProducts()">Filter</button>
+        </div>
 
-            <div class="content-header">
-                <h1>Product Inventory</h1>
-                <button class="btn btn-primary" id="open-modal-btn">+ Add New Product</button>
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="product-grid">
+            <!-- Products will be injected here -->
+            <div class="glass-card p-8 text-center col-span-full">
+                <p class="text-muted text-sm font-mono animate-pulse">LOADING_DATA_STREAM...</p>
+            </div>
+        </div>
+    </main>
+<style>
+    /* Modal Background Overlay */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    /* Sharp Glass Card for Modal */
+    .modal-content {
+        background: #0a0a0a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        max-width: 900px;
+        margin: 40px auto;
+        position: relative;
+        box-shadow: 20px 20px 0px rgba(255, 60, 0, 0.05); /* Cyber-offset shadow */
+    }
+
+    /* Sharp Inputs Logic */
+    label {
+        display: block;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #888;
+        margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0 !important; /* Force Sharp */
+        padding: 12px 16px;
+        color: white;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 13px;
+        transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #ff3c00;
+        background: rgba(255, 60, 0, 0.02);
+    }
+
+    /* Custom File Input Styling */
+    input[type="file"] {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+    input[type="file"]::file-selector-button {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: white;
+        padding: 8px 16px;
+        cursor: pointer;
+        margin-right: 15px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 10px;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background: white;
+        color: black;
+    }
+
+    /* Preview Boxes */
+    #main-preview, .gallery-item {
+        border: 1px dashed rgba(255,255,255,0.2);
+        background: #050505;
+        position: relative;
+    }
+
+    /* Custom Scrollbar for Textareas */
+    textarea::-webkit-scrollbar { width: 3px; }
+    textarea::-webkit-scrollbar-thumb { background: #ff3c00; }
+</style>
+    <!-- Product Modal -->
+  <div id="product-modal" class="modal" data-lenis-prevent>
+    <div class="modal-content p-6 md:p-12">
+        
+        <div class="flex justify-between items-end mb-10 border-b border-white/10 pb-6">
+            <div>
+                <span class="text-accent font-mono text-[10px] tracking-[0.3em] uppercase block mb-2">System_Entry</span>
+                <h2 class="font-display text-4xl font-black uppercase tracking-tighter" id="modal-title">New Product</h2>
+            </div>
+            <button onclick="closeModal()" class="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-accent hover:text-white transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+            </button>
+        </div>
+        
+        <form id="product-form" class="space-y-8">
+            <input type="hidden" id="product-id">
+            <input type="hidden" id="mainImageBase64">
+
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="h-[1px] w-8 bg-accent"></span>
+                    <span class="text-[10px] font-bold tracking-widest text-muted uppercase">01. Identity_Core</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="title">Product Title</label>
+                        <input type="text" id="title" name="title" required placeholder="AXE_MODEL_01">
+                    </div>
+                    <div>
+                        <label for="artist">Artist / Maker</label>
+                        <input type="text" id="artist" name="artist" placeholder="Tahir_Studio">
+                    </div>
+                </div>
             </div>
 
-            <section class="product-management card">
-
-                <div class="controls-bar">
-                    <input type="text" placeholder="Search by title, artist, or style..." class="search-input">
-                    <div class="custom-select-wrapper filter-select-wrapper">
-                        <select class="filter-select" id="filterCategorySelect">
-                            <option value="" selected>All Categories</option>
-                            <option value="drawing">Drawing</option>
-                            <option value="painting">Painting</option>
-                            <option value="sculpture">Sculpture</option>
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="h-[1px] w-8 bg-accent"></span>
+                    <span class="text-[10px] font-bold tracking-widest text-muted uppercase">02. Technical_Specs</span>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="price">Price ($)</label>
+                        <input type="number" id="price" name="price" required placeholder="0.00">
+                    </div>
+                    <div>
+                        <label for="priceRange">Range</label>
+                        <input type="text" id="priceRange" name="priceRange" placeholder="e.g. 100-200">
+                    </div>
+                    <div>
+                        <label for="dimensions">Dimensions</label>
+                        <input type="text" id="dimensions" name="dimensions" placeholder="24x36">
+                    </div>
+                    <div>
+                        <label for="size">Scale</label>
+                        <select id="size" name="size">
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
                         </select>
                     </div>
                 </div>
+            </div>
 
-                <div class="table-responsive">
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title / Artist</th>
-                                <th>Price Range</th>
-                                <th>Category</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="product-table-body">
-                            <tr>
-                                <td colspan="5">Loading products...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-            </section>
-        </main>
-
-    </div>
-
-    <div class="modal-overlay" id="product-modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-modal-btn">&times;</span>
-            <h3 id="modal-title">Add New Product</h3>
-            <form class="product-form" id="product-form">
-
-                <input type="hidden" id="product-id" value="">
-
-                <div class="form-group span-2"><label for="title">Title</label><input type="text" id="title" required>
-                </div>
-                <div class="form-group span-2"><label for="artist">Artist</label><input type="text" id="artist" required>
-                </div>
-
-                <div class="form-group"><label for="price">Price ($)</label><input type="number" id="price" required>
-                </div>
-                <div class="form-group custom-select-wrapper">
-                    <label for="priceRange">Price Range</label>
-                    <select id="priceRange" required>
-                        <option value="0-1000">$0 - $1000</option>
-                        <option value="1000-2000" selected>$1000 - $2000</option>
-                        <option value="2000-5000">$2000 - $5000</option>
-                        <option value="5000+">$5000+</option>
-                    </select>
-                </div>
-
-                <div class="form-group"><label for="dimensions">Dimensions</label><input type="text" id="dimensions"
-                        value="20 x 20 in"></div>
-                <div class="form-group custom-select-wrapper">
-                    <label for="size">Size</label>
-                    <select id="size">
-                        <option value="small" selected>Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
-                    </select>
-                </div>
-
-                <div class="form-group custom-select-wrapper">
-                    <label for="orientation">Orientation</label>
-                    <select id="orientation">
-                        <option value="portrait">Portrait</option>
-                        <option value="landscape">Landscape</option>
-                        <option value="square" selected>Square</option>
-                    </select>
-                </div>
-                <div class="form-group custom-select-wrapper">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
                     <label for="category">Category</label>
-                    <select id="category">
-                        <option value="drawing" selected>Drawing</option>
-                        <option value="painting">Painting</option>
-                        <option value="sculpture">Sculpture</option>
+                    <input type="text" id="category" name="category" placeholder="Swords">
+                   
+
+                </div>
+                <div>
+                    <label for="medium">Material/Medium</label>
+                    <input type="text" id="medium" name="medium" placeholder="Carbon Steel">
+                </div>
+                <div>
+                    <label for="style">Visual Style</label>
+                    <input type="text" id="style" name="style" placeholder="Nordic">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                 <div>
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Portrait">
+                </div>
+                <div>
+                    <label for="orientation">Orientation</label>
+                    <select id="orientation" name="orientation">
+                        <option value="Square">Square</option>
+                        <option value="Portrait">Portrait</option>
+                        <option value="Landscape">Landscape</option>
                     </select>
                 </div>
-                <div class="form-group"><label for="medium">Medium</label><input type="text" id="medium"></div>
-                <div class="form-group"><label for="style">Style</label><input type="text" id="style"></div>
-                <div class="form-group"><label for="subject">Subject</label><input type="text" id="subject"></div>
-
-                <div class="form-group span-4 multi-select-container">
-                    <label>Country</label>
-                    <div class="tag-input-field" data-type="country">
-                        <input type="text" class="tag-input"
-                            data-list="Japan,USA,France,Italy,Spain,China,Germany,UK,Brazil"
-                            placeholder="Search or select country...">
-                        <span class="tag-input-icon" data-action="enter">🔍</span>
-                    </div>
+                <div>
+                    <label for="country">Origin/Country</label>
+                    <input type="text" id="country" name="country" placeholder="Sweden">
                 </div>
-
-                <div class="form-group span-4 multi-select-container">
-                    <label>Color Palette</label>
-                    <div class="tag-input-field" data-type="palette">
-                        <input type="text" class="tag-input"
-                            data-list="Monochromatic,Analogous,Complementary,Triadic,Vibrant,Pastel,Earthy,High Contrast"
-                            placeholder="Search or select palette...">
-                        <span class="tag-input-icon" data-action="enter">🔍</span>
-                    </div>
+                <div>
+                    <label for="palette">Color Palette</label>
+                    <input type="text" id="palette" name="palette" placeholder="Red, Black">
                 </div>
+            </div>
 
-                <div class="form-group span-4 image-upload-group">
-                    <label>Product Images</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="description">Product Narrative (Description)</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Enter full specifications..."></textarea>
+                </div>
+                <div>
+                    <label for="artistBio">Maker Details (Bio)</label>
+                    <textarea id="artistBio" name="artistBio" rows="4" placeholder="Background of the creator..."></textarea>
+                </div>
+            </div>
 
-                    <div class="image-input-pair">
-                        <input type="text" id="main-image-url"
-                            placeholder="Paste Main Image URL here (overridden by file upload)">
-                        <input type="file" id="main-file-upload" accept="image/*" style="display: none;">
-                        <label for="main-file-upload" class="btn btn-secondary browse-btn">Browse / Upload</label>
-                    </div>
-
-                    <div class="image-preview-area">
-                        <img src="placeholder.jpg" alt="Image Preview" id="main-image-preview"
-                            class="main-image-preview">
-                        <p class="preview-text">Main Image Preview (File or URL)</p>
-                    </div>
-
-                    <div class="small-images-array">
-                        <label>Small Images (`smallImages`)</label>
-                        <div class="image-thumbs-container">
-                            <div class="thumb-wrapper add-new-thumb" id="add-small-image">
-                                <span>+ Add Image</span>
-                                <input type="file" id="small-file-upload" accept="image/*" multiple>
+            <div class="pt-8 border-t border-white/5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="mb-4">Primary Image Asset</label>
+                        <div class="flex flex-col gap-4">
+                            <div id="main-preview" class="h-48 w-full border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
+                                <span class="text-[10px] text-muted font-mono">WAITING_FOR_UPLOAD...</span>
                             </div>
+                            <input type="file" id="mainImageInput" class="text-[10px]" accept="image/*" onchange="previewImage(this, 'main-preview')">
                         </div>
-                        <input type="hidden" name="smallImages" id="small-images-input" value="">
+                    </div>
+                    <div>
+                        <label class="mb-4">Gallery Buffer (Multiple)</label>
+                        <div class="flex flex-col gap-4">
+                            <div id="gallery-preview" class="h-48 w-full border border-white/10 bg-white/5 p-2 flex gap-2 overflow-x-auto">
+                                </div>
+                            <input type="file" id="smallImagesInput" accept="image/*" multiple onchange="previewGallery(this)">
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group span-4">
-                    <label for="description">Description Text</label>
-                    <textarea id="description" placeholder="A meticulous abstract drawing..."></textarea>
-                </div>
-                <div class="form-group span-4">
-                    <label for="artist-bio">Artist Bio Text</label>
-                    <textarea id="artist-bio" placeholder="Tanaka is a Tokyo-based artist..."></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary save-btn span-4">Save Product</button>
-            </form>
-        </div>
+            <div class="flex flex-col md:flex-row justify-end gap-4 pt-10 border-t border-white/10">
+                <button type="button" class="btn-sharp px-10 py-4 order-2 md:order-1" onclick="closeModal()">Discard_Changes</button>
+                <button type="submit" class="btn-sharp btn-accent px-12 py-4 order-1 md:order-2" id="save-btn">Push_To_Database</button>
+            </div>
+        </form>
     </div>
+</div>
+
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
+        // --- Configuration ---
+        const API_BASE_URL = 'https://backend-web-1.vercel.app/api'; 
+        // Note: Change to 'https://backend-web-1-yb6q.vercel.app/api' if the previous domain was preferred.
+        
+        let allProducts = [];
+        let galleryImagesBase64 = []; // Store multiple images
 
-    // --- 1. VARIABLE DECLARATIONS ---
-    const modal = document.getElementById('product-modal');
-    const openModalBtn = document.getElementById('open-modal-btn');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const productForm = document.getElementById('product-form');
-    const productTableBody = document.querySelector('.product-table tbody');
-    const modalTitle = document.getElementById('modal-title');
-    const hiddenProductId = document.getElementById('product-id');
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
+            
+            // Header Toggle Logic
+            const openBtn = document.getElementById('open-menu');
+            const closeBtn = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
 
-    const mainImageUrlInput = document.getElementById('main-image-url');
-    const mainImagePreview = document.getElementById('main-image-preview');
-    const mainFileUpload = document.getElementById('main-file-upload');
-    const smallFileUpload = document.getElementById('small-file-upload');
-    const smallImagesContainer = document.querySelector('.image-thumbs-container');
-    const smallImagesInput = document.getElementById('small-images-input');
-    const searchInput = document.querySelector('.search-input');
-    const filterSelect = document.querySelector('.filter-select');
-    let smallImageUrls = [];
-    const API_URL = 'https://backend-web-1-yb6q.vercel.app/api/products';
+            if(openBtn) openBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+            if(closeBtn) closeBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
 
-    let allProducts = [];
+            // Search Logic
+            document.getElementById('search-input').addEventListener('input', filterProducts);
 
-    // --- 2. MODAL & FORM UTILITIES ---
-    function updateCustomSelectDisplay(nativeSelect) {
-        const wrapper = nativeSelect.closest('.custom-select-wrapper');
-        const customButton = wrapper ? wrapper.querySelector('.select-selected') : null;
-        if (customButton) {
-            const selectedOption = Array.from(nativeSelect.options).find(opt => opt.value === nativeSelect.value);
-            customButton.innerHTML = selectedOption ? selectedOption.innerHTML : nativeSelect.options[0].innerHTML;
-        }
-    }
-
-    function clearForm() {
-        productForm.reset();
-        hiddenProductId.value = '';
-        modalTitle.textContent = 'Add New Product';
-        mainImagePreview.src = 'placeholder.jpg';
-        smallImageUrls = [];
-        renderSmallImages();
-        document.querySelectorAll('.tag-input-field').forEach(inputField => {
-            if (inputField.api && inputField.api.reset) inputField.api.reset();
+            // Form Submit
+            document.getElementById('product-form').addEventListener('submit', handleFormSubmit);
         });
-        document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper => {
-            const nativeSelect = wrapper.querySelector('select');
-            if (nativeSelect) {
-                nativeSelect.value = nativeSelect.options[0].value;
-                updateCustomSelectDisplay(nativeSelect);
+
+        // --- Core Functions ---
+
+        async function fetchProducts() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/products`);
+                if (!res.ok) throw new Error('Failed to fetch data');
+                allProducts = await res.json();
+                renderProducts(allProducts);
+                document.getElementById('total-count').textContent = `Total Items: ${allProducts.length}`;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('product-grid').innerHTML = `
+                    <div class="col-span-full text-center text-red-500 font-mono text-sm border border-red-900 p-4 bg-red-900/10">
+                        Error connecting to server. <br> ${error.message}
+                    </div>
+                `;
             }
-        });
-    }
-
-    if (openModalBtn) openModalBtn.onclick = () => { clearForm(); modal.classList.add('open'); };
-    if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.remove('open');
-    if (modal) modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
-
-    function closeAllSelect(elmnt) {
-        const selectedElements = document.getElementsByClassName("select-selected");
-        const itemsElements = document.getElementsByClassName("select-items");
-        for (let i = 0; i < selectedElements.length; i++) {
-            if (elmnt !== selectedElements[i]) selectedElements[i].classList.remove("select-arrow-active");
         }
-        for (let i = 0; i < itemsElements.length; i++) {
-            if (elmnt !== selectedElements[i]) itemsElements[i].classList.add("select-hide");
+
+        function renderProducts(products) {
+            const grid = document.getElementById('product-grid');
+            if (products.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center text-muted font-mono py-12">NO_DATA_FOUND</div>';
+                return;
+            }
+
+            grid.innerHTML = products.map(product => `
+                <div class="glass-card p-4 gsap-card group relative">
+                    <div class="product-img-box mb-6">
+                        <img src="${product.mainImage || 'https://via.placeholder.com/400x400?text=No+Image'}" 
+                             alt="${product.title}" 
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/400x400?text=Error'">
+                        <div class="absolute top-0 right-0 p-2 flex gap-1">
+                            <span class="bg-black/50 backdrop-blur text-white text-[9px] font-black px-2 py-1 uppercase border border-white/10 hover:bg-accent cursor-pointer transition-colors" 
+                                  onclick="editProduct('${product._id}')">Edit</span>
+                            <span class="bg-red-900/50 backdrop-blur text-white text-[9px] font-black px-2 py-1 uppercase border border-red-500/30 hover:bg-red-600 cursor-pointer transition-colors" 
+                                  onclick="deleteProduct('${product._id}')">✕</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-display text-lg font-bold uppercase tracking-tight truncate pr-2">${product.title}</h3>
+                        <span class="text-accent font-mono text-sm font-bold">$${product.price}</span>
+                    </div>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest mb-4 font-mono truncate">${product.artist || 'Unknown Artist'}</p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-[9px] bg-white/5 px-2 py-1 rounded border border-white/5">${product.category || 'Art'}</span>
+                        <span class="text-[9px] bg-white/5 px-2 py-1 rounded border border-white/5">${product.dimensions || 'N/A'}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-muted uppercase font-bold">Status</span>
+                            <span class="text-green-500 text-xs font-black uppercase">Active</span>
+                        </div>
+                        <button class="w-8 h-8 border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors" onclick="Swal.fire({ title: 'View Details', text: 'Not fully implemented in this demo', icon: 'info', background: '#111', color: '#fff', confirmButtonColor: '#ff3c00' })">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-trigger animations
+            gsap.from('.gsap-card', {
+                scale: 0.95,
+                opacity: 0,
+                duration: 0.5,
+                stagger: 0.05,
+                ease: 'power2.out'
+            });
         }
-    }
-    document.addEventListener("click", closeAllSelect);
 
-    // --- 3. CUSTOM SELECT LOGIC ---
-    function setupCustomSelects() {
-        document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
-            const nativeSelect = wrapper.querySelector('select');
-            if (!nativeSelect || wrapper.querySelector('.select-selected')) return;
+        function filterProducts() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allProducts.filter(p => 
+                (p.title && p.title.toLowerCase().includes(term)) || 
+                (p.artist && p.artist.toLowerCase().includes(term)) ||
+                (p.category && p.category.toLowerCase().includes(term))
+            );
+            renderProducts(filtered);
+        }
 
-            const customButton = document.createElement('div');
-            customButton.className = 'select-selected';
-            const customItems = document.createElement('div');
-            customItems.className = 'select-items select-hide';
+        // --- Modal & Form Logic ---
 
-            Array.from(nativeSelect.options).forEach(option => {
-                if (nativeSelect.classList.contains('filter-select') && option.value === "") {
-                    customButton.innerHTML = option.innerHTML;
-                    return;
+        function openModal(mode, data = null) {
+            const modal = document.getElementById('product-modal');
+            const form = document.getElementById('product-form');
+            const title = document.getElementById('modal-title');
+            const saveBtn = document.getElementById('save-btn');
+            
+            // Activate Modal
+            modal.classList.add('active');
+            gsap.from(".modal-content", { y: 50, opacity: 0, duration: 0.5, ease: "power4.out" });
+
+            // Reset form
+            form.reset();
+            document.getElementById('product-id').value = '';
+            document.getElementById('main-preview').innerHTML = '<span class="text-[10px] text-muted font-mono">WAITING_FOR_UPLOAD...</span>';
+            document.getElementById('gallery-preview').innerHTML = '';
+            document.getElementById('mainImageBase64').value = ''; // Reset hidden input
+            galleryImagesBase64 = [];
+
+            if (mode === 'edit' && data) {
+                title.textContent = 'EDIT_ENTRY';
+                saveBtn.textContent = 'UPDATE_DATABASE';
+                
+                // Fill fields
+                document.getElementById('product-id').value = data._id;
+                document.getElementById('title').value = data.title || '';
+                document.getElementById('artist').value = data.artist || '';
+                document.getElementById('price').value = data.price || '';
+                document.getElementById('priceRange').value = data.priceRange || '';
+                document.getElementById('dimensions').value = data.dimensions || '';
+                document.getElementById('size').value = data.size || 'Medium';
+                document.getElementById('category').value = data.category || '';
+                document.getElementById('medium').value = data.medium || '';
+                document.getElementById('style').value = data.style || '';
+                document.getElementById('subject').value = data.subject || '';
+                document.getElementById('orientation').value = data.orientation || 'Square';
+                document.getElementById('country').value = data.country || '';
+                document.getElementById('palette').value = data.palette || '';
+                document.getElementById('description').value = data.description || '';
+                document.getElementById('artistBio').value = data.artistBio || '';
+
+                // Handle Image Previews (Use URLs from backend)
+                if (data.mainImage) {
+                    console.log('Rendering Main Image:', data.mainImage);
+                    document.getElementById('main-preview').innerHTML = `<img src="${data.mainImage}" class="w-full h-full object-cover">`;
+                    // Important: Store existing URL in the hidden field so we don't send empty if not changed
+                    document.getElementById('mainImageBase64').value = data.mainImage;
                 }
-                const itemDiv = document.createElement('div');
-                itemDiv.innerHTML = option.innerHTML;
-                itemDiv.dataset.value = option.value;
-                if (option.selected) itemDiv.classList.add('same-as-selected');
-                itemDiv.addEventListener('click', function (e) {
-                    nativeSelect.value = this.dataset.value;
-                    customButton.innerHTML = this.innerHTML;
-                    const selected = customItems.querySelector('.same-as-selected');
-                    if (selected) selected.classList.remove('same-as-selected');
-                    this.classList.add('same-as-selected');
-                    closeAllSelect();
-                    e.stopPropagation();
-                    if (nativeSelect.classList.contains('filter-select')) handleSearch();
-                });
-                customItems.appendChild(itemDiv);
-            });
-            if (!nativeSelect.classList.contains('filter-select')) {
-                customButton.innerHTML = nativeSelect.options[nativeSelect.selectedIndex].innerHTML;
-            }
-            wrapper.append(customButton, customItems);
-            customButton.addEventListener('click', function (e) {
-                e.stopPropagation();
-                closeAllSelect(this);
-                this.classList.toggle('select-arrow-active');
-                customItems.classList.toggle('select-hide');
-            });
-        });
-    }
-    setupCustomSelects();
 
-    // --- 4. MULTI-SELECT TAG LOGIC ---
-    function setupMultiSelect(container) {
-        const inputField = container.querySelector('.tag-input-field');
-        const tagInput = container.querySelector('.tag-input');
-        const tagIcon = container.querySelector('.tag-input-icon[data-action="enter"]');
-        const allOptions = tagInput.dataset.list.split(',');
-        let selectedTags = new Set();
-        const suggestionsList = document.createElement('div');
-        suggestionsList.className = 'select-options-list';
-        inputField.parentElement.appendChild(suggestionsList);
-
-        function addTagFromInput() {
-            const value = tagInput.value.trim();
-            if (value && !selectedTags.has(value)) {
-                selectedTags.add(value);
-                tagInput.value = '';
-                renderTags();
-                filterSuggestions('');
-            }
-        }
-
-        function renderTags() {
-            inputField.querySelectorAll('.tag').forEach(tag => tag.remove());
-            selectedTags.forEach(tagValue => {
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.dataset.value = tagValue;
-                tag.innerHTML = `${tagValue} <span class="tag-remove">&times;</span>`;
-                tag.querySelector('.tag-remove').onclick = (e) => {
-                    selectedTags.delete(tagValue);
-                    renderTags();
-                    filterSuggestions('');
-                    e.stopPropagation();
-                };
-                inputField.insertBefore(tag, tagInput);
-            });
-        }
-
-        function filterSuggestions(query) {
-            suggestionsList.innerHTML = '';
-            suggestionsList.classList.remove('show');
-            const lowerQuery = query.toLowerCase().trim();
-            let hasSuggestions = false;
-            allOptions.filter(o => !selectedTags.has(o) && (lowerQuery === '' || o.toLowerCase().includes(lowerQuery)))
-                .forEach(option => {
-                    const optionDiv = document.createElement('span');
-                    optionDiv.className = 'select-option';
-                    optionDiv.innerHTML = option;
-                    optionDiv.onclick = () => { selectedTags.add(option); tagInput.value=''; renderTags(); filterSuggestions(''); tagInput.focus(); };
-                    suggestionsList.appendChild(optionDiv);
-                    hasSuggestions = true;
-                });
-            if (hasSuggestions) suggestionsList.classList.add('show');
-        }
-
-        tagInput.addEventListener('input', () => filterSuggestions(tagInput.value));
-        tagInput.addEventListener('focus', () => filterSuggestions(tagInput.value));
-        tagInput.addEventListener('keydown', (e) => { if (e.key==='Enter'){ e.preventDefault(); addTagFromInput(); suggestionsList.classList.remove('show'); } });
-        if (tagIcon) tagIcon.addEventListener('click', (e)=>{ e.stopPropagation(); addTagFromInput(); suggestionsList.classList.remove('show'); tagInput.focus(); });
-        document.addEventListener('click', (e) => { if (!container.contains(e.target)) suggestionsList.classList.remove('show'); });
-        renderTags();
-
-        inputField.api = {
-            reset: () => { selectedTags.clear(); renderTags(); },
-            set: (tagsArray = []) => { selectedTags = new Set(tagsArray); renderTags(); }
-        };
-    }
-    document.querySelectorAll('.multi-select-container').forEach(setupMultiSelect);
-
-    // --- 5. IMAGE HANDLING ---
-    if (mainImageUrlInput) mainImageUrlInput.addEventListener('input', () => { mainImagePreview.src = mainImageUrlInput.value.trim() || 'placeholder.jpg'; });
-    if (mainFileUpload) mainFileUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => { mainImagePreview.src=event.target.result; mainImageUrlInput.value=event.target.result; };
-        reader.readAsDataURL(file);
-    });
-
-    function renderSmallImages() {
-        if (!smallImagesContainer || !smallImagesInput) return;
-        const addNewThumbEl = smallImagesContainer.querySelector('#add-small-image');
-        smallImagesContainer.innerHTML='';
-        smallImageUrls.forEach(url=>{
-            const wrapper=document.createElement('div'); wrapper.className='thumb-wrapper';
-            const altText = url.startsWith('data:')?'Data URL Thumb':'Uploaded URL';
-            wrapper.innerHTML=`<img src="${url}" alt="${altText}" class="small-thumb"><span class="thumb-remove" data-url="${url}">&times;</span>`;
-            wrapper.querySelector('.thumb-remove').addEventListener('click', e=>{
-                e.stopPropagation();
-                const urlToRemove=e.target.dataset.url;
-                smallImageUrls = smallImageUrls.filter(u=>u!==urlToRemove);
-                updateSmallImagesArray();
-            });
-            smallImagesContainer.appendChild(wrapper);
-        });
-        if (addNewThumbEl) smallImagesContainer.appendChild(addNewThumbEl);
-        smallImagesInput.value = smallImageUrls.join(',');
-    }
-
-    function updateSmallImagesArray(){ renderSmallImages(); }
-
-    if (smallFileUpload) smallFileUpload.addEventListener('change', (e)=>{
-        Array.from(e.target.files).forEach(file=>{
-            const reader = new FileReader();
-            reader.onload = (event)=>{ smallImageUrls.push(event.target.result); updateSmallImagesArray(); };
-            reader.readAsDataURL(file);
-        });
-        e.target.value='';
-    });
-
-    renderSmallImages();
-
-    // --- 6. RENDER & SEARCH ---
-    function renderProducts(productsToDisplay){
-        if (!productTableBody) return;
-        productTableBody.innerHTML='';
-        if (productsToDisplay.length===0){
-            productTableBody.innerHTML='<tr><td colspan="5">No products found.</td></tr>';
-            return;
-        }
-        productsToDisplay.forEach(product=>{
-            const row=document.createElement('tr');
-            row.innerHTML=`
-                <td data-label="ID">${product._id.slice(-6)}</td>
-                <td data-label="Title / Artist"><strong>${product.title||'N/A'}</strong><small>(${product.artist||'N/A'})</small></td>
-                <td data-label="Price Range">${product.priceRange||'$'+product.price}</td>
-                <td data-label="Category">${product.category||'N/A'}</td>
-                <td data-label="Actions">
-                    <button class="btn btn-action edit-btn" data-id="${product._id}" title="Edit">✏️</button>
-                    <button class="btn btn-action delete-btn" data-id="${product._id}" title="Delete">🗑️</button>
-                </td>
-            `;
-            productTableBody.appendChild(row);
-        });
-    }
-
-    function handleSearch(){
-        const query=searchInput.value.toLowerCase().trim();
-        const categoryFilter=filterSelect.value.toLowerCase();
-        const filtered = allProducts.filter(product=>{
-            const matchesQuery = !query || (product.title && product.title.toLowerCase().includes(query)) || (product.artist && product.artist.toLowerCase().includes(query)) || (product.style && product.style.toLowerCase().includes(query));
-            const matchesCategory = categoryFilter==='' || (product.category && product.category.toLowerCase()===categoryFilter);
-            return matchesQuery && matchesCategory;
-        });
-        renderProducts(filtered);
-    }
-
-    if(searchInput) searchInput.addEventListener('input', handleSearch);
-
-    async function loadProducts(){
-        if(!productTableBody) return;
-        productTableBody.innerHTML='<tr><td colspan="5">Loading products...</td></tr>';
-        try{
-            const response=await fetch(API_URL);
-            if(!response.ok) throw new Error('Network response was not ok');
-            allProducts=await response.json();
-            handleSearch();
-        }catch(error){
-            console.error('Failed to load products:',error);
-            productTableBody.innerHTML='<tr><td colspan="5">Failed to load products. (Check API server)</td></tr>';
-        }
-    }
-
-    // --- 7. EDIT & DELETE ---
-    function populateFormForEdit(product){
-        modalTitle.textContent=`Edit Product: ${product.title}`;
-        hiddenProductId.value=product._id;
-        document.getElementById('title').value=product.title||'';
-        document.getElementById('artist').value=product.artist||'';
-        document.getElementById('price').value=product.price||0;
-        document.getElementById('dimensions').value=product.dimensions||'';
-        document.getElementById('medium').value=product.medium||'';
-        document.getElementById('style').value=product.style||'';
-        document.getElementById('subject').value=product.subject||'';
-        document.getElementById('description').value=product.description||'';
-        document.getElementById('artist-bio').value=product.artistBio||'';
-        document.getElementById('priceRange').value=product.priceRange||'1000-2000';
-        document.getElementById('size').value=product.size||'small';
-        document.getElementById('category').value=product.category||'drawing';
-        document.getElementById('orientation').value=product.orientation||'square';
-        document.querySelectorAll('.modal-content .custom-select-wrapper').forEach(wrapper=>{
-            const nativeSelect=wrapper.querySelector('select');
-            if(nativeSelect) updateCustomSelectDisplay(nativeSelect);
-        });
-        mainImageUrlInput.value=product.mainImage||'';
-        mainImagePreview.src=product.mainImage||'placeholder.jpg';
-        smallImageUrls=product.smallImages||[];
-        renderSmallImages();
-        document.querySelector('.tag-input-field[data-type="country"]').api.set(product.country||[]);
-        document.querySelector('.tag-input-field[data-type="palette"]').api.set(product.palette||[]);
-    }
-
-    productTableBody.addEventListener('click', async (e)=>{
-        const target=e.target;
-        if(target.classList.contains('edit-btn')){
-            const id=target.dataset.id;
-            try{
-                const res=await fetch(`${API_URL}/${id}`);
-                if(!res.ok) throw new Error('Failed to fetch product details');
-                const product=await res.json();
-                clearForm();
-                populateFormForEdit(product);
-                modal.classList.add('open');
-            }catch(error){ console.error(error); alert(`Error fetching product: ${error.message}`);}
-        }
-        if(target.classList.contains('delete-btn')){
-            const id=target.dataset.id;
-            if(!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
-            try{
-                const authToken=localStorage.getItem('token');
-                const res=await fetch(`${API_URL}/${id}`,{method:'DELETE', headers:{'Authorization':`Bearer ${authToken}`}});
-                if(!res.ok){
-                    const errorData=await res.json().catch(()=>({}));
-                    throw new Error(errorData.msg || `Failed to delete product (Status: ${res.status})`);
+                if (data.smallImages && Array.isArray(data.smallImages) && data.smallImages.length > 0) {
+                    console.log('Rendering Gallery Images:', data.smallImages);
+                    galleryImagesBase64 = data.smallImages; // Keep existing URLs
+                    
+                    const galleryContainer = document.getElementById('gallery-preview');
+                    data.smallImages.forEach(url => {
+                        const div = document.createElement('div');
+                        div.className = 'flex-shrink-0 w-20 h-20 border border-white/10 overflow-hidden relative group';
+                        div.innerHTML = `
+                            <img src="${url}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-[10px] text-white">STORED</div>
+                        `;
+                        galleryContainer.appendChild(div);
+                    });
                 }
-                console.log('Product deleted');
-                loadProducts();
-            }catch(error){ console.error(error); alert(`Error: ${error.message}`);}
-        }
-    });
 
-    // --- 8. FORM SUBMISSION ---
-    productForm.addEventListener('submit', async function(e){
-        e.preventDefault();
-        const saveButton=productForm.querySelector('.save-btn');
-        saveButton.textContent='Saving...'; saveButton.disabled=true;
-        const productId=hiddenProductId.value;
-        const isEditing=!!productId;
-        const productData={
-            title: document.getElementById('title').value,
-            artist: document.getElementById('artist').value,
-            price: document.getElementById('price').value,
-            priceRange: document.getElementById('priceRange').value,
-            dimensions: document.getElementById('dimensions').value,
-            size: document.getElementById('size').value,
-            category: document.getElementById('category').value,
-            medium: document.getElementById('medium').value,
-            style: document.getElementById('style').value,
-            subject: document.getElementById('subject').value,
-            orientation: document.getElementById('orientation').value,
-            description: document.getElementById('description').value,
-            artistBio: document.getElementById('artist-bio').value,
-            mainImage: mainImageUrlInput.value,
-            smallImages: smallImageUrls,
-            country: Array.from(document.querySelector('.tag-input-field[data-type="country"]').querySelectorAll('.tag')).map(tag=>tag.dataset.value),
-            palette: Array.from(document.querySelector('.tag-input-field[data-type="palette"]').querySelectorAll('.tag')).map(tag=>tag.dataset.value),
-        };
-        const url=isEditing?`${API_URL}/${productId}`:API_URL;
-        const method=isEditing?'PUT':'POST';
-        const authToken=localStorage.getItem('token');
-        try{
-            const response=await fetch(url,{method:method, headers:{'Content-Type':'application/json','Authorization':`Bearer ${authToken}`}, body:JSON.stringify(productData)});
-            if(!response.ok){
-                const errorData=await response.json().catch(()=>({}));
-                throw new Error(errorData.msg||'Failed to save product');
+            } else {
+                title.textContent = 'NEW_PRODUCT';
+                saveBtn.textContent = 'PUSH_TO_DATABASE';
             }
-            console.log(`Product ${isEditing?'updated':'saved'} successfully`);
-            modal.classList.remove('open'); clearForm(); loadProducts();
-        }catch(error){ console.error('Form submission error:',error); alert(`Error: ${error.message}`);}
-        finally{ saveButton.textContent='Save Product'; saveButton.disabled=false; }
-    });
+        }
 
-    // INITIAL LOAD
-    loadProducts();
+        function closeModal() {
+            document.getElementById('product-modal').classList.remove('active');
+        }
 
-}); // DOMContentLoaded
-</script>
+        async function editProduct(id) {
+            try {
+                // Priority 1: Check local loaded data (Instant)
+                let product = allProducts.find(p => p._id === id);
 
+                // Priority 2: If missing (e.g. pagination/deleted), fetch from server
+                if (!product) {
+                    const res = await fetch(`${API_BASE_URL}/products/${id}`);
+                    if (!res.ok) throw new Error('Product not found on server');
+                    product = await res.json();
+                }
+
+                // If fetched successfully, open modal
+                if (product) openModal('edit', product);
+
+            } catch (error) {
+                console.error("Error loading product:", error);
+                
+                // Fallback: Try fetching fresh data even if local check failed incorrectly
+                try {
+                     const res = await fetch(`${API_BASE_URL}/products/${id}`);
+                     if(res.ok) {
+                         const product = await res.json();
+                         openModal('edit', product);
+                         return;
+                     }
+                } catch(e) { console.error(e); }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Load Error',
+                    text: 'Could not load product details. Possible network or ID issue.',
+                    background: '#111',
+                    color: '#fff',
+                    confirmButtonColor: '#ff3c00'
+                });
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const saveBtn = document.getElementById('save-btn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Processing...';
+            saveBtn.disabled = true;
+
+            const id = document.getElementById('product-id').value;
+            const isEdit = !!id;
+
+            // Gather Data
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Add Images
+            // Note: The backend expects 'mainImage' to be a Base64 string OR a URL string
+            data.mainImage = document.getElementById('mainImageBase64').value;
+            // The backend expects 'smallImages' to be an array of strings
+            data.smallImages = galleryImagesBase64;
+
+            // Clean up file inputs from the object (we handled them manually)
+            delete data['mainImageInput']; // name attribute from HTML input
+            delete data['smallImagesInput'];
+
+            try {
+                const url = isEdit ? `${API_BASE_URL}/products/${id}` : `${API_BASE_URL}/products`;
+                const method = isEdit ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) throw new Error('Operation Failed');
+
+                const result = await res.json();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: isEdit ? 'Updated!' : 'Created!',
+                    text: `Product ${result.title} has been saved.`,
+                    background: '#111',
+                    color: '#fff',
+                    confirmButtonColor: '#ff3c00'
+                });
+
+                closeModal();
+                fetchProducts(); // Refresh Grid
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Check console.',
+                    background: '#111',
+                    color: '#fff'
+                });
+            } finally {
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function deleteProduct(id) {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#333',
+                confirmButtonText: 'Yes, delete!',
+                background: '#111',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Delete failed');
+                    
+                    Swal.fire({ title:'Deleted!', text:'Product has been removed.', icon:'success', background:'#111', color:'#fff', confirmButtonColor:'#ff3c00'});
+                    fetchProducts();
+                } catch (error) {
+                    Swal.fire({ title:'Error!', text:'Could not delete product.', icon:'error', background:'#111', color:'#fff'});
+                }
+            }
+        }
+
+        // --- Image Helpers ---
+
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById(previewId).innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                    document.getElementById('mainImageBase64').value = e.target.result; // Store Base64
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewGallery(input) {
+            const previewContainer = document.getElementById('gallery-preview');
+            previewContainer.innerHTML = '';
+            galleryImagesBase64 = []; // Reset current list
+
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'flex-shrink-0 w-20 h-20 border border-white/10 overflow-hidden relative';
+                        div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                        previewContainer.appendChild(div);
+                        galleryImagesBase64.push(e.target.result); // Add Base64 to array
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // --- Layout JS (Cursor, Smooth Scroll) ---
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(circle, { x: e.clientX - 17, y: e.clientY - 17, duration: 0.2 });
+        });
+
+        document.querySelectorAll('.btn-sharp').forEach(btn => {
+            btn.addEventListener('mouseenter', () => gsap.to(circle, { scale: 1.5, borderColor: '#ff3c00', duration: 0.3 }));
+            btn.addEventListener('mouseleave', () => gsap.to(circle, { scale: 1, borderColor: 'rgba(255,255,255,0.3)', duration: 0.3 }));
+        });
+
+    </script>
 </body>
-
 </html>

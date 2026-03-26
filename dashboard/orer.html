@@ -1,898 +1,364 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management Dashboard</title>
+    <title>Command Center | INKBYHAND</title>
+    
+    <script>if(!localStorage.getItem('authToken')) window.location.replace('login.html');</script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/global.css">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
                     colors: {
-                        'primary': {
-                            500: '#4F46E5', // Indigo
-                            600: '#4338CA',
-                        },
-                        'status-pending': '#F59E0B',    // Amber/Yellow
-                        'status-processing': '#2563EB', // Blue
-                        'status-shipped': '#F59E0B',    // Amber/Yellow
-                        'status-delivered': '#10B981',  // Green
-                        'status-cancelled': '#EF4444',  // Red
-                        'status-requested': '#6366F1',  // Violet
+                        dark: '#050505',
+                        card: '#111111',
+                        accent: '#ff3c00',
+                        text: '#ffffff',
+                        muted: '#888888'
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+     <script>
+        if (!localStorage.getItem('authToken')) {
+            window.location.replace('login.html');
+        }
+    </script>
     <style>
-        /* Optional custom styles for better readability and structure */
-        body {
-            background-color: #f3f4f6;
-            font-family: light;
-        }
-        .card {
-            background-color: #ffffff;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 1.25rem; /* p-5 */
-        }
-        .detail-item {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        .status-button {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 9999px; /* rounded-full */
-            transition: all 0.2s;
-        }
-        .status-button.active {
-            background-color: theme('colors.primary.500');
-            color: blue;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .status-button:not(.active) {
-            background-color: #e5e7eb; /* bg-gray-200 */
-            color: #4b5563; /* text-gray-700 */
-        }
-        .status-button:hover:not(.active) {
-            background-color: #d1d5db; /* bg-gray-300 */
-        }
+        body { background-color: #050505; color: #ffffff; cursor: none; overflow-x: hidden; font-family: 'Space Grotesk', sans-serif; }
+        * { border-radius: 0 !important; box-shadow: none !important; outline: none !important; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff3c00; }
         
-        /* ⭐ Timeline styles */
-        .timeline {
-            position: relative;
-            padding-left: 20px;
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-circle { display: none; }
+            body { cursor: auto; }
         }
-        .timeline-item {
-            margin-bottom: 20px;
-            position: relative;
-            padding-left: 30px;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #D1D5DB; /* bg-gray-300 */
-            z-index: 1;
-        }
-        .timeline-item.completed::before {
-            background-color: theme('colors.status-delivered'); /* Green */
-        }
-        .timeline-item.estimated::before {
-            background-color: #9CA3AF; /* Gray 400 */
-            border: 2px dashed #4B5563;
-        }
-        .timeline::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 4px;
-            bottom: 0;
-            width: 2px;
-            background-color: #E5E7EB; /* bg-gray-200 */
-        }
-        .timeline-item:last-child::after {
-            content: none;
-        }
-        #filter-nav{
-            gap: 15px;
-            justify-content: center;
-        }
-          #filter-nav li{
-            margin: 0;
-          }
 
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: white; pointer-events: none; z-index: 100; mix-blend-mode: difference; }
+        .cursor-circle { position: fixed; top: 0; left: 0; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); pointer-events: none; z-index: 99; transition: width 0.3s, height 0.3s; }
+        
+        .glass-card { background: #111; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.4s; }
+        .glass-card:hover { border-color: #ff3c00; }
+        
+        .data-table th { background: #0a0a0a; color: #555; border-bottom: 1px solid #222; font-family: 'Syne', sans-serif; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.15em; white-space: nowrap; }
+        .data-table td { border-bottom: 1px solid #111; padding: 1rem 1.5rem; white-space: nowrap; }
+        
+        .status-badge { width: 8px; height: 8px; display: inline-block; margin-right: 10px; }
+        .bg-pending { background: #eab308; }
+        .bg-processing { background: #3b82f6; }
+        .bg-shipped { background: #a855f7; }
+        .bg-delivered { background: #22c55e; }
+        .bg-cancelled { background: #ef4444; }
+
+        #orderDetailPanel { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 450px; background: #0a0a0a; border-left: 1px solid #222; z-index: 80; transform: translateX(100%); transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto; }
+        #orderDetailPanel.open { transform: translateX(0); }
+        
+        /* Mobile Menu Panel */
+        #mobileMenu { position: fixed; inset: 0; background: #050505; z-index: 90; transform: translateY(-100%); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #mobileMenu.open { transform: translateY(0); }
+
+        .panel-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 70; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+        .panel-mask.open { opacity: 1; pointer-events: auto; }
+
+        #loadingOverlay { position: fixed; inset: 0; background: #050505; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
-<body class="p-4 sm:p-6 lg:p-10">
-<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            
-            <div class="flex-shrink-0">
-                <a href="#" class="text-gray-800 text-xl font-bold tracking-tight">
-                    <span class="text-blue-600">Pro</span>Dashboard
-                </a>
-            </div>
+<body class="antialiased selection:bg-accent selection:text-white">
 
-            <nav class="hidden md:block">
-                <div class="flex items-baseline space-x-6">
-                    <a href="overview.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
-                    <a href="contactdash.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Reports</a>
-                    <a href="dashboard_user.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Customers</a>
-                    <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Inventory</a>
-                    <a href="orer.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Sales</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Help</a>
-                    
-                    <a href="#" class="ml-4 bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm font-semibold transition duration-150 border border-gray-200">
-                        Profile
-                    </a>
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <div id="loadingOverlay">
+        <div class="font-display text-2xl font-bold tracking-tighter uppercase">INK<span class="text-accent">DASH</span></div>
+        <div class="w-32 h-[1px] bg-white/10 mt-4 overflow-hidden"><div id="loadProgress" class="h-full bg-accent w-0"></div></div>
+    </div>
+
+    <div id="mobileMenu">
+        <button onclick="toggleMenu()" class="absolute top-8 right-8 text-white">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+        </button>
+        <nav class="flex flex-col gap-8 text-center">
+            <a href="overview.html" class="text-3xl font-display font-bold uppercase tracking-widest hover:text-accent">Analytics</a>
+            <a href="dashboard.html" class="text-3xl font-display font-bold uppercase tracking-widest hover:text-accent">Inventory</a>
+            <a href="orer.html" class="text-3xl font-display font-bold uppercase tracking-widest text-accent">Orders</a>
+            <a href="contactdash.html" class="text-3xl font-display font-bold uppercase tracking-widest hover:text-accent">Messages</a>
+        </nav>
+    </div>
+
+    <header class="fixed w-full top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 flex items-center justify-between h-20">
+            <div class="flex items-center gap-8">
+                <div class="font-display text-xl md:text-2xl font-black tracking-tighter">
+                    INK<span class="text-accent">DASH</span>
                 </div>
-            </nav>
-
-            <div class="md:hidden">
-                <label for="menu-toggle-light" class="cursor-pointer inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <input type="checkbox" id="menu-toggle-light" class="hidden peer">
-
-    <div class="md:hidden peer-checked:block bg-gray-50 pb-3 border-t border-gray-200 transition-all duration-300 ease-in-out hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="overview.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Dashboard</a>
-            <a href="contactdash.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Reports</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Customers</a>
-            <a href="dashboard.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Inventory</a>
-            <a href="orer.html" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Sales</a>
-            <a href="#" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Help</a>
-            <a href="#" class="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-semibold mt-2 transition duration-150">Profile</a>
-        </div>
-    </div>
-</header>
-    <div class="max-w-7xl mx-auto" id="app-container">
-
-        <div id="order-list-view" class="space-y-6">
-            <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Recent Orders</h1>
-            
-            <div class="header">
-                <nav>
-                    <ul id="filter-nav" class="flex flex-wrap gap-0">
-                        <li><button class="status-button active" data-status-filter="all">All Orders</button></li>
-                        <li><button class="status-button" data-status-filter="Pending">Pending</button></li>
-                        <li><button class="status-button" data-status-filter="Processing">Processing</button></li>
-                        <li><button class="status-button" data-status-filter="Shipped">Shipped</button></li>
-                        <li><button class="status-button" data-status-filter="Delivered">Delivered</button></li>
-                        <li><button class="status-button" data-status-filter="Cancelled">Cancelled</button></li>
-                        <li><button class="status-button" data-status-filter="Requested">Requested</button></li>
-                    </ul>
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="overview.html" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-accent transition-colors">Analytics</a>
+                    <a href="dashboard.html" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-accent transition-colors">Inventory</a>
+                    <a href="orer.html" class="nav-link active text-sm font-bold uppercase tracking-widest text-accent">Orders</a>
+                    <a href="contactdash.html" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-accent transition-colors">Messages</a>
                 </nav>
             </div>
+
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <input type="text" id="searchInput" placeholder="SEARCH_DATABASE..." 
+                       class="w-full bg-white/5 border border-white/10 px-4 py-2 text-[10px] font-mono tracking-widest uppercase focus:border-accent transition-colors outline-none">
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex flex-col items-end mr-4">
+                    <span class="text-[10px] text-muted font-mono leading-none">CORE_SYNC</span>
+                    <span class="text-xs text-green-500 font-mono tracking-tighter uppercase">Online</span>
+                </div>
+                <button onclick="toggleMenu()" class="lg:hidden w-10 h-10 border border-white/10 flex items-center justify-center hover:border-accent">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-width="1.5"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 px-6 max-w-7xl mx-auto min-h-screen pb-20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="glass-card p-6 border-l-2 border-l-accent">
+                <div class="text-[9px] font-mono text-muted mb-2 uppercase">Total_Revenue</div>
+                <div class="text-3xl font-display font-bold text-accent" id="statRevenue">$0.00</div>
+            </div>
+            <div class="glass-card p-6">
+                <div class="text-[9px] font-mono text-muted mb-2 uppercase">Order_Volume</div>
+                <div class="text-3xl font-display font-bold" id="statCount">0</div>
+            </div>
+            <div class="glass-card p-6">
+                <div class="text-[9px] font-mono text-muted mb-2 uppercase">Avg_Order_Value</div>
+                <div class="text-3xl font-display font-bold" id="statAvg">$0.00</div>
+            </div>
+            <div class="glass-card p-6">
+                <div class="text-[9px] font-mono text-muted mb-2 uppercase">Pending_Action</div>
+                <div class="text-3xl font-display font-bold text-yellow-500" id="statPending">0</div>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <h2 class="font-display text-2xl font-bold tracking-tighter uppercase">Active_Records</h2>
             
-            <div class="card p-0 overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="flex gap-2">
+                <input type="text" id="mobileSearchInput" placeholder="SEARCH..." 
+                       class="md:hidden flex-1 bg-white/5 border border-white/10 px-4 py-2 text-[10px] font-mono tracking-widest uppercase focus:border-accent outline-none">
+                <button onclick="fetchData()" class="px-6 py-3 bg-white text-black text-[10px] font-bold uppercase tracking-widest hover:bg-accent hover:text-white transition-all">Reload_Database</button>
+            </div>
+        </div>
+
+        <div class="glass-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="data-table w-full text-left border-collapse">
+                    <thead>
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                            <th class="py-5 px-6">Timestamp</th>
+                            <th class="py-5 px-6">Reference_ID</th>
+                            <th class="py-5 px-6">Entity_Name</th>
+                            <th class="py-5 px-6">Valuation</th>
+                            <th class="py-5 px-6">Current_State</th>
+                            <th class="py-5 px-6 text-right">Access</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-table-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td colspan="6" class="p-8 text-center text-gray-500">Loading orders...</td></tr>
-                    </tbody>
+                    <tbody id="ordersTableBody" class="text-[11px] font-medium uppercase tracking-wider">
+                        </tbody>
                 </table>
-                <div id="no-orders-message" class="hidden p-8 text-center text-gray-500">No orders found.</div>
-                <div id="error-message" class="hidden p-8 text-center text-red-500 font-medium"></div>
             </div>
         </div>
+    </main>
 
-        <div id="order-detail-view" class="hidden">
-            
-            <header class="mb-8">
-                <button onclick="toggleView('list')" class="flex items-center text-primary-500 hover:text-primary-600 font-medium text-sm p-2 rounded-lg bg-white shadow hover:shadow-md transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    Back to Orders
-                </button>
-                
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-6">
-                    <h1 class="text-3xl font-extrabold text-gray-900 mb-2 flex items-center">
-                        Order Details
-                        <span id="detail-order-status" class="ml-4 text-sm font-semibold px-3 py-1 rounded-full text-white"></span>
-                    </h1>
-                    <p class="text-gray-500">Order ID: <span id="detail-order-id" class="font-medium text-gray-700"></span> | Date: <span id="detail-order-date"></span></p>
-                </div>
-            </header>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <div class="lg:col-span-2 space-y-6">
-                    
-                    <div id="order-timeline-card" class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Order Timeline
-                        </h2>
-                        <div class="mb-4 bg-gray-50 p-3 rounded-lg flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-700">Set Estimated Delivery Time:</p>
-                            <select id="delivery-time-select" class="p-2 border border-gray-300 rounded-lg text-sm" onchange="updateDeliveryTime(this.value)">
-                                <option value="1">1 Week (7 Days)</option>
-                                <option value="1.5">1.5 Weeks (10 Days)</option>
-                                <option value="2">2 Weeks (14 Days)</option>
-                                <option value="3">3 Weeks (21 Days)</option>
-                                <option value="4">4 Weeks (28 Days)</option>
-                            </select>
-                        </div>
-                        <div id="timeline-list" class="timeline">
-                            <p class="text-gray-500">Timeline loading...</p>
-                        </div>
-                    </div>
-                    <div id="product-details-card" class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                            Product Details
-                        </h2>
-                        <div id="product-list" class="space-y-4">
-                            </div>
-                    </div>
-                    
-                    <div class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2l-2 3m0-3h-2m2 3h-2" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 4v2m-6 3h12a2 2 0 002-2V5a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h6" />
-                            </svg>
-                            Payment & Summary
-                        </h2>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center text-gray-600">
-                                <span>Subtotal</span>
-                                <span id="summary-subtotal" class="font-medium">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-gray-600">
-                                <span>Discount (<span id="summary-discount-code">None</span>)</span>
-                                <span id="summary-discount" class="font-medium text-green-600">-$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-gray-600 pb-3 border-b border-dashed border-gray-200">
-                                <span>Shipping Fee</span>
-                                <span id="summary-shipping" class="font-medium">$0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center text-lg font-bold text-gray-900 pt-3">
-                                <span>Total Payable</span>
-                                <span id="summary-total">$0.00</span>
-                            </div>
-                            <div class="text-sm text-gray-600 pt-2 border-t border-gray-100">
-                                **Payment Method:** <span id="payment-method-display" class="font-semibold text-primary-500 capitalize">COD</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="lg:col-span-1 space-y-6">
-
-                    <div class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.121-6.26l-1.414-1.414a1.998 1.998 0 00-2.828 0L7 12m14 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Customer & Shipping
-                        </h2>
-                        <div id="user-details-list" class="space-y-2">
-                            </div>
-                        <div id="map-link-container" class="mt-4 pt-4 border-t border-gray-100">
-                            <a id="map-link" class="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center" target="_blank">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.121-6.26l-1.414-1.414a1.998 1.998 0 00-2.828 0L7 12m14 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                View Location on Google Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1c-.414 0-.61.168-.707.293L8 20l-1.293-1.707C6.61 18.168 6.414 18 6 18H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-4z" />
-                            </svg>
-                            Delivery Instructions
-                        </h2>
-                        <p id="instruction-content" class="text-sm text-gray-700 italic bg-gray-50 p-3 rounded-lg">No special instructions provided by the customer.</p>
-                    </div>
-
-                    <div class="card">
-                        <h2 class="flex items-center text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            Update Status
-                        </h2>
-                        <select id="status-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition mb-4">
-                            <option value="Pending">Pending</option>
-                            <option value="Requested">Requested</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                        <button onclick="updateOrderStatus()" id="update-status-btn" class="w-full bg-primary-500 text-white font-semibold py-3 rounded-lg hover:bg-primary-600 transition shadow-lg">
-                            Apply New Status
-                        </button>
-                    </div>
-
-                    <div class="card bg-red-50 border-2 border-red-200">
-                        <h2 class="flex items-center text-xl font-bold text-red-700 mb-4 pb-2 border-b border-red-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Admin Actions
-                        </h2>
-                        <button onclick="deleteOrder()" id="delete-order-btn" class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition shadow-lg mt-2">
-                            Permanently Delete Order
-                        </button>
-                        <p class="text-xs text-red-500 mt-2 text-center">Caution: This action cannot be undone.</p>
-                    </div>
-                    </div>
-
+    <div id="panelMask" class="panel-mask" onclick="closePanel()"></div>
+    <div id="orderDetailPanel" class="p-6 md:p-10">
+        <div class="flex justify-between items-start mb-12">
+            <div>
+                <span class="text-[9px] font-mono text-accent block mb-1 tracking-widest">RECORD_STREAM_ACTIVE</span>
+                <h2 class="font-display text-2xl font-bold tracking-tighter uppercase" id="panelOrderId">--</h2>
             </div>
+            <button onclick="closePanel()" class="text-muted hover:text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"></path></svg>
+            </button>
         </div>
 
+        <div class="space-y-10">
+            <section>
+                <h3 class="text-[9px] font-mono text-muted mb-4 tracking-[0.2em] border-b border-white/5 pb-2 uppercase">Customer_Profile</h3>
+                <div class="text-sm font-bold uppercase" id="panelCustomerName">--</div>
+                <div class="text-[10px] font-mono text-muted mt-1 lowercase" id="panelCustomerEmail">--</div>
+            </section>
+
+            <section>
+                <h3 class="text-[9px] font-mono text-muted mb-4 tracking-[0.2em] border-b border-white/5 pb-2 uppercase">Manifest_Items</h3>
+                <div id="panelItems" class="space-y-3"></div>
+                <div class="pt-6 mt-6 border-t border-white/5 flex justify-between font-display font-bold text-lg">
+                    <span>GRAND_TOTAL</span>
+                    <span class="text-accent" id="panelTotal">$0.00</span>
+                </div>
+            </section>
+
+            <section class="pt-6 border-t border-white/5 pb-10">
+                <h3 class="text-[9px] font-mono text-muted mb-4 tracking-[0.2em] uppercase">Control_Interface</h3>
+                <div class="flex flex-col gap-2">
+                    <select id="updateStatusSelect" class="w-full bg-black border border-white/10 p-3 text-xs font-mono uppercase text-white">
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <button id="updateBtn" class="w-full bg-white text-black font-bold text-[10px] uppercase py-4 hover:bg-accent hover:text-white transition-all">Update_Status</button>
+                </div>
+            </section>
+        </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        // --- API Configuration ---
-        const API_BASE_URL = 'https://backend-web-1-yb6q.vercel.app/api'; 
-
-        // --- Global State & Configuration ---
-        let ALL_ORDERS = []; 
-        let CURRENT_FILTER = 'all'; 
-        let CURRENT_ORDER_ID = null;
+        const API_ORDERS = 'https://backend-web-1.vercel.app/api/orders';
+        const API_PRODUCTS = 'https://backend-web-1.vercel.app/api/products';
         
-        // ⭐ Global state for delivery weeks and ratios
-        let DELIVERY_WEEKS = 2; // Default starting value
-        const PROCESSING_RATIO = 0.4; 
-        const SHIPPING_RATIO = 0.6; 
+        let activeOrders = [];
+        let allProducts = [];
+        let currentOrderId = null;
 
-        const statusClassMap = {
-            'Pending': 'bg-status-pending',
-            'Processing': 'bg-status-processing',
-            'Shipped': 'bg-status-shipped',
-            'Delivered': 'bg-status-delivered',
-            'Cancelled': 'bg-status-cancelled',
-            'Requested': 'bg-status-requested'
-        };
-        const formatCurrency = (amount) => `$ ${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-        const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        const formatDateTime = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+        // Cursor Logic
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(circle, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.15 });
+        });
 
-        // ----------------------------------------------------------------------
-        // --- TIMELINE MANAGEMENT & API CALLS ---
-        // ----------------------------------------------------------------------
-        
-        function calculateEstimatedDate(baseDateString, daysToAdd) {
-            const date = new Date(baseDateString);
-            date.setDate(date.getDate() + daysToAdd);
-            return date;
+        // Burger Menu Toggle
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.toggle('open');
         }
 
-        /**
-         * Updates the global delivery time and persists it via the new API route.
-         */
-        async function updateDeliveryTime(weeks) {
-            DELIVERY_WEEKS = parseFloat(weeks);
-            const orderId = CURRENT_ORDER_ID;
-            
-            if (!orderId) return;
+        // Search Filter Logic
+        function setupSearch() {
+            const inputs = ['searchInput', 'mobileSearchInput'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.addEventListener('input', (e) => {
+                        const term = e.target.value.toLowerCase();
+                        const filtered = activeOrders.filter(o => 
+                            o.customerName.toLowerCase().includes(term) || 
+                            o._id.toLowerCase().includes(term) ||
+                            o.status.toLowerCase().includes(term)
+                        );
+                        renderTable(filtered);
+                    });
+                }
+            });
+        }
 
-            const selectEl = document.getElementById('delivery-time-select');
-            selectEl.disabled = true;
-
+        async function fetchData() {
             try {
-                // Call the new API route
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}/deliverytime`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ deliveryWeeks: DELIVERY_WEEKS })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const updatedData = await response.json();
-                const updatedOrder = updatedData.data;
-
-                // Update local state
-                const orderIndex = ALL_ORDERS.findIndex(o => o._id === updatedOrder._id);
-                if (orderIndex !== -1) {
-                    ALL_ORDERS[orderIndex] = updatedOrder;
-                }
-
-                // Re-render the timeline using the current order's creation date
-                renderOrderTimeline(updatedOrder.statusUpdates, updatedOrder.createdAt, updatedOrder.deliveryWeeks);
+                const [orderRes, prodRes] = await Promise.all([
+                    fetch(API_ORDERS), fetch(API_PRODUCTS)
+                ]);
+                const orderData = await orderRes.json();
+                allProducts = await prodRes.json();
                 
-                alert(`Estimated delivery time updated to ${DELIVERY_WEEKS} weeks.`);
-                
-            } catch (error) {
-                console.error('Error updating delivery time:', error);
-                alert(`Error: Could not update delivery time. Details: ${error.message}`);
-                // Revert selection on error
-                const currentOrder = ALL_ORDERS.find(o => o._id === orderId);
-                selectEl.value = currentOrder?.deliveryWeeks || 1; 
-            } finally {
-                selectEl.disabled = false;
-            }
+                if (orderData.success) {
+                    activeOrders = orderData.data;
+                    renderTable(activeOrders);
+                    runAnalytics(activeOrders);
+                    setupSearch();
+                }
+            } catch (err) { console.error("Sync Error:", err); }
         }
 
-        // ----------------------------------------------------------------------
-        // --- API & DATA FETCHING ---
-        // ----------------------------------------------------------------------
-        async function fetchOrders() {
-            const tbodyEl = document.getElementById('orders-table-body');
-            const errorEl = document.getElementById('error-message');
-            tbodyEl.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500">Fetching orders from server...</td></tr>';
-            errorEl.classList.add('hidden');
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/orders`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                ALL_ORDERS = data.data || []; 
-                
-                if (ALL_ORDERS.length === 0) {
-                    document.getElementById('no-orders-message').classList.remove('hidden');
-                } else {
-                    document.getElementById('no-orders-message').classList.add('hidden');
-                }
-
-                renderOrderList(ALL_ORDERS.filter(filterOrder));
-                
-            } catch (error) {
-                console.error("Failed to fetch orders:", error);
-                errorEl.textContent = `Error: Could not connect to the backend or fetch data. Details: ${error.message}`;
-                errorEl.classList.remove('hidden');
-                tbodyEl.innerHTML = ''; 
-            }
-        }
-        
-        async function updateOrderStatus() {
-            const orderId = CURRENT_ORDER_ID;
-            const newStatus = document.getElementById('status-select').value;
-            const button = document.getElementById('update-status-btn');
-
-            if (!orderId) {
-                alert("Error: No order selected.");
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = `Updating to ${newStatus}...`;
-
-            try {
-                // The backend handles adding the status update to the statusUpdates array
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const updatedData = await response.json();
-                const updatedOrder = updatedData.data;
-
-                // Update the local ALL_ORDERS list
-                const orderIndex = ALL_ORDERS.findIndex(o => o._id === updatedOrder._id);
-                if (orderIndex !== -1) {
-                    ALL_ORDERS[orderIndex] = updatedOrder;
-                }
-                
-                renderOrderDetail(updatedOrder); 
-                renderOrderList(ALL_ORDERS.filter(filterOrder)); 
-                
-                alert(`Status for Order ${orderId} updated to: ${newStatus}`);
-
-            } catch (error) {
-                console.error('Error updating status:', error);
-                alert(`Error: Could not update status. Details: ${error.message}`);
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Apply New Status';
-            }
-        }
-
-        // ⭐ NEW FUNCTION: Delete Order
-        async function deleteOrder() {
-            const orderId = CURRENT_ORDER_ID;
-            const button = document.getElementById('delete-order-btn');
-
-            if (!orderId) {
-                alert("Error: No order selected for deletion.");
-                return;
-            }
-
-            if (!confirm(`Are you absolutely sure you want to PERMANENTLY delete Order ID ${orderId}? This action cannot be undone.`)) {
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = `Deleting Order...`;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
-                    method: 'DELETE',
-                });
-
-                if (!response.ok) {
-                    // Check for 404 specifically
-                    if (response.status === 404) {
-                         throw new Error('Order not found on the server.');
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // Remove the order from the local ALL_ORDERS list
-                ALL_ORDERS = ALL_ORDERS.filter(o => o._id !== orderId);
-                
-                alert(`Order ID ${orderId} was successfully deleted.`);
-
-                // Redirect back to the list view
-                toggleView('list');
-
-            } catch (error) {
-                console.error('Error deleting order:', error);
-                alert(`Error: Could not delete order. Details: ${error.message}`);
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Permanently Delete Order';
-            }
-        }
-        // ⭐ END NEW FUNCTION: Delete Order
-
-        // ----------------------------------------------------------------------
-        // --- LIST VIEW LOGIC ---
-        // ----------------------------------------------------------------------
-        function filterOrder(order) {
-            if (CURRENT_FILTER === 'all') {
-                return true;
-            }
-            return order.status === CURRENT_FILTER; 
-        }
-
-        function handleFilterClick(event) {
-            const button = event.target.closest('.status-button');
-            if (!button) return;
-
-            document.querySelectorAll('.status-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            CURRENT_FILTER = button.getAttribute('data-status-filter');
-            renderOrderList(ALL_ORDERS.filter(filterOrder));
-        }
-
-        function renderOrderList(orders) {
-            const tbodyEl = document.getElementById('orders-table-body');
-            tbodyEl.innerHTML = ''; 
-
-            if (orders.length === 0) {
-                document.getElementById('no-orders-message').classList.remove('hidden');
-                return;
-            } else {
-                document.getElementById('no-orders-message').classList.add('hidden');
-            }
-
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                const statusColor = statusClassMap[order.status] || 'bg-gray-500';
-
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate max-w-xs">${order._id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(order.createdAt)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${order.customerName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white ${statusColor}">
-                            ${order.status}
-                        </span>
+        function renderTable(data) {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = data.length === 0 ? 
+                `<tr><td colspan="6" class="text-center py-20 text-muted italic">ZERO_RECORDS_FOUND</td></tr>` :
+                data.map(order => `
+                <tr class="group cursor-pointer" onclick="openPanel('${order._id}')">
+                    <td class="px-6 py-6 font-mono text-muted">${new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td class="px-6 py-6 font-mono text-accent">#${order._id.slice(-8)}</td>
+                    <td class="px-6 py-6 text-white font-bold">${order.customerName}</td>
+                    <td class="px-6 py-6 font-mono">$${(order.totalAmount || 0).toFixed(2)}</td>
+                    <td class="px-6 py-6">
+                        <span class="status-badge bg-${order.status.toLowerCase()}"></span>
+                        <span class="text-[9px] font-mono opacity-80 uppercase">${order.status}</span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatCurrency(order.totalAmount)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="toggleView('detail', '${order._id}')" class="text-primary-600 hover:text-primary-900">
-                            View Details
-                        </button>
+                    <td class="px-6 py-6 text-right">
+                        <span class="text-[9px] border border-white/10 px-3 py-1 group-hover:bg-white group-hover:text-black transition-all">DETAILS</span>
                     </td>
-                `;
-                tbodyEl.appendChild(row);
-            });
+                </tr>
+            `).join('');
         }
 
-        // ----------------------------------------------------------------------
-        // --- DETAIL VIEW LOGIC ---
-        // ----------------------------------------------------------------------
-
-        function renderOrderDetail(order) {
-            // ⭐ Set global state from the order object
-            CURRENT_ORDER_ID = order._id;
-            // Use the value from the database, default to 2 if missing
-            DELIVERY_WEEKS = order.deliveryWeeks || 2; 
-
-            // Header Details
-            document.getElementById('detail-order-id').textContent = order._id;
-            document.getElementById('detail-order-date').textContent = formatDate(order.createdAt);
-            
-            const statusEl = document.getElementById('detail-order-status');
-            statusEl.textContent = order.status;
-            const statusColor = statusClassMap[order.status] || 'bg-gray-500';
-            statusEl.className = statusEl.className.replace(/bg-[\w-]+/g, '') + ` ${statusColor}`; 
-            
-            // Status Dropdown
-            document.getElementById('status-select').value = order.status;
-            
-            // ⭐ Delivery Time Selector: Set to the value stored in the order
-            document.getElementById('delivery-time-select').value = DELIVERY_WEEKS.toString();
-
-
-            // Summary Details
-            document.getElementById('summary-subtotal').textContent = formatCurrency(order.subtotalAmount);
-            document.getElementById('summary-discount-code').textContent = order.discountCode || 'None';
-            document.getElementById('summary-discount').textContent = `-${formatCurrency(order.discountAmount)}`;
-            document.getElementById('summary-shipping').textContent = formatCurrency(order.shippingFee);
-            document.getElementById('summary-total').textContent = formatCurrency(order.totalAmount);
-            document.getElementById('payment-method-display').textContent = order.paymentMethod.toUpperCase();
-
-            // Delivery Instructions
-            document.getElementById('instruction-content').textContent = order.notes || 'No special instructions provided by the customer.';
-            
-            // Render Sub-Sections
-            renderProductList(order.items);
-            renderUserDetails(order);
-            renderMapLink(order.geoLocation);
-            // ⭐ Render Timeline with data from schema
-            renderOrderTimeline(order.statusUpdates, order.createdAt, order.deliveryWeeks); 
+        function runAnalytics(data) {
+            const totalRevenue = data.reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
+            const pending = data.filter(o => ['Pending', 'Processing'].includes(o.status)).length;
+            document.getElementById('statRevenue').innerText = `$${totalRevenue.toLocaleString()}`;
+            document.getElementById('statCount').innerText = data.length;
+            document.getElementById('statAvg').innerText = `$${data.length ? (totalRevenue / data.length).toFixed(0) : '0'}`;
+            document.getElementById('statPending').innerText = pending;
         }
 
-        function renderProductList(items) {
-            const listEl = document.getElementById('product-list');
-            listEl.innerHTML = '';
-            
-            if (items.length === 0) {
-                 listEl.innerHTML = '<p class="text-gray-500">No products found for this order.</p>';
-                 return;
-            }
+        async function openPanel(id) {
+            const order = activeOrders.find(o => o._id === id);
+            if (!order) return;
+            currentOrderId = id;
 
-            items.forEach(product => {
-                const totalProductPrice = product.quantity * product.price;
-                const productHtml = `
-                    <div class="flex items-start border-b border-gray-100 pb-3">
-                        <div class="flex-shrink-0 mr-4">
-                            <img src="${product.imageUrl || 'https://placehold.co/60x60/e5e7eb/4b5563?text=N/A'}" alt="${product.productName}" class="w-16 h-16 rounded-lg object-cover border border-gray-200" onerror="this.onerror=null; this.src='https://placehold.co/60x60/e5e7eb/4b5563?text=N/A';" />
-                        </div>
-                        <div class="flex-grow">
-                            <p class="text-base font-semibold text-gray-900 truncate">${product.productName}</p>
-                            <p class="text-sm font-normal text-gray-500">${product.variant ? `Variant: ${product.variant} | ` : ''} Qty: ${product.quantity}</p>
-                        </div>
-                        <div class="ml-4 text-right">
-                            <p class="text-base font-bold text-gray-900">${formatCurrency(totalProductPrice)}</p>
-                            <p class="text-xs text-gray-500">${formatCurrency(product.price)} / unit</p>
+            document.getElementById('panelOrderId').innerText = `ORD_${id.slice(-10)}`;
+            document.getElementById('panelCustomerName').innerText = order.customerName;
+            document.getElementById('panelCustomerEmail').innerText = order.email || 'customer@anonymous.io';
+            document.getElementById('panelTotal').innerText = `$${(order.totalAmount || 0).toFixed(2)}`;
+            document.getElementById('updateStatusSelect').value = order.status;
+
+            const itemsHtml = order.items.map(item => {
+                const product = allProducts.find(p => p._id === (item.productId || item.id));
+                const title = item.title || item.name || (product ? product.title : "Unknown Asset");
+                const img = (product && product.mainImage) ? product.mainImage : "https://via.placeholder.com/50x50?text=NA";
+                const qty = item.quantity || item.qty || 1;
+                const price = item.price || (product ? product.price : 0);
+                
+                return `
+                    <div class="flex items-center gap-4 p-3 border border-white/5 bg-white/[0.02]">
+                        <img src="${img}" class="w-12 h-12 object-cover grayscale">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[10px] font-bold text-white uppercase">${title}</span>
+                                <span class="text-accent font-mono text-[10px]">$${(price * qty).toFixed(2)}</span>
+                            </div>
+                            <div class="text-[8px] text-muted font-mono mt-1">QTY: ${qty}</div>
                         </div>
                     </div>
                 `;
-                listEl.insertAdjacentHTML('beforeend', productHtml);
-            });
-        }
-
-        function renderUserDetails(order) {
-            const listEl = document.getElementById('user-details-list');
-            listEl.innerHTML = '';
-
-            const details = [
-                { icon: 'user', label: 'Customer Name', value: order.customerName },
-                { icon: 'mail', label: 'Email', value: order.customerEmail },
-                { icon: 'phone', label: 'Phone', value: order.customerPhone },
-                { icon: 'mapPin', label: 'Shipping Address', value: `${order.shippingAddress.streetAddress}, ${order.shippingAddress.city}, ${order.shippingAddress.province}, ${order.shippingAddress.zipCode}, ${order.shippingAddress.country}` }
-            ];
-
-            const icons = {
-                user: '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-                mail: '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
-                phone: '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2 2A15.97 15.97 0 0 1 2 3.8a2 2 0 0 1 2-2h3l3 4-3 2a15 15 0 0 0 7 7l2-3 4 3z"/></svg>',
-                mapPin: '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 4 6 10 6 10s6-6 6-10z"/><circle cx="12" cy="8" r="3"/></svg>'
-            };
-
-            details.forEach(item => {
-                const itemHtml = `
-                    <div class="detail-item flex items-start">
-                        <span class="flex-shrink-0 text-primary-500 mr-2">${icons[item.icon]}</span>
-                        <div>
-                            <p class="text-xs font-semibold text-gray-500">${item.label}</p>
-                            <p class="text-sm font-medium text-gray-800">${item.value}</p>
-                        </div>
-                    </div>
-                `;
-                listEl.insertAdjacentHTML('beforeend', itemHtml);
-            });
-        }
-
-        function renderMapLink(geoLocation) {
-            const linkEl = document.getElementById('map-link');
-            const containerEl = document.getElementById('map-link-container');
-            if (geoLocation && geoLocation.latitude && geoLocation.longitude) {
-                // Corrected Google Maps URL construction
-                const mapUrl = `http://www.google.com/maps/search/?api=1&query=${geoLocation.latitude},${geoLocation.longitude}`;
-                linkEl.href = mapUrl;
-                linkEl.setAttribute('target', '_blank');
-                containerEl.classList.remove('hidden'); 
-            } else {
-                linkEl.removeAttribute('href');
-                containerEl.classList.add('hidden');
-            }
-        }
-        
-        /**
-         * Renders the Order Timeline, including estimated dates based on deliveryWeeks.
-         */
-        function renderOrderTimeline(statusUpdates, orderCreatedAt, deliveryWeeks) {
-            const timelineEl = document.getElementById('timeline-list');
-            timelineEl.innerHTML = '';
+            }).join('');
             
-            // Get the delivery time (default to 2 if DB value is missing)
-            const currentWeeks = deliveryWeeks || 2; 
-
-            const totalDays = currentWeeks * 7;
-            const processingDays = Math.round(totalDays * PROCESSING_RATIO); 
-            const shippingDays = totalDays - processingDays; 
-
-            // Calculate estimated dates based on order creation
-            const createdDate = new Date(orderCreatedAt);
-            const estProcessingDate = calculateEstimatedDate(orderCreatedAt, processingDays);
-            const estShippedDate = calculateEstimatedDate(orderCreatedAt, processingDays + 1); // Shipped starts day after processing ends
-            const estDeliveryDate = calculateEstimatedDate(orderCreatedAt, totalDays);
-
-            // 1. Order Placed (Actual Date)
-            const timelineEvents = [{
-                status: 'Order Placed',
-                date: createdDate,
-                isActual: true,
-                note: 'Order confirmed and payment received.'
-            }];
-
-            // 2. Manufacturing/Processing (Estimated or Actual)
-            const actualProcessing = statusUpdates.find(u => u.status === 'Processing');
-            timelineEvents.push({
-                status: 'Processing (Making/Preparation)',
-                date: actualProcessing ? new Date(actualProcessing.date) : estProcessingDate,
-                isActual: !!actualProcessing,
-                note: actualProcessing ? actualProcessing.note : `Estimated completion in ${processingDays} days from order.`
-            });
-
-            // 3. Shipped (Estimated or Actual)
-            const actualShipped = statusUpdates.find(u => u.status === 'Shipped');
-            timelineEvents.push({
-                status: 'Shipped (In Transit)',
-                date: actualShipped ? new Date(actualShipped.date) : estShippedDate,
-                isActual: !!actualShipped,
-                note: actualShipped ? actualShipped.note : `Estimated shipping time: ${shippingDays} days. (From day ${processingDays + 1})`
-            });
-
-            // 4. Delivered (Estimated or Actual)
-            const actualDelivered = statusUpdates.find(u => u.status === 'Delivered');
-            timelineEvents.push({
-                status: 'Delivered',
-                date: actualDelivered ? new Date(actualDelivered.date) : estDeliveryDate,
-                isActual: !!actualDelivered,
-                note: actualDelivered ? actualDelivered.note : `Estimated Total Delivery: ${totalDays} days from order.`
-            });
-
-            // Sort by date (oldest first for a proper timeline view)
-            timelineEvents.sort((a, b) => a.date - b.date);
-            const now = new Date();
-
-            timelineEvents.forEach(event => {
-                const isActualEvent = event.isActual;
-                const isEstimated = !event.isActual;
-                
-                let timelineItemClass = 'timeline-item';
-
-                // Completed state: If it's an actual event and the date has passed
-                if (isActualEvent && event.date <= now) {
-                    timelineItemClass += ' completed';
-                } else if (isEstimated || event.date > now) {
-                    // Estimated state: If it's a future event (actual or estimated)
-                    timelineItemClass += ' estimated';
-                }
-                
-                const statusTextColor = timelineItemClass.includes('completed') ? 'text-gray-900' : 'text-gray-500';
-                
-                const timelineHtml = `
-                    <div class="${timelineItemClass}">
-                        <p class="text-sm font-bold ${statusTextColor}">${event.status} ${isEstimated || event.date > now ? '(ESTIMATED)' : ''}</p>
-                        <p class="text-xs text-gray-500">${formatDateTime(event.date.toISOString())}</p>
-                        <p class="text-xs text-gray-600 italic mt-1">${event.note}</p>
-                    </div>
-                `;
-                timelineEl.insertAdjacentHTML('beforeend', timelineHtml);
-            });
-
-            // Add other actual status updates (e.g., Requested, Cancelled)
-            const otherActualUpdates = statusUpdates.filter(u => 
-                u.status !== 'Processing' && u.status !== 'Shipped' && u.status !== 'Delivered' && u.status !== 'Pending'
-            ).sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            if (otherActualUpdates.length > 0) {
-                timelineEl.insertAdjacentHTML('beforeend', '<div class="pt-4 mt-4 border-t border-dashed border-gray-200"><p class="text-sm font-semibold text-gray-700">Other Updates:</p></div>');
-                otherActualUpdates.forEach(update => {
-                    const date = new Date(update.date);
-                    const statusColor = statusClassMap[update.status] || 'text-gray-700';
-                    const updateHtml = `
-                        <div class="timeline-item completed">
-                            <p class="text-sm font-semibold text-white px-2 py-0.5 rounded ${statusColor}">${update.status}</p>
-                            <p class="text-xs text-gray-500">${formatDateTime(date.toISOString())}</p>
-                            ${update.note ? `<p class="text-xs text-gray-600 italic mt-1">${update.note}</p>` : ''}
-                        </div>
-                    `;
-                    timelineEl.insertAdjacentHTML('beforeend', updateHtml);
-                });
-            }
+            document.getElementById('panelItems').innerHTML = itemsHtml || '<div class="text-muted text-[10px]">EMPTY_MANIFEST</div>';
+            document.getElementById('orderDetailPanel').classList.add('open');
+            document.getElementById('panelMask').classList.add('open');
         }
 
-
-        // ----------------------------------------------------------------------
-        // --- VIEW TOGGLER ---
-        // ----------------------------------------------------------------------
-
-        function toggleView(view, orderId = null) {
-            const listView = document.getElementById('order-list-view');
-            const detailView = document.getElementById('order-detail-view');
-
-            if (view === 'list') {
-                listView.classList.remove('hidden');
-                detailView.classList.add('hidden');
-                renderOrderList(ALL_ORDERS.filter(filterOrder)); 
-            } else if (view === 'detail' && orderId) {
-                const order = ALL_ORDERS.find(o => o._id === orderId);
-                if (order) {
-                    renderOrderDetail(order);
-                    listView.classList.add('hidden');
-                    detailView.classList.remove('hidden');
-                } else {
-                    alert('Error: Order not found locally. Please refresh.');
-                    console.error('Order not found:', orderId);
-                }
-            }
+        function closePanel() {
+            document.getElementById('orderDetailPanel').classList.remove('open');
+            document.getElementById('panelMask').classList.remove('open');
         }
 
-        // Execute initial load and setup
-        window.onload = function() {
-            document.getElementById('filter-nav').addEventListener('click', handleFilterClick);
-            fetchOrders();
+        window.onload = () => {
+            gsap.to('#loadProgress', { width: '100%', duration: 1, onComplete: () => {
+                gsap.to('#loadingOverlay', { opacity: 0, pointerEvents: 'none', duration: 0.5 });
+                fetchData();
+            }});
         };
     </script>
 
