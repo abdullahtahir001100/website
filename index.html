@@ -9,8 +9,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
@@ -159,6 +161,84 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .hero-bg-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.68;
+        }
+
+        .hero-ink-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.14), transparent 46%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.11), transparent 42%),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.45));
+        }
+
+        .hero-quote-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .quote-write {
+            position: absolute;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .quote-stroke {
+            position: relative;
+            display: inline-block;
+            font-family: 'Noto Naskh Arabic', serif;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            filter: blur(0.1px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
+            will-change: transform, opacity;
+            direction: rtl;
+            unicode-bidi: plaintext;
+            clip-path: inset(0 0 0 100%);
+        }
+
+        .q1 {
+            top: 18%;
+            left: 8%;
+            font-size: clamp(1.3rem, 2.2vw, 2.1rem);
+            transform: rotate(-7deg);
+        }
+
+        .q2 {
+            top: 52%;
+            right: 10%;
+            font-size: clamp(1.2rem, 2vw, 2rem);
+            transform: rotate(6deg);
+        }
+
+        .q3 {
+            bottom: 12%;
+            left: 20%;
+            font-size: clamp(1rem, 1.7vw, 1.6rem);
+            transform: rotate(-5deg);
+            color: rgba(255, 255, 255, 0.28);
+        }
+
+        .hero-title {
+            position: relative;
+            z-index: 2;
         }
 
         .hero-title h1 {
@@ -675,6 +755,10 @@
                 line-height: 1.1;
             }
 
+            .q2 {
+                right: 5%;
+            }
+
             .content-block h2 {
                 font-size: 2rem;
             }
@@ -744,6 +828,19 @@
                 line-height: 1;
                 letter-spacing: -2px;
                 word-break: break-all; /* Safety wrapper */
+            }
+
+            .hero-bg-canvas {
+                opacity: 0.5;
+            }
+
+            .quote-stroke {
+                font-size: 1rem !important;
+                opacity: 0.3;
+            }
+
+            .q3 {
+                display: none;
             }
      .hero-title p{
                 letter-spacing: 5px !important;
@@ -904,8 +1001,15 @@
     <div id="scroll-wrapper" data-scroll-container>
 
         <section class="hero" data-scroll-section>
-            <div class="hero-title" data-scroll data-scroll-speed="-3">
-                <p style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
+            <canvas id="hero-ink-canvas" class="hero-bg-canvas" aria-hidden="true"></canvas>
+            <div class="hero-ink-overlay" aria-hidden="true"></div>
+            <div class="hero-quote-layer" aria-hidden="true">
+                <div class="quote-write q1"><span class="quote-stroke">وَاَنۡ لَّيۡسَ لِلۡاِنۡسَانِ اِلَّا مَا سَعٰى</span></div>
+                <div class="quote-write q2"><span class="quote-stroke">فَاِنَّ مَعَ الۡعُسۡرِ يُسۡرًا</span></div>
+                <div class="quote-write q3"><span class="quote-stroke">وَقُل رَّبِّ زِدۡنِي عِلۡمًا</span></div>
+            </div>
+            <div class="hero-title animate__animated animate__fadeInUp" data-scroll data-scroll-speed="-3">
+                <p class="animate__animated animate__fadeIn animate__delay-1s" style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
                     SARGODHA / PAKISTAN</p>
                 <h1>INKBYHAND</h1>
             </div>
@@ -1116,6 +1220,8 @@
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
@@ -1157,6 +1263,462 @@
             lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
         };
     }
+
+    let heroInkApi = null;
+
+    // 3.5 Hero Ink Animation (Three.js)
+    function initHeroInkScene() {
+        const canvas = document.getElementById('hero-ink-canvas');
+        if (!canvas || typeof THREE === 'undefined') return null;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return null;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.z = 9;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
+        renderer.setSize(window.innerWidth, window.innerHeight, false);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+
+        const ambientLight = new THREE.AmbientLight(0xfff4e6, 0.85);
+        scene.add(ambientLight);
+
+        const keyLight = new THREE.DirectionalLight(0xffe4bf, 1.25);
+        keyLight.position.set(3.2, 3.4, 6.2);
+        scene.add(keyLight);
+
+        const fillLight = new THREE.DirectionalLight(0xd6e4ff, 0.55);
+        fillLight.position.set(-2.8, -1.6, 4.2);
+        scene.add(fillLight);
+
+        const rimLight = new THREE.DirectionalLight(0xffffff, 0.95);
+        rimLight.position.set(0.5, 0.9, -4.5);
+        scene.add(rimLight);
+
+        function makeSvgTexture(svgString) {
+            const encoded = encodeURIComponent(svgString)
+                .replace(/'/g, '%27')
+                .replace(/\"/g, '%22');
+            const dataUrl = `data:image/svg+xml;charset=utf-8,${encoded}`;
+            return new THREE.TextureLoader().load(dataUrl);
+        }
+
+        const ribbonCount = window.innerWidth <= 550 ? 2 : 4;
+        const ribbons = [];
+
+        function createRibbon(color, offset, amplitude) {
+            const points = [];
+            const segments = 110;
+
+            for (let i = 0; i <= segments; i++) {
+                const x = (i / segments) * 18 - 9;
+                const y = Math.sin(i * 0.18 + offset) * amplitude;
+                const z = (Math.random() - 0.5) * 1.6;
+                points.push(new THREE.Vector3(x, y, z));
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({
+                color,
+                transparent: true,
+                opacity: 0.36
+            });
+
+            const line = new THREE.Line(geometry, material);
+            line.userData = {
+                offset,
+                amplitude,
+                basePositions: geometry.attributes.position.array.slice(0)
+            };
+
+            scene.add(line);
+            ribbons.push(line);
+        }
+
+        createRibbon(0xf6f0e6, 0, 0.85);
+        createRibbon(0xd9d2c2, 1.4, 0.6);
+        if (ribbonCount > 2) {
+            createRibbon(0xb6b1a5, 2.2, 0.55);
+            createRibbon(0xffffff, 3.1, 0.4);
+        }
+
+        const particlesGeo = new THREE.BufferGeometry();
+        const particleCount = window.innerWidth <= 550 ? 120 : 260;
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 20;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 11;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+        }
+
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particles = new THREE.Points(
+            particlesGeo,
+            new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: window.innerWidth <= 550 ? 0.03 : 0.025,
+                transparent: true,
+                opacity: 0.2
+            })
+        );
+        scene.add(particles);
+
+        const trailSvg = `
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+                <filter id='splatter'>
+                    <feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' />
+                    <feDisplacementMap in='SourceGraphic' scale='8' />
+                </filter>
+                <circle cx='50' cy='50' r='35' fill='rgba(255,255,255,0.6)' filter='url(#splatter)' />
+            </svg>
+        `;
+
+        const trailTexture = makeSvgTexture(trailSvg);
+        const brushGroup = new THREE.Group();
+
+        const handleMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x4c2618,
+            roughness: 0.42,
+            metalness: 0.12,
+            clearcoat: 0.42,
+            clearcoatRoughness: 0.3,
+            sheen: 0.18,
+            emissive: 0x120905,
+            emissiveIntensity: 0.35,
+            transparent: true,
+            opacity: 0
+        });
+        const ferruleMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xf0dbc0,
+            roughness: 0.16,
+            metalness: 0.95,
+            clearcoat: 0.9,
+            clearcoatRoughness: 0.08,
+            emissive: 0x302015,
+            emissiveIntensity: 0.22,
+            transparent: true,
+            opacity: 0
+        });
+        const bristleMaterial = new THREE.MeshStandardMaterial({
+            color: 0xb37843,
+            roughness: 0.66,
+            metalness: 0.03,
+            emissive: 0x1f1208,
+            emissiveIntensity: 0.2,
+            transparent: true,
+            opacity: 0
+        });
+        const tipMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3a2014,
+            roughness: 0.82,
+            metalness: 0,
+            emissive: 0x100907,
+            emissiveIntensity: 0.18,
+            transparent: true,
+            opacity: 0
+        });
+
+        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.095, 3.7, 24), handleMaterial);
+        handle.position.y = 0.45;
+        brushGroup.add(handle);
+
+        const ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.125, 0.42, 20), ferruleMaterial);
+        ferrule.position.y = -1.43;
+        brushGroup.add(ferrule);
+
+        const bristleBase = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.44, 16), bristleMaterial);
+        bristleBase.position.y = -1.84;
+        bristleBase.rotation.z = Math.PI;
+        brushGroup.add(bristleBase);
+
+        const bristleTip = new THREE.Mesh(new THREE.ConeGeometry(0.042, 0.52, 14), tipMaterial);
+        bristleTip.position.y = -2.3;
+        bristleTip.rotation.z = Math.PI;
+        brushGroup.add(bristleTip);
+
+        const capLoop = new THREE.Mesh(new THREE.TorusGeometry(0.072, 0.012, 10, 18), ferruleMaterial);
+        capLoop.position.y = 2.28;
+        capLoop.rotation.x = Math.PI / 2;
+        brushGroup.add(capLoop);
+
+        const baseBrushScale = { value: window.innerWidth <= 550 ? 1.2 : 1.85 };
+        const brushPulse = { value: 1 };
+        brushGroup.scale.set(baseBrushScale.value, baseBrushScale.value, baseBrushScale.value);
+        brushGroup.position.set(0, 0, 3.1);
+        brushGroup.rotation.set(0.55, 0.32, -1.02);
+        scene.add(brushGroup);
+
+        function setBrushOpacity(alpha) {
+            brushGroup.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    child.material.opacity = alpha;
+                    child.material.transparent = alpha < 1;
+                }
+            });
+        }
+
+        const trailPool = [];
+        const maxTrailSprites = window.innerWidth <= 550 ? 22 : 36;
+
+        for (let i = 0; i < maxTrailSprites; i++) {
+            const mat = new THREE.SpriteMaterial({
+                map: trailTexture,
+                transparent: true,
+                opacity: 0,
+                depthWrite: false,
+                blending: THREE.NormalBlending
+            });
+            const sp = new THREE.Sprite(mat);
+            sp.scale.set(0.18, 0.18, 1);
+            sp.position.set(0, 0, 1.2);
+            sp.userData = { life: 0, active: false, vx: 0, vy: 0 };
+            scene.add(sp);
+            trailPool.push(sp);
+        }
+
+        function spawnTrailAt(x, y) {
+            const slot = trailPool.find(t => !t.userData.active) || trailPool[0];
+            slot.userData.active = true;
+            slot.userData.life = 0.4;
+            slot.userData.vx = (Math.random() - 0.5) * 0.015;
+            slot.userData.vy = (Math.random() - 0.5) * 0.015;
+            slot.position.set(x + (Math.random() - 0.5) * 0.03, y + (Math.random() - 0.5) * 0.03, 1.2);
+            const s = Math.random() * 0.3 + 0.1;
+            slot.scale.set(s, s, 1);
+            slot.material.opacity = 0.92;
+        }
+
+        let brushVisible = false;
+        let brushAngle = -1.02;
+        const prevBrushPos = { x: 0, y: 0, hasValue: false };
+
+        function viewportToWorld(x, y) {
+            const nx = x / window.innerWidth;
+            const ny = y / window.innerHeight;
+            const vFov = THREE.MathUtils.degToRad(camera.fov);
+            const worldHeight = 2 * Math.tan(vFov / 2) * camera.position.z;
+            const worldWidth = worldHeight * camera.aspect;
+            return {
+                x: (nx - 0.5) * worldWidth,
+                y: (0.5 - ny) * worldHeight
+            };
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            const t = clock.getElapsedTime();
+
+            ribbons.forEach((line, index) => {
+                const pos = line.geometry.attributes.position;
+                const base = line.userData.basePositions;
+
+                for (let i = 0; i < pos.count; i++) {
+                    const x = base[i * 3];
+                    const yBase = base[i * 3 + 1];
+                    pos.array[i * 3] = x + Math.sin(t * 0.35 + i * 0.05 + index) * 0.05;
+                    pos.array[i * 3 + 1] = yBase + Math.sin(t * 0.9 + i * 0.07 + line.userData.offset) * 0.16;
+                }
+
+                pos.needsUpdate = true;
+                line.rotation.z = Math.sin(t * 0.12 + index) * 0.05;
+            });
+
+            particles.rotation.z = t * 0.015;
+            particles.rotation.y = t * 0.02;
+
+            if (brushVisible) {
+                setBrushOpacity(0.98);
+                brushGroup.rotation.z += (brushAngle + Math.sin(t * 6.5) * 0.018 - brushGroup.rotation.z) * 0.24;
+                brushGroup.rotation.x += (0.56 + Math.sin(t * 4.1) * 0.028 - brushGroup.rotation.x) * 0.22;
+                brushGroup.rotation.y += (0.34 + Math.cos(t * 3.2) * 0.024 - brushGroup.rotation.y) * 0.22;
+                const targetScale = baseBrushScale.value * brushPulse.value;
+                brushGroup.scale.x += (targetScale - brushGroup.scale.x) * 0.22;
+                brushGroup.scale.y += (targetScale - brushGroup.scale.y) * 0.22;
+                brushGroup.scale.z += (targetScale - brushGroup.scale.z) * 0.22;
+            } else {
+                setBrushOpacity(0);
+            }
+
+            trailPool.forEach(sp => {
+                if (!sp.userData.active) return;
+                sp.userData.life -= 1 / 60;
+                if (sp.userData.life <= 0) {
+                    sp.userData.active = false;
+                    sp.material.opacity = 0;
+                    return;
+                }
+
+                sp.position.x += sp.userData.vx;
+                sp.position.y += sp.userData.vy;
+                sp.scale.multiplyScalar(1.012);
+                sp.material.opacity = Math.max(0, sp.userData.life / 0.4) * 0.55;
+            });
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight, false);
+            baseBrushScale.value = window.innerWidth <= 550 ? 1.2 : 1.85;
+            brushGroup.scale.set(baseBrushScale.value, baseBrushScale.value, baseBrushScale.value);
+        });
+
+        return {
+            showBrush() {
+                brushVisible = true;
+                if (typeof anime !== 'undefined') {
+                    anime.remove(brushPulse);
+                    anime({
+                        targets: brushPulse,
+                        value: [0.9, 1.12],
+                        duration: 260,
+                        direction: 'alternate',
+                        easing: 'easeInOutSine',
+                        loop: true
+                    });
+                }
+            },
+            hideBrush() {
+                brushVisible = false;
+                if (typeof anime !== 'undefined') {
+                    anime.remove(brushPulse);
+                }
+                brushPulse.value = 1;
+            },
+            moveBrush(viewportX, viewportY) {
+                const p = viewportToWorld(viewportX, viewportY);
+                if (prevBrushPos.hasValue) {
+                    const dx = p.x - prevBrushPos.x;
+                    const dy = p.y - prevBrushPos.y;
+                    if (Math.abs(dx) + Math.abs(dy) > 0.0001) {
+                        // Align brush tip with actual stroke direction for natural handwriting feel.
+                        brushAngle = Math.atan2(dy, dx) - Math.PI / 2;
+                    }
+                }
+
+                prevBrushPos.x = p.x;
+                prevBrushPos.y = p.y;
+                prevBrushPos.hasValue = true;
+
+                brushGroup.position.x = p.x;
+                brushGroup.position.y = p.y;
+                brushGroup.position.z = 3.1;
+                spawnTrailAt(p.x, p.y);
+            },
+            parkBrush(viewportX, viewportY, angle) {
+                const p = viewportToWorld(viewportX, viewportY);
+                brushGroup.position.set(p.x, p.y, 3.1);
+                if (typeof angle === 'number') {
+                    brushAngle = angle;
+                    brushGroup.rotation.z = angle;
+                }
+            },
+            addTrail(viewportX, viewportY) {
+                const p = viewportToWorld(viewportX, viewportY);
+                spawnTrailAt(p.x, p.y);
+            }
+        };
+    }
+
+    heroInkApi = initHeroInkScene();
+
+    function runHeroQuoteWriteOnce() {
+        const hero = document.querySelector('.hero');
+        const quotes = gsap.utils.toArray('.hero-quote-layer .quote-stroke');
+
+        if (!hero || !quotes.length) return;
+
+        gsap.set(quotes, { clipPath: 'inset(0 0 0 100%)', opacity: 0.95 });
+
+        const heroRect = hero.getBoundingClientRect();
+        const tl = gsap.timeline();
+
+        const firstRect = quotes[0].getBoundingClientRect();
+        const introTargetX = firstRect.right - heroRect.left;
+        const introTargetY = firstRect.top - heroRect.top + firstRect.height * 0.52;
+        const introState = {
+            x: heroRect.left + introTargetX - 220,
+            y: heroRect.top - 90
+        };
+
+        tl.call(() => {
+            if (heroInkApi) {
+                heroInkApi.showBrush();
+            }
+        }, null, 0);
+
+        // Show brush first, then start writing.
+        tl.to(introState, {
+            x: heroRect.left + introTargetX,
+            y: heroRect.top + introTargetY,
+            duration: 0.95,
+            ease: 'power2.out',
+            onUpdate: () => {
+                if (heroInkApi) {
+                    heroInkApi.moveBrush(introState.x, introState.y);
+                    heroInkApi.addTrail(introState.x, introState.y);
+                }
+            }
+        }, 0.05);
+
+        tl.to({}, { duration: 0.16 });
+
+        quotes.forEach((quote, idx) => {
+            const rect = quote.getBoundingClientRect();
+            const startX = rect.right - heroRect.left;
+            const endX = rect.left - heroRect.left + 8;
+            const y = rect.top - heroRect.top + rect.height * 0.52;
+
+            const brushState = { x: startX };
+
+            tl.call(() => {
+                if (heroInkApi) {
+                    heroInkApi.moveBrush(heroRect.left + startX, heroRect.top + y);
+                }
+            }, null, idx === 0 ? '+=0.02' : '+=0.18');
+
+            tl.to(quote, {
+                clipPath: 'inset(0 0 0 0%)',
+                duration: 1.1,
+                ease: 'none'
+            }, '<');
+
+            tl.to(brushState, {
+                x: endX,
+                duration: 1.1,
+                ease: 'none',
+                onUpdate: () => {
+                    if (heroInkApi) {
+                        heroInkApi.moveBrush(heroRect.left + brushState.x, heroRect.top + y);
+                        heroInkApi.addTrail(heroRect.left + brushState.x, heroRect.top + y);
+                    }
+                }
+            }, '<');
+        });
+
+        // Keep brush visible on screen after writing completes.
+        tl.call(() => {
+            if (heroInkApi) {
+                heroInkApi.parkBrush(heroRect.left + heroRect.width * 0.76, heroRect.top + heroRect.height * 0.78, -0.9);
+            }
+        }, null, '+=0.05');
+    }
+
+    window.addEventListener('load', () => {
+        runHeroQuoteWriteOnce();
+    }, { once: true });
 
     // 4. FAQ Animations (Alternating)
     gsap.utils.toArray('.faq-item').forEach(item => {
