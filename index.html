@@ -210,12 +210,16 @@
             width: max-content;
             gap: 2rem;
             white-space: nowrap;
-            animation: marquee-left 22s linear infinite;
+            animation: none;
             will-change: transform;
         }
 
         .marquee-track span {
             flex-shrink: 0;
+        }
+
+        .marquee-track span[aria-hidden="true"] {
+            display: none;
         }
 
         .marquee-right .marquee-track {
@@ -753,9 +757,18 @@
                 padding: 60px 5%; /* Tighter padding */
             }
 
-            /* Fix: Disable Parallax on Mobile for Moving Text to prevent sticking */
-            .moving-text-section .marquee-line {
-                transform: none !important;
+            /* Under 550px marquee should run continuously */
+            .moving-text-section .marquee-track {
+                animation: marquee-left 22s linear infinite;
+            }
+
+            .moving-text-section .marquee-right .marquee-track {
+                animation-name: marquee-right;
+                animation-duration: 24s;
+            }
+
+            .moving-text-section .marquee-track span[aria-hidden="true"] {
+                display: inline;
             }
 
             /* 1. Hero Section */
@@ -907,19 +920,19 @@
         </section>
 
         <section class="moving-text-section" data-scroll-section>
-            <div class="marquee-line marquee-left">
+            <div class="marquee-line marquee-left" data-scroll data-scroll-direction="horizontal" data-scroll-speed="6">
                 <div class="marquee-track">
                     <span>CRAFTING LEGACY • CRAFTING LEGACY • CRAFTING LEGACY •</span>
                     <span aria-hidden="true">CRAFTING LEGACY • CRAFTING LEGACY • CRAFTING LEGACY •</span>
                 </div>
             </div>
-            <div class="marquee-line marquee-right outline-text">
+            <div class="marquee-line marquee-right outline-text" data-scroll data-scroll-direction="horizontal" data-scroll-speed="-6">
                 <div class="marquee-track">
                     <span>MODERN CALLIGRAPHY • MODERN CALLIGRAPHY • MODERN CALLIGRAPHY •</span>
                     <span aria-hidden="true">MODERN CALLIGRAPHY • MODERN CALLIGRAPHY • MODERN CALLIGRAPHY •</span>
                 </div>
             </div>
-            <div class="marquee-line marquee-left">
+            <div class="marquee-line marquee-left" data-scroll data-scroll-direction="horizontal" data-scroll-speed="8">
                 <div class="marquee-track">
                     <span>NO SHADOWS • NO RADIUS • NO LIMITS • NO SHADOWS •</span>
                     <span aria-hidden="true">NO SHADOWS • NO RADIUS • NO LIMITS • NO SHADOWS •</span>

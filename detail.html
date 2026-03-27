@@ -389,12 +389,16 @@
             width: max-content;
             gap: 2rem;
             white-space: nowrap;
-            animation: marquee-left 22s linear infinite;
+            animation: none;
             will-change: transform;
         }
 
         .marquee-track span {
             flex-shrink: 0;
+        }
+
+        .marquee-track span[aria-hidden="true"] {
+            display: none;
         }
 
         .marquee-right .marquee-track {
@@ -758,7 +762,19 @@
         @media (max-width: 550px) {
             .marquee-line {
                 font-size: 10vw;
-                 transform: none !important; /* Fix: Disable Parallax */
+            }
+
+            .moving-text-section .marquee-track {
+                animation: marquee-left 22s linear infinite;
+            }
+
+            .moving-text-section .marquee-right .marquee-track {
+                animation-name: marquee-right;
+                animation-duration: 24s;
+            }
+
+            .moving-text-section .marquee-track span[aria-hidden="true"] {
+                display: inline;
             }
 
             .gallery-thumbnails {
@@ -870,13 +886,13 @@
 
         <!-- 2. MARQUEE MOVING COMPONENT -->
         <section class="moving-text-section" data-scroll-section>
-            <div class="marquee-line marquee-left">
+            <div class="marquee-line marquee-left" data-scroll data-scroll-direction="horizontal" data-scroll-speed="6">
                 <div class="marquee-track">
                     <span>SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
                     <span aria-hidden="true">SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
                 </div>
             </div>
-            <div class="marquee-line marquee-right outline-text">
+            <div class="marquee-line marquee-right outline-text" data-scroll data-scroll-direction="horizontal" data-scroll-speed="-6">
                 <div class="marquee-track">
                     <span>AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
                     <span aria-hidden="true">AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
