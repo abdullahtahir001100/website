@@ -1276,29 +1276,22 @@
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.z = 9;
+        camera.position.z = 10;
 
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
         renderer.setSize(window.innerWidth, window.innerHeight, false);
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
 
-        const ambientLight = new THREE.AmbientLight(0xfff4e6, 0.85);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
 
-        const keyLight = new THREE.DirectionalLight(0xffe4bf, 1.25);
-        keyLight.position.set(3.2, 3.4, 6.2);
+        const keyLight = new THREE.DirectionalLight(0xfff2d9, 0.75);
+        keyLight.position.set(2.8, 3.2, 5.4);
         scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0xd6e4ff, 0.55);
-        fillLight.position.set(-2.8, -1.6, 4.2);
+        const fillLight = new THREE.DirectionalLight(0xb7c6ff, 0.35);
+        fillLight.position.set(-2.5, -1.8, 3.4);
         scene.add(fillLight);
-
-        const rimLight = new THREE.DirectionalLight(0xffffff, 0.95);
-        rimLight.position.set(0.5, 0.9, -4.5);
-        scene.add(rimLight);
 
         function makeSvgTexture(svgString) {
             const encoded = encodeURIComponent(svgString)
@@ -1382,44 +1375,31 @@
         const trailTexture = makeSvgTexture(trailSvg);
         const brushGroup = new THREE.Group();
 
-        const handleMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x4c2618,
-            roughness: 0.42,
-            metalness: 0.12,
-            clearcoat: 0.42,
-            clearcoatRoughness: 0.3,
-            sheen: 0.18,
-            emissive: 0x120905,
-            emissiveIntensity: 0.35,
+        const handleMaterial = new THREE.MeshStandardMaterial({
+            color: 0x2b1813,
+            roughness: 0.58,
+            metalness: 0.06,
             transparent: true,
             opacity: 0
         });
-        const ferruleMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xf0dbc0,
-            roughness: 0.16,
-            metalness: 0.95,
-            clearcoat: 0.9,
-            clearcoatRoughness: 0.08,
-            emissive: 0x302015,
-            emissiveIntensity: 0.22,
+        const ferruleMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd0b690,
+            roughness: 0.35,
+            metalness: 0.78,
             transparent: true,
             opacity: 0
         });
         const bristleMaterial = new THREE.MeshStandardMaterial({
-            color: 0xb37843,
-            roughness: 0.66,
-            metalness: 0.03,
-            emissive: 0x1f1208,
-            emissiveIntensity: 0.2,
+            color: 0x8e5e34,
+            roughness: 0.82,
+            metalness: 0.02,
             transparent: true,
             opacity: 0
         });
         const tipMaterial = new THREE.MeshStandardMaterial({
-            color: 0x3a2014,
-            roughness: 0.82,
+            color: 0x2a160f,
+            roughness: 0.9,
             metalness: 0,
-            emissive: 0x100907,
-            emissiveIntensity: 0.18,
             transparent: true,
             opacity: 0
         });
@@ -1447,11 +1427,11 @@
         capLoop.rotation.x = Math.PI / 2;
         brushGroup.add(capLoop);
 
-        const baseBrushScale = { value: window.innerWidth <= 550 ? 1.2 : 1.85 };
+        const baseBrushScale = { value: window.innerWidth <= 550 ? 0.74 : 1.0 };
         const brushPulse = { value: 1 };
         brushGroup.scale.set(baseBrushScale.value, baseBrushScale.value, baseBrushScale.value);
-        brushGroup.position.set(0, 0, 3.1);
-        brushGroup.rotation.set(0.55, 0.32, -1.02);
+        brushGroup.position.set(0, 0, 1.5);
+        brushGroup.rotation.z = -0.95;
         scene.add(brushGroup);
 
         function setBrushOpacity(alpha) {
@@ -1491,11 +1471,11 @@
             slot.position.set(x + (Math.random() - 0.5) * 0.03, y + (Math.random() - 0.5) * 0.03, 1.2);
             const s = Math.random() * 0.3 + 0.1;
             slot.scale.set(s, s, 1);
-            slot.material.opacity = 0.92;
+            slot.material.opacity = 0.8;
         }
 
         let brushVisible = false;
-        let brushAngle = -1.02;
+        let brushAngle = -0.95;
         const prevBrushPos = { x: 0, y: 0, hasValue: false };
 
         function viewportToWorld(x, y) {
@@ -1535,9 +1515,7 @@
 
             if (brushVisible) {
                 setBrushOpacity(0.98);
-                brushGroup.rotation.z += (brushAngle + Math.sin(t * 6.5) * 0.018 - brushGroup.rotation.z) * 0.24;
-                brushGroup.rotation.x += (0.56 + Math.sin(t * 4.1) * 0.028 - brushGroup.rotation.x) * 0.22;
-                brushGroup.rotation.y += (0.34 + Math.cos(t * 3.2) * 0.024 - brushGroup.rotation.y) * 0.22;
+                brushGroup.rotation.z += (brushAngle + Math.sin(t * 6.5) * 0.03 - brushGroup.rotation.z) * 0.24;
                 const targetScale = baseBrushScale.value * brushPulse.value;
                 brushGroup.scale.x += (targetScale - brushGroup.scale.x) * 0.22;
                 brushGroup.scale.y += (targetScale - brushGroup.scale.y) * 0.22;
@@ -1571,7 +1549,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight, false);
-            baseBrushScale.value = window.innerWidth <= 550 ? 1.2 : 1.85;
+            baseBrushScale.value = window.innerWidth <= 550 ? 0.74 : 1.0;
             brushGroup.scale.set(baseBrushScale.value, baseBrushScale.value, baseBrushScale.value);
         });
 
@@ -1603,8 +1581,7 @@
                     const dx = p.x - prevBrushPos.x;
                     const dy = p.y - prevBrushPos.y;
                     if (Math.abs(dx) + Math.abs(dy) > 0.0001) {
-                        // Align brush tip with actual stroke direction for natural handwriting feel.
-                        brushAngle = Math.atan2(dy, dx) - Math.PI / 2;
+                        brushAngle = Math.atan2(dy, dx) + Math.PI / 2;
                     }
                 }
 
@@ -1614,16 +1591,8 @@
 
                 brushGroup.position.x = p.x;
                 brushGroup.position.y = p.y;
-                brushGroup.position.z = 3.1;
+                brushGroup.position.z = 1.5;
                 spawnTrailAt(p.x, p.y);
-            },
-            parkBrush(viewportX, viewportY, angle) {
-                const p = viewportToWorld(viewportX, viewportY);
-                brushGroup.position.set(p.x, p.y, 3.1);
-                if (typeof angle === 'number') {
-                    brushAngle = angle;
-                    brushGroup.rotation.z = angle;
-                }
             },
             addTrail(viewportX, viewportY) {
                 const p = viewportToWorld(viewportX, viewportY);
@@ -1645,36 +1614,6 @@
         const heroRect = hero.getBoundingClientRect();
         const tl = gsap.timeline();
 
-        const firstRect = quotes[0].getBoundingClientRect();
-        const introTargetX = firstRect.right - heroRect.left;
-        const introTargetY = firstRect.top - heroRect.top + firstRect.height * 0.52;
-        const introState = {
-            x: heroRect.left + introTargetX - 220,
-            y: heroRect.top - 90
-        };
-
-        tl.call(() => {
-            if (heroInkApi) {
-                heroInkApi.showBrush();
-            }
-        }, null, 0);
-
-        // Show brush first, then start writing.
-        tl.to(introState, {
-            x: heroRect.left + introTargetX,
-            y: heroRect.top + introTargetY,
-            duration: 0.95,
-            ease: 'power2.out',
-            onUpdate: () => {
-                if (heroInkApi) {
-                    heroInkApi.moveBrush(introState.x, introState.y);
-                    heroInkApi.addTrail(introState.x, introState.y);
-                }
-            }
-        }, 0.05);
-
-        tl.to({}, { duration: 0.16 });
-
         quotes.forEach((quote, idx) => {
             const rect = quote.getBoundingClientRect();
             const startX = rect.right - heroRect.left;
@@ -1685,9 +1624,10 @@
 
             tl.call(() => {
                 if (heroInkApi) {
+                    heroInkApi.showBrush();
                     heroInkApi.moveBrush(heroRect.left + startX, heroRect.top + y);
                 }
-            }, null, idx === 0 ? '+=0.02' : '+=0.18');
+            }, null, idx === 0 ? 0.35 : '+=0.12');
 
             tl.to(quote, {
                 clipPath: 'inset(0 0 0 0%)',
@@ -1706,14 +1646,13 @@
                     }
                 }
             }, '<');
-        });
 
-        // Keep brush visible on screen after writing completes.
-        tl.call(() => {
-            if (heroInkApi) {
-                heroInkApi.parkBrush(heroRect.left + heroRect.width * 0.76, heroRect.top + heroRect.height * 0.78, -0.9);
-            }
-        }, null, '+=0.05');
+            tl.call(() => {
+                if (heroInkApi) {
+                    heroInkApi.hideBrush();
+                }
+            }, null, '>-0.03');
+        });
     }
 
     window.addEventListener('load', () => {
