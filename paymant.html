@@ -41,6 +41,10 @@
             /* For locomotive scroll */
         }
 
+        #scroll-container {
+            min-height: 100vh;
+        }
+
         a {
             text-decoration: none;
             color: inherit;
@@ -606,6 +610,11 @@
         }
 
         @media (max-width: 900px) {
+            body {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
             .h-xl {
                 font-size: 11vw;
                 letter-spacing: -0.04em;
@@ -909,13 +918,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
     <script>
-        // Init Locomotive
-        const scroll = new LocomotiveScroll({
-            el: document.querySelector('[data-scroll-container]'),
-            smooth: true,
-            smartphone: { smooth: false },
-            tablet: { smooth: false }
-        });
+        // Init Locomotive only on desktop; mobile uses native scroll.
+        const isSmallScreen = window.matchMedia('(max-width: 900px)').matches;
+        const scroll = isSmallScreen
+            ? null
+            : new LocomotiveScroll({
+                el: document.querySelector('[data-scroll-container]'),
+                smooth: true,
+                smartphone: { smooth: false },
+                tablet: { smooth: false }
+            });
+
+        window.locoScroll = scroll;
 
         // Show Body
         document.body.classList.add('loaded');
@@ -940,7 +954,11 @@
             toggleBtn.addEventListener('click', () => {
                 form.classList.toggle('open');
                 // Update locomotive scroll because height changed
-                setTimeout(() => scroll.update(), 600);
+                setTimeout(() => {
+                    if (window.locoScroll) {
+                        window.locoScroll.update();
+                    }
+                }, 600);
             });
         }
 

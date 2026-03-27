@@ -41,7 +41,9 @@
             /* Removed opacity: 0 for safety - elements will animate mostly from JS */
         }
 
-        body.loaded {}
+        #scroll-container {
+            min-height: 100vh;
+        }
 
         a {
             text-decoration: none;
@@ -54,7 +56,7 @@
         }
 
         .h-xl {
-            font-size: 8vw;
+            font-size: clamp(3rem, 8vw, 7rem);
             line-height: 0.9;
             text-transform: uppercase;
             letter-spacing: -2px;
@@ -164,9 +166,12 @@
             padding: 200px 5% 100px;
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.1fr);
             gap: 80px;
             position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: start;
         }
 
         /* Left Side: Info */
@@ -219,6 +224,13 @@
             padding: 40px;
             border: 1px solid var(--border-color);
             /* Removed opacity/transform for safety */
+            width: 100%;
+        }
+
+        .name-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
         .form-group {
@@ -287,13 +299,28 @@
             position: absolute;
             top: 150px;
             left: -2vw;
-            font-size: 20vw;
+            font-size: clamp(6rem, 20vw, 18rem);
             font-weight: 900;
             color: rgba(255, 255, 255, 0.03);
             pointer-events: none;
             white-space: nowrap;
             z-index: -1;
             font-family: 'Inter';
+        }
+
+        @media (max-width: 1100px) {
+            .contact-container {
+                gap: 50px;
+                padding-top: 170px;
+            }
+
+            .contact-form-col {
+                padding: 30px;
+            }
+
+            .info-val {
+                font-size: 1.25rem;
+            }
         }
 
         /* Cursor */
@@ -321,32 +348,33 @@
         @media (max-width: 900px) {
             .contact-container {
                 grid-template-columns: 1fr;
-                padding-top: 140px;
-                gap: 50px;
+                padding: 135px 20px 70px;
+                gap: 35px;
             }
 
             .h-xl {
-                font-size: 15vw;
+                font-size: clamp(2.7rem, 14vw, 5rem);
                 line-height: 0.9;
             }
 
             /* Larger title on mobile */
             .bg-text {
-                font-size: 25vw;
-                top: 100px;
-                opacity: 0.05;
+                display: none;
             }
 
             /* Form Area */
             .contact-form-col {
-                padding: 25px 20px;
-                border: none;
-                background: transparent;
-                padding: 0;
+                padding: 24px 18px;
+                border: 1px solid var(--border-color);
+                background: rgba(255, 255, 255, 0.02);
             }
 
             .form-input {
                 font-size: 16px;
+            }
+
+            .form-group {
+                margin-bottom: 30px;
             }
 
             /* Prevents iOS zoom */
@@ -367,7 +395,7 @@
             }
 
             .info-val {
-                font-size: 1.2rem;
+                font-size: clamp(1.05rem, 5vw, 1.2rem);
             }
 
             /* Mobile Locomotive Fixes - ENABLE NATIVE SCROLL */
@@ -396,21 +424,38 @@
 
         @media (max-width: 450px) {
             .contact-container {
-                padding-top: 120px;
+                padding: 115px 16px 60px;
             }
 
             .h-xl {
-                font-size: 18vw;
+                font-size: clamp(2.3rem, 16vw, 4rem);
+            }
+
+            .main-header {
+                padding: 18px 16px;
+            }
+
+            .header-logo img {
+                width: 78px;
             }
 
             .submit-btn {
                 width: 100%;
                 text-align: center;
-                padding: 18px;
+                padding: 16px;
             }
 
             .info-group {
                 margin-bottom: 30px;
+            }
+
+            .nav-overlay .nav-links a {
+                font-size: 11vw;
+            }
+            .playfair{
+                display: flex;
+                justify-content: center;
+                gap: 10px;
             }
         }
     </style>
@@ -476,7 +521,7 @@
             <div class="contact-form-col">
                 <form id="contactForm" onsubmit="event.preventDefault();">
 
-                    <div class="name-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="name-row">
                         <div class="form-group">
                             <input type="text" class="form-input" name="firstName" required>
                             <label class="form-label">First Name</label>
@@ -526,25 +571,29 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // 1. Init Locomotive with Error Handling
+        // 1. Init Locomotive on desktop only; mobile uses native scrolling
         let scroller;
         try {
-            scroller = new LocomotiveScroll({
-                el: document.querySelector('[data-scroll-container]'),
-                smooth: true,
-                smartphone: { smooth: false },
-                tablet: { smooth: false }
-            });
+            const isMobile = window.matchMedia('(max-width: 900px)').matches;
+            const scrollContainer = document.querySelector('[data-scroll-container]');
 
-            // Resize Observer for height bugs
-            new ResizeObserver(() => scroller.update()).observe(document.querySelector('[data-scroll-container]'));
+            if (!isMobile && scrollContainer) {
+                scroller = new LocomotiveScroll({
+                    el: scrollContainer,
+                    smooth: true,
+                    smartphone: { smooth: false },
+                    tablet: { smooth: false }
+                });
 
-            // Sync (Optional but good practice)
-            ScrollTrigger.scrollerProxy('[data-scroll-container]', {
-                scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
-                getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
-                pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
-            });
+                // Resize Observer for height bugs
+                new ResizeObserver(() => scroller && scroller.update()).observe(scrollContainer);
+
+                ScrollTrigger.scrollerProxy('[data-scroll-container]', {
+                    scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
+                    getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
+                    pinType: scrollContainer.style.transform ? "transform" : "fixed"
+                });
+            }
         } catch (e) { console.error("Locomotive/GSAP Error:", e); }
 
         // 2. Animations using .from() for safety

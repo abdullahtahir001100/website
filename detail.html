@@ -376,12 +376,50 @@
         }
 
         .marquee-line {
-            display: flex;
-            white-space: nowrap;
+            overflow: hidden;
             font-size: 6vw;
             font-weight: 700;
             text-transform: uppercase;
             line-height: 1;
+        }
+
+        .marquee-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            gap: 2rem;
+            white-space: nowrap;
+            animation: marquee-left 22s linear infinite;
+            will-change: transform;
+        }
+
+        .marquee-track span {
+            flex-shrink: 0;
+        }
+
+        .marquee-right .marquee-track {
+            animation-name: marquee-right;
+            animation-duration: 24s;
+        }
+
+        @keyframes marquee-left {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes marquee-right {
+            from {
+                transform: translateX(-50%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
         }
 
         .outline-text {
@@ -717,9 +755,10 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 550px) {
             .marquee-line {
                 font-size: 10vw;
+                 transform: none !important; /* Fix: Disable Parallax */
             }
 
             .gallery-thumbnails {
@@ -831,12 +870,17 @@
 
         <!-- 2. MARQUEE MOVING COMPONENT -->
         <section class="moving-text-section" data-scroll-section>
-            <div class="marquee-line" data-scroll data-scroll-direction="horizontal" data-scroll-speed="6">
-                <span>SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
+            <div class="marquee-line marquee-left">
+                <div class="marquee-track">
+                    <span>SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
+                    <span aria-hidden="true">SPECIFICATIONS • REVIEWS • DETAILS • SPECIFICATIONS •</span>
+                </div>
             </div>
-            <div class="marquee-line outline-text" data-scroll data-scroll-direction="horizontal"
-                data-scroll-speed="-6">
-                <span>AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
+            <div class="marquee-line marquee-right outline-text">
+                <div class="marquee-track">
+                    <span>AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
+                    <span aria-hidden="true">AUTHENTICITY • PRECISION • CRAFT • AUTHENTICITY •</span>
+                </div>
             </div>
         </section>
 
