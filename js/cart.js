@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     
                     <div class="total-column">
-                        ${formatPrice(itemSubtotal)}
+                       <div class="product-price-inlin">${formatPrice(itemSubtotal)}</div>
                         <i class="fas fa-trash remove-btn" data-index="${index}" style="margin-left: 20px;"></i>
                     </div>
                 </div> 
