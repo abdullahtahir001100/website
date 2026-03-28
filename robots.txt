@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard/
 Sitemap: https://inkbyhand.store/sitemap.xml
