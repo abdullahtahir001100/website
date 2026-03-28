@@ -240,7 +240,8 @@
                         <option value="Delivered">Delivered</option>
                         <option value="Cancelled">Cancelled</option>
                     </select>
-                    <button id="updateBtn" class="w-full bg-white text-black font-bold text-[10px] uppercase py-4 hover:bg-accent hover:text-white transition-all">Update_Status</button>
+                    <button id="updateBtn" onclick="updateOrderStatus()" class="w-full bg-white text-black font-bold text-[10px] uppercase py-4 hover:bg-accent hover:text-white transition-all">Update_Status</button>
+                    <button id="deleteBtn" onclick="deleteOrder()" class="w-full mt-2 bg-transparent text-red-500 border border-red-500/30 font-bold text-[10px] uppercase py-3 hover:bg-red-500 hover:text-white transition-all">Delete_Record</button>
                 </div>
             </section>
         </div>
@@ -374,6 +375,74 @@
         function closePanel() {
             document.getElementById('orderDetailPanel').classList.remove('open');
             document.getElementById('panelMask').classList.remove('open');
+        }
+
+        async function updateOrderStatus() {
+            if (!currentOrderId) return;
+            const newStatus = document.getElementById('updateStatusSelect').value;
+            const btn = document.getElementById('updateBtn');
+            const originalText = btn.innerText;
+            btn.innerText = 'UPDATING...';
+            
+            try {
+                const res = await fetch(`${API_ORDERS}/${currentOrderId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus, note: `Status updated by admin to ${newStatus}` })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    btn.innerText = 'SUCCESS';
+                    btn.classList.add('bg-green-500', 'text-white');
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.classList.remove('bg-green-500', 'text-white');
+                        closePanel();
+                        fetchData(); // Reload table
+                    }, 1500);
+                } else {
+                    alert(data.message || 'Failed to update status');
+                    btn.innerText = originalText;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to server.');
+                btn.innerText = originalText;
+            }
+        }
+
+        async function deleteOrder() {
+            if (!currentOrderId) return;
+            if (!confirm('Are you sure you want to permanently delete this order? This cannot be undone.')) return;
+            
+            const btn = document.getElementById('deleteBtn');
+            const originalText = btn.innerText;
+            btn.innerText = 'DELETING...';
+
+            try {
+                const res = await fetch(`${API_ORDERS}/${currentOrderId}`, {
+                    method: 'DELETE'
+                });
+                
+                // Assuming status 200/204 or success JSON
+                if (res.ok) {
+                    btn.innerText = 'DELETED';
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        closePanel();
+                        fetchData(); // Reload table
+                    }, 1000);
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.message || 'Failed to delete order');
+                    btn.innerText = originalText;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to server.');
+                btn.innerText = originalText;
+            }
         }
 
         window.onload = () => {
