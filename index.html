@@ -17,7 +17,7 @@
 
     <style>
         :root {
-    /* overflow-x: hidden; */
+            /* overflow-x: hidden; */
             --bg-deep: #0a0a0a;
             --bg-mid: #141414;
             --bg-light: #f4f4f4;
@@ -28,7 +28,7 @@
 
         /* Global Reset - Strict Sharp Edges */
         * {
-                /* overflow-x: hidden; */
+            /* overflow-x: hidden; */
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -43,10 +43,12 @@
             font-family: 'Inter', sans-serif;
             /* overflow-x: hidden !important; */
         }
-     #scroll-wrapper {
-    overflow: hidden;
-    width: 100%;
-}
+
+        #scroll-wrapper {
+            overflow: hidden;
+            width: 100%;
+        }
+
         h1,
         h2,
         h3,
@@ -157,7 +159,7 @@
 
         /* Hero */
         .hero {
-            height: 110vh;
+            height: 115vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -516,19 +518,23 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: blur(5px); /* Changed from grayscale to blur */
-            opacity: 0.6;      /* Dim inactive slides slightly */
+            filter: blur(5px);
+            /* Changed from grayscale to blur */
+            opacity: 0.6;
+            /* Dim inactive slides slightly */
             transition: transform 0.8s ease, filter 0.5s ease, opacity 0.5s ease;
         }
 
         .swiper-slide:hover img {
             transform: scale(1.05);
-            filter: blur(0);   /* Clear on hover */
+            filter: blur(0);
+            /* Clear on hover */
             opacity: 1;
         }
-        
+
         .swiper-slide-active img {
-            filter: blur(0);   /* Clear active slide */
+            filter: blur(0);
+            /* Clear active slide */
             opacity: 1;
         }
 
@@ -557,8 +563,8 @@
 
         .slide-btn {
             padding: 12px 30px;
-            border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
             text-decoration: none;
             text-transform: uppercase;
@@ -639,7 +645,7 @@
         }
 
         .footer-top {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 60px;
             margin-bottom: 60px;
         }
@@ -740,7 +746,7 @@
             justify-content: space-between;
             align-items: center;
             padding-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 60px;
             font-size: 0.8rem;
             color: #555;
@@ -757,7 +763,7 @@
             }
 
             .hero-title h1 {
-                font-size: 16vw; 
+                font-size: 16vw;
                 line-height: 1.1;
             }
 
@@ -779,13 +785,15 @@
             .h-scroll-item {
                 width: 85vw;
             }
-            
+
             .h-scroll-item img {
-                height: 40vh; /* Reduced height for mobile */
+                height: 40vh;
+                /* Reduced height for mobile */
             }
-            
+
             .h-scroll-item h3 {
-                font-size: 2rem; /* Fixed size instead of vw for better readability */
+                font-size: 2rem;
+                /* Fixed size instead of vw for better readability */
             }
 
             .faq-item {
@@ -800,40 +808,51 @@
 
         /* Mobile Optimization (extended to 550px) */
         @media (max-width: 550px) {
-            .swiper-section h2{
+            .swiper-section h2 {
                 font-size: 10vw !important;
             }
-            
+
             /* --- Performance Fixes --- */
             * {
-                cursor: auto !important; /* Disable custom cursor */
+                cursor: auto !important;
+                /* Disable custom cursor */
             }
-            
-            .cursor, .cursor-follower {
-                display: none !important; /* Hide custom cursor elements */
+
+            .cursor,
+            .cursor-follower {
+                display: none !important;
+                /* Hide custom cursor elements */
             }
 
             .main-header {
-                backdrop-filter: none !important; /* Remove blur effect */
-                background: rgba(10,10,10,0.95); /* Solid-ish background */
+                backdrop-filter: none !important;
+                /* Remove blur effect */
+                background: rgba(10, 10, 10, 0.95);
+                /* Solid-ish background */
                 padding: 20px 5%;
             }
-            
+
             .slide-overlay {
-                backdrop-filter: none !important; /* Remove blur effect */
+                backdrop-filter: none !important;
+                /* Remove blur effect */
             }
 
-            .hero-title, .h-scroll-item, .swiper-slide {
-                will-change: transform; /* Hardware acceleration hint */
+            .hero-title,
+            .h-scroll-item,
+            .swiper-slide {
+                will-change: transform;
+                /* Hardware acceleration hint */
             }
 
             /* --- Layout Adjustments --- */
-            .hero-title h1{
+            .hero-title h1 {
                 text-align: center;
-                font-size: 13vw; /* Smaller to prevent overflow on 320px */
+                font-size: 13vw;
+                /* Smaller to prevent overflow on 320px */
                 line-height: 1;
                 letter-spacing: -2px;
-                word-break: break-all; /* Safety wrapper */
+                word-break: break-all;
+                /* Safety wrapper */
             }
 
             .hero-bg-canvas {
@@ -848,16 +867,23 @@
             .q3 {
                 display: none;
             }
-     .hero-title p{
+
+            .hero-title p {
                 letter-spacing: 5px !important;
             }
-            .nav-links a{
+
+            .nav-links a {
                 font-size: 8vw;
             }
 
             /* Global Adjustments */
-            .content-block, .process-section, .faq-section, .swiper-section, .footer-container {
-                padding: 60px 5%; /* Tighter padding */
+            .content-block,
+            .process-section,
+            .faq-section,
+            .swiper-section,
+            .footer-container {
+                padding: 60px 5%;
+                /* Tighter padding */
             }
 
             /* Under 550px marquee should run continuously */
@@ -876,16 +902,19 @@
 
             /* 1. Hero Section */
             .hero {
-                height: 85vh; /* Account for mobile browser bars */
+                height: 85vh;
+                /* Account for mobile browser bars */
             }
 
             .header-logo img {
-                width: 80px; /* Resize logo */
+                width: 80px;
+                /* Resize logo */
             }
 
             /* 2. Process Section */
             .process-card h3 {
-                font-size: 4rem; /* Smaller numbers */
+                font-size: 4rem;
+                /* Smaller numbers */
             }
 
             /* 3. Horizontal Scroll Section */
@@ -894,18 +923,22 @@
             }
 
             .h-scroll-item {
-                width: 85vw; /* Almost full width */
+                width: 85vw;
+                /* Almost full width */
                 margin-right: 20px;
-                opacity: 1; /* Always visible */
+                opacity: 1;
+                /* Always visible */
             }
 
             .h-scroll-item img {
                 height: 40vh;
-                filter: none !important; /* No grayscale/blur on mobile */
+                filter: none !important;
+                /* No grayscale/blur on mobile */
             }
 
             .h-scroll-item h2 {
-                font-size: 12vw !important; /* Fix Main Title */
+                font-size: 12vw !important;
+                /* Fix Main Title */
             }
 
             .h-scroll-item h3 {
@@ -919,25 +952,29 @@
             }
 
             .swiper-slide img {
-                filter: none !important; /* No blur on mobile */
+                filter: none !important;
+                /* No blur on mobile */
                 opacity: 1;
             }
 
             .slide-overlay {
                 opacity: 1;
-                background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%);
+                background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 60%);
                 justify-content: flex-end;
                 align-items: flex-start;
                 padding: 30px;
                 text-align: left;
             }
 
-            .slide-title, .slide-desc, .slide-btn {
+            .slide-title,
+            .slide-desc,
+            .slide-btn {
                 transform: translateY(0);
             }
 
             .slide-desc {
-                -webkit-line-clamp: 2; /* Less text */
+                -webkit-line-clamp: 2;
+                /* Less text */
                 font-size: 0.85rem;
             }
 
@@ -948,7 +985,8 @@
 
             /* 6. Footer */
             .footer-cta {
-                font-size: 13.5vw; /* Prevent overflow of long words */
+                font-size: 13.5vw;
+                /* Prevent overflow of long words */
                 -webkit-text-stroke-width: 0.5px;
             }
 
@@ -956,26 +994,32 @@
                 gap: 40px;
             }
         }
+
         @media (max-width: 768px) {
-    .horizontal-outer {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 20px; /* Space for scrollbar if visible */
-    }
-    .horizontal-inner {
-        padding-left: 5vw;
-        padding-right: 5vw;
-        width: max-content; /* Forces it to scroll natively */
-    }
-    .horizontal-scroll-container {
-        height: auto;
-        padding-bottom: 60px;
-        padding-top: 80px;
-    }
-    .scroller-pin-fix {
-        height: auto;
-    }
-}
+            .horizontal-outer {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 20px;
+                /* Space for scrollbar if visible */
+            }
+
+            .horizontal-inner {
+                padding-left: 5vw;
+                padding-right: 5vw;
+                width: max-content;
+                /* Forces it to scroll natively */
+            }
+
+            .horizontal-scroll-container {
+                height: auto;
+                padding-bottom: 60px;
+                padding-top: 80px;
+            }
+
+            .scroller-pin-fix {
+                height: auto;
+            }
+        }
     </style>
 </head>
 
@@ -1008,16 +1052,20 @@
 
         <section class="hero" data-scroll-section>
             <video class="hero-bg-video" autoplay muted loop playsinline aria-hidden="true">
-                <source src="freepik_cinematic-3d-animation-of-the-arabic-word-in-dark-_kling_1080p_16-9_24fps_29760.mp4" type="video/mp4">
+                <source
+                    src="hero.mp4"
+                    type="video/mp4">
             </video>
             <div class="hero-ink-overlay" aria-hidden="true"></div>
             <div class="hero-quote-layer" aria-hidden="true">
-                <div class="quote-write q1"><span class="quote-stroke">وَاَنۡ لَّيۡسَ لِلۡاِنۡسَانِ اِلَّا مَا سَعٰى</span></div>
+                <div class="quote-write q1"><span class="quote-stroke">وَاَنۡ لَّيۡسَ لِلۡاِنۡسَانِ اِلَّا مَا
+                        سَعٰى</span></div>
                 <div class="quote-write q2"><span class="quote-stroke">فَاِنَّ مَعَ الۡعُسۡرِ يُسۡرًا</span></div>
                 <div class="quote-write q3"><span class="quote-stroke">وَقُل رَّبِّ زِدۡنِي عِلۡمًا</span></div>
             </div>
             <div class="hero-title animate__animated animate__fadeInUp" data-scroll data-scroll-speed="-3">
-                <p class="animate__animated animate__fadeIn animate__delay-1s" style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
+                <p class="animate__animated animate__fadeIn animate__delay-1s"
+                    style="letter-spacing: 10px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
                     SARGODHA / PAKISTAN</p>
                 <h1>INKBYHAND</h1>
             </div>
@@ -1038,7 +1086,8 @@
                     <span aria-hidden="true">CRAFTING LEGACY • CRAFTING LEGACY • CRAFTING LEGACY •</span>
                 </div>
             </div>
-            <div class="marquee-line marquee-right outline-text" data-scroll data-scroll-direction="horizontal" data-scroll-speed="-6">
+            <div class="marquee-line marquee-right outline-text" data-scroll data-scroll-direction="horizontal"
+                data-scroll-speed="-6">
                 <div class="marquee-track">
                     <span>MODERN CALLIGRAPHY • MODERN CALLIGRAPHY • MODERN CALLIGRAPHY •</span>
                     <span aria-hidden="true">MODERN CALLIGRAPHY • MODERN CALLIGRAPHY • MODERN CALLIGRAPHY •</span>
@@ -1210,7 +1259,8 @@
                     <div class="footer-col">
                         <h4>CONTACT</h4>
                         <p style="color: #888; margin-bottom: 10px;">Sargodha, Pakistan</p>
-                        <a href="mailto:hello@inkbyhand.com" class="footer-link" style="color:#fff;">hello@inkbyhand.com</a>
+                        <a href="mailto:hello@inkbyhand.com" class="footer-link"
+                            style="color:#fff;">hello@inkbyhand.com</a>
                     </div>
                 </div>
 
@@ -1232,174 +1282,174 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-    gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger);
 
-    // 1. Locomotive Init
-    const locoScroll = new LocomotiveScroll({
-        el: document.querySelector("[data-scroll-container]"),
-        smooth: true, 
-        multiplier: 1, 
-        lerp: 0.05,
-        smartphone: { smooth: false }, // Disables smooth scrolling on mobile for better performance
-        tablet: { smooth: false }      // Disables on tablets
-    });
-
-    locoScroll.on("scroll", ScrollTrigger.update);
-    ScrollTrigger.scrollerProxy("[data-scroll-container]", {
-        scrollTop(value) { return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y; },
-        getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
-        pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
-    });
-
-    // 2. Cursor
-    const cursor = document.querySelector(".cursor");
-    const follower = document.querySelector(".cursor-follower");
-    window.addEventListener("mousemove", e => {
-        gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-        gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
-    });
-
-    // 3. Burger Menu
-    const burger = document.getElementById('burger');
-    const menu = document.getElementById('menu');
-    if (burger && menu) {
-        burger.onclick = () => {
-            menu.classList.toggle('active');
-            const lines = burger.querySelectorAll('div');
-            lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
-            lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
-        };
-    }
-
-    // 3.5 Three.js model removed by request; hero now uses a video background.
-
-    function runHeroQuoteWriteOnce() {
-        const hero = document.querySelector('.hero');
-        const quotes = gsap.utils.toArray('.hero-quote-layer .quote-stroke');
-
-        if (!hero || !quotes.length) return;
-
-        gsap.set(quotes, { clipPath: 'inset(0 0 0 100%)', opacity: 0.95 });
-
-        const tl = gsap.timeline();
-
-        tl.to({}, { duration: 0.2 });
-
-        quotes.forEach((quote, idx) => {
-            tl.to({}, { duration: idx === 0 ? 0.02 : 0.18 });
-
-            tl.to(quote, {
-                clipPath: 'inset(0 0 0 0%)',
-                duration: 1.1,
-                ease: 'none'
-            }, '<');
+        // 1. Locomotive Init
+        const locoScroll = new LocomotiveScroll({
+            el: document.querySelector("[data-scroll-container]"),
+            smooth: true,
+            multiplier: 1,
+            lerp: 0.05,
+            smartphone: { smooth: false }, // Disables smooth scrolling on mobile for better performance
+            tablet: { smooth: false }      // Disables on tablets
         });
 
-        tl.to({}, { duration: 0.05 });
-    }
-
-    let heroWriteStarted = false;
-
-    function startHeroWriteSequence() {
-        if (heroWriteStarted) return;
-        heroWriteStarted = true;
-        // Let layout settle briefly so quote bounds are accurate before brush path is calculated.
-        setTimeout(() => {
-            runHeroQuoteWriteOnce();
-        }, 120);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', startHeroWriteSequence, { once: true });
-    } else {
-        startHeroWriteSequence();
-    }
-
-    // Fallback in case DOMContentLoaded listener timing is missed in edge cases.
-    window.addEventListener('load', startHeroWriteSequence, { once: true });
-
-    // 4. FAQ Animations (Alternating)
-    gsap.utils.toArray('.faq-item').forEach(item => {
-        const direction = item.getAttribute('data-faq-anim');
-        const xVal = direction === 'left' ? -100 : 100;
-
-        gsap.from(item, {
-            scrollTrigger: {
-                trigger: item,
-                scroller: "[data-scroll-container]",
-                start: "top 90%",
-            },
-            x: xVal,
-            opacity: 0,
-            duration: 1,
-            ease: "power4.out"
+        locoScroll.on("scroll", ScrollTrigger.update);
+        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+            scrollTop(value) { return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y; },
+            getBoundingClientRect() { return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }; },
+            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
         });
-    });
 
-    // 5. Scroll Animations for Process Section
-    gsap.utils.toArray('.process-card').forEach((card, i) => {
-        gsap.from(card, {
-            scrollTrigger: {
-                trigger: ".process-section",
-                scroller: "[data-scroll-container]",
-                start: "top 80%"
-            },
-            y: 100,
-            opacity: 0,
-            duration: 1,
-            delay: i * 0.2,
-            ease: "power4.out"
+        // 2. Cursor
+        const cursor = document.querySelector(".cursor");
+        const follower = document.querySelector(".cursor-follower");
+        window.addEventListener("mousemove", e => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(follower, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
         });
-    });
 
-    // 6. Horizontal Scroll - Fixed Pinning with MatchMedia for Mobile Stability
-    ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
-
-    let mm = gsap.matchMedia();
-
-    // Only run GSAP horizontal pinning on Desktop/Tablet
-    mm.add("(min-width: 769px)", () => {
-        const horizontalSection = document.querySelector('.horizontal-scroll-container');
-        const horizontalInner = document.querySelector('.horizontal-inner');
-
-        if (horizontalSection && horizontalInner) {
-            const getScrollAmount = () => {
-                let totalWidth = horizontalInner.scrollWidth;
-                let viewportWidth = window.innerWidth;
-                return -(totalWidth - viewportWidth);
+        // 3. Burger Menu
+        const burger = document.getElementById('burger');
+        const menu = document.getElementById('menu');
+        if (burger && menu) {
+            burger.onclick = () => {
+                menu.classList.toggle('active');
+                const lines = burger.querySelectorAll('div');
+                lines[0].style.transform = menu.classList.contains('active') ? 'translateY(4px) rotate(45deg)' : 'none';
+                lines[1].style.transform = menu.classList.contains('active') ? 'translateY(-3px) rotate(-45deg)' : 'none';
             };
-
-            const tween = gsap.to(horizontalInner, {
-                x: getScrollAmount,
-                ease: "none"
-            });
-
-            ScrollTrigger.create({
-                trigger: horizontalSection,
-                scroller: "[data-scroll-container]",
-                pin: true,
-                pinType: "transform",
-                animation: tween,
-                scrub: 1,
-                start: "top top",
-                end: () => `+=${horizontalInner.scrollWidth}`,
-                invalidateOnRefresh: true
-            });
         }
-    });
 
-    // Ensure layout updates after static images load
-    window.addEventListener("load", () => {
-        ScrollTrigger.refresh();
-    });
+        // 3.5 Three.js model removed by request; hero now uses a video background.
 
-    // 7. Dynamic Data Fetch & Swiper Init
-    fetch('https://backend-web-1.vercel.app/api/products')
-        .then(res => res.json())
-        .then(data => {
-            const wrapper = document.getElementById('fetch');
-            if (wrapper && Array.isArray(data)) {
-                wrapper.innerHTML = data.map(item => `
+        function runHeroQuoteWriteOnce() {
+            const hero = document.querySelector('.hero');
+            const quotes = gsap.utils.toArray('.hero-quote-layer .quote-stroke');
+
+            if (!hero || !quotes.length) return;
+
+            gsap.set(quotes, { clipPath: 'inset(0 0 0 100%)', opacity: 0.95 });
+
+            const tl = gsap.timeline();
+
+            tl.to({}, { duration: 0.2 });
+
+            quotes.forEach((quote, idx) => {
+                tl.to({}, { duration: idx === 0 ? 0.02 : 0.18 });
+
+                tl.to(quote, {
+                    clipPath: 'inset(0 0 0 0%)',
+                    duration: 1.1,
+                    ease: 'none'
+                }, '<');
+            });
+
+            tl.to({}, { duration: 0.05 });
+        }
+
+        let heroWriteStarted = false;
+
+        function startHeroWriteSequence() {
+            if (heroWriteStarted) return;
+            heroWriteStarted = true;
+            // Let layout settle briefly so quote bounds are accurate before brush path is calculated.
+            setTimeout(() => {
+                runHeroQuoteWriteOnce();
+            }, 120);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startHeroWriteSequence, { once: true });
+        } else {
+            startHeroWriteSequence();
+        }
+
+        // Fallback in case DOMContentLoaded listener timing is missed in edge cases.
+        window.addEventListener('load', startHeroWriteSequence, { once: true });
+
+        // 4. FAQ Animations (Alternating)
+        gsap.utils.toArray('.faq-item').forEach(item => {
+            const direction = item.getAttribute('data-faq-anim');
+            const xVal = direction === 'left' ? -100 : 100;
+
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    scroller: "[data-scroll-container]",
+                    start: "top 90%",
+                },
+                x: xVal,
+                opacity: 0,
+                duration: 1,
+                ease: "power4.out"
+            });
+        });
+
+        // 5. Scroll Animations for Process Section
+        gsap.utils.toArray('.process-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: ".process-section",
+                    scroller: "[data-scroll-container]",
+                    start: "top 80%"
+                },
+                y: 100,
+                opacity: 0,
+                duration: 1,
+                delay: i * 0.2,
+                ease: "power4.out"
+            });
+        });
+
+        // 6. Horizontal Scroll - Fixed Pinning with MatchMedia for Mobile Stability
+        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+
+        let mm = gsap.matchMedia();
+
+        // Only run GSAP horizontal pinning on Desktop/Tablet
+        mm.add("(min-width: 769px)", () => {
+            const horizontalSection = document.querySelector('.horizontal-scroll-container');
+            const horizontalInner = document.querySelector('.horizontal-inner');
+
+            if (horizontalSection && horizontalInner) {
+                const getScrollAmount = () => {
+                    let totalWidth = horizontalInner.scrollWidth;
+                    let viewportWidth = window.innerWidth;
+                    return -(totalWidth - viewportWidth);
+                };
+
+                const tween = gsap.to(horizontalInner, {
+                    x: getScrollAmount,
+                    ease: "none"
+                });
+
+                ScrollTrigger.create({
+                    trigger: horizontalSection,
+                    scroller: "[data-scroll-container]",
+                    pin: true,
+                    pinType: "transform",
+                    animation: tween,
+                    scrub: 1,
+                    start: "top top",
+                    end: () => `+=${horizontalInner.scrollWidth}`,
+                    invalidateOnRefresh: true
+                });
+            }
+        });
+
+        // Ensure layout updates after static images load
+        window.addEventListener("load", () => {
+            ScrollTrigger.refresh();
+        });
+
+        // 7. Dynamic Data Fetch & Swiper Init
+        fetch('https://backend-web-1.vercel.app/api/products')
+            .then(res => res.json())
+            .then(data => {
+                const wrapper = document.getElementById('fetch');
+                if (wrapper && Array.isArray(data)) {
+                    wrapper.innerHTML = data.map(item => `
                     <div class="swiper-slide">
                         <img src="${item.mainImage}" alt="${item.title || 'Artwork'}" loading="lazy" />
                         <div class="slide-overlay">
@@ -1410,52 +1460,52 @@
                     </div>
                 `).join('');
 
-                // Initialize Swiper AFTER elements exist in DOM
-                new Swiper(".mySwiper", {
-                    effect: "coverflow",
-                    centeredSlides: true,
-                    slidesPerView: "auto",
-                    slideToClickedSlide: true,
-                    coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
-                    loop: true,
-                    autoplay: { delay: 2500, disableOnInteraction: false }
-                });
-
-                // Image load checker to fix Locomotive blank space issue
-                const images = wrapper.querySelectorAll('img');
-                let imagesLoadedCount = 0;
-
-                if (images.length === 0) {
-                    locoScroll.update();
-                    ScrollTrigger.refresh();
-                } else {
-                    images.forEach(img => {
-                        if (img.complete) {
-                            imageLoaded();
-                        } else {
-                            img.addEventListener('load', imageLoaded);
-                            img.addEventListener('error', imageLoaded);
-                        }
+                    // Initialize Swiper AFTER elements exist in DOM
+                    new Swiper(".mySwiper", {
+                        effect: "coverflow",
+                        centeredSlides: true,
+                        slidesPerView: "auto",
+                        slideToClickedSlide: true,
+                        coverflowEffect: { rotate: 0, stretch: 80, depth: 200, modifier: 1, slideShadows: false },
+                        loop: true,
+                        autoplay: { delay: 2500, disableOnInteraction: false }
                     });
-                }
 
-                function imageLoaded() {
-                    imagesLoadedCount++;
-                    if (imagesLoadedCount === images.length) {
-                        // All dynamic images loaded, safely recalculate height
-                        setTimeout(() => {
-                            locoScroll.update();
-                            ScrollTrigger.refresh();
-                        }, 100);
+                    // Image load checker to fix Locomotive blank space issue
+                    const images = wrapper.querySelectorAll('img');
+                    let imagesLoadedCount = 0;
+
+                    if (images.length === 0) {
+                        locoScroll.update();
+                        ScrollTrigger.refresh();
+                    } else {
+                        images.forEach(img => {
+                            if (img.complete) {
+                                imageLoaded();
+                            } else {
+                                img.addEventListener('load', imageLoaded);
+                                img.addEventListener('error', imageLoaded);
+                            }
+                        });
                     }
-                }
 
-            } else {
-                console.log('No data or element missing');
-            }
-        })
-        .catch(err => console.error('Fetch error:', err));
-</script>
+                    function imageLoaded() {
+                        imagesLoadedCount++;
+                        if (imagesLoadedCount === images.length) {
+                            // All dynamic images loaded, safely recalculate height
+                            setTimeout(() => {
+                                locoScroll.update();
+                                ScrollTrigger.refresh();
+                            }, 100);
+                        }
+                    }
+
+                } else {
+                    console.log('No data or element missing');
+                }
+            })
+            .catch(err => console.error('Fetch error:', err));
+    </script>
 </body>
 
 </html>
