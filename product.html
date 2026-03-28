@@ -15,17 +15,52 @@
     <meta property="og:description" content="Browse curated INKBYHAND collections, limited drops, and premium design pieces. Explore immersive product experiences crafted for serious collectors.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://inkbyhand.store/product.html">
-    <meta property="og:image" content="https://inkbyhand.store/https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png">
+    <meta property="og:image" content="https://inkbyhand.store/favicon.png">
     <meta property="og:updated_time" content="2026-03-28T00:00:00Z">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="INKBYHAND Archive | Limited Collections and Art Editions">
     <meta name="twitter:description" content="Browse curated INKBYHAND collections, limited drops, and premium design pieces. Explore immersive product experiences crafted for serious collectors.">
-    <meta name="twitter:image" content="https://inkbyhand.store/https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png">
+    <meta name="twitter:image" content="https://inkbyhand.store/favicon.png">
 
     <link rel="canonical" href="https://inkbyhand.store/product.html">
-    <link rel="icon" type="image/svg+xml" href="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png">
-    <link rel="apple-touch-icon" href="https://inkbyhand.com/wp-content/uploads/2025/08/Main-Logo-2-e1756815161444.png">
+        <link rel="icon" type="image/svg+xml" href="favicon.png">
+        <link rel="apple-touch-icon" href="favicon.png">
+
+        <script type="application/ld+json" id="archive-breadcrumb-jsonld">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://inkbyhand.store/index.html"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Archive",
+                    "item": "https://inkbyhand.store/product.html"
+                }
+            ]
+        }
+        </script>
+
+        <script type="application/ld+json" id="archive-products-jsonld">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "INKBYHAND Archive",
+            "url": "https://inkbyhand.store/product.html",
+            "description": "Curated INKBYHAND products and art editions.",
+            "mainEntity": {
+                "@type": "ItemList",
+                "itemListElement": []
+            }
+        }
+        </script>
     <title>INKBYHAND Archive | Limited Collections and Art Editions</title>
 
     <!-- Fonts -->
@@ -542,6 +577,7 @@
 
         // --- DATA ---
         let allProducts = [];
+        let sourceProducts = [];
         const cols = [document.getElementById('col1'), document.getElementById('col2'), document.getElementById('col3')];
 
         const fallback = [
@@ -561,18 +597,70 @@
                 const data = await res.json();
 
                 if (Array.isArray(data) && data.length > 0) {
+                    sourceProducts = [...data];
                     allProducts = [...data];
                     while (allProducts.length < 15) allProducts = [...allProducts, ...data]; // Fill grid
                     render(allProducts);
+                    updateArchiveStructuredData(sourceProducts);
                     document.body.classList.add('loaded');
                 } else throw new Error("Empty");
 
             } catch (e) {
                 console.log("Fallback mode");
+                sourceProducts = [...fallback];
                 allProducts = [...fallback, ...fallback, ...fallback];
                 render(allProducts);
+                updateArchiveStructuredData(sourceProducts);
                 document.body.classList.add('loaded');
             }
+        }
+
+        function updateArchiveStructuredData(products) {
+            const jsonLd = document.getElementById('archive-products-jsonld');
+            if (!jsonLd || !Array.isArray(products) || products.length === 0) return;
+
+            const itemList = products.slice(0, 20).map((p, idx) => {
+                const productUrl = p._id
+                    ? `https://inkbyhand.store/detail.html?id=${encodeURIComponent(p._id)}`
+                    : 'https://inkbyhand.store/product.html';
+
+                return {
+                    "@type": "ListItem",
+                    "position": idx + 1,
+                    "url": productUrl,
+                    "item": {
+                        "@type": "Product",
+                        "name": p.title || `INKBYHAND Item ${idx + 1}`,
+                        "image": p.mainImage || 'https://inkbyhand.store/favicon.png',
+                        "category": p.category || 'Art',
+                        "brand": {
+                            "@type": "Brand",
+                            "name": "INKBYHAND"
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "priceCurrency": "USD",
+                            "price": Number(p.price || 0),
+                            "availability": "https://schema.org/InStock",
+                            "url": productUrl
+                        }
+                    }
+                };
+            });
+
+            const payload = {
+                "@context": "https://schema.org",
+                "@type": "CollectionPage",
+                "name": "INKBYHAND Archive",
+                "url": "https://inkbyhand.store/product.html",
+                "description": "Curated INKBYHAND products and art editions.",
+                "mainEntity": {
+                    "@type": "ItemList",
+                    "itemListElement": itemList
+                }
+            };
+
+            jsonLd.textContent = JSON.stringify(payload);
         }
 
         function render(items) {

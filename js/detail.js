@@ -91,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. RENDER MAIN INFO
     // ----------------------------------------------------
     function renderProduct(product) {
+        updateSeoAndStructuredData(product);
+
         // Text
         if(els.title) els.title.innerText = product.title || "Untitled";
         if(els.price) els.price.innerText = `$${(product.price || 0).toLocaleString()}`;
@@ -129,6 +131,76 @@ document.addEventListener('DOMContentLoaded', () => {
                 els.thumbsContainer.appendChild(thumb);
             });
         }
+    }
+
+    function upsertMeta(selector, attrName, attrValue, content) {
+        let tag = document.querySelector(selector);
+        if (!tag) {
+            tag = document.createElement('meta');
+            tag.setAttribute(attrName, attrValue);
+            document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+    }
+
+    function updateSeoAndStructuredData(product) {
+        const productTitle = product.title || 'INKBYHAND Product';
+        const productDescription = (product.description || 'Discover handcrafted INKBYHAND artwork and premium editions.').replace(/<[^>]*>/g, '').slice(0, 240);
+        const productImage = product.image || 'https://inkbyhand.store/favicon.png';
+        const productId = product.id ? String(product.id) : '';
+        const productUrl = productId
+            ? `https://inkbyhand.store/detail.html?id=${encodeURIComponent(productId)}`
+            : 'https://inkbyhand.store/detail.html';
+        const productPrice = Number(product.price || 0);
+
+        document.title = `${productTitle} | INKBYHAND Product Detail`;
+
+        upsertMeta('meta[name="description"]', 'name', 'description', productDescription);
+        upsertMeta('meta[property="og:title"]', 'property', 'og:title', `${productTitle} | INKBYHAND`);
+        upsertMeta('meta[property="og:description"]', 'property', 'og:description', productDescription);
+        upsertMeta('meta[property="og:image"]', 'property', 'og:image', productImage);
+        upsertMeta('meta[property="og:url"]', 'property', 'og:url', productUrl);
+        upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', `${productTitle} | INKBYHAND`);
+        upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', productDescription);
+        upsertMeta('meta[name="twitter:image"]', 'name', 'twitter:image', productImage);
+
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', productUrl);
+
+        let jsonLd = document.getElementById('product-jsonld');
+        if (!jsonLd) {
+            jsonLd = document.createElement('script');
+            jsonLd.type = 'application/ld+json';
+            jsonLd.id = 'product-jsonld';
+            document.head.appendChild(jsonLd);
+        }
+
+        const payload = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": productTitle,
+            "image": [productImage],
+            "description": productDescription,
+            "sku": productId || undefined,
+            "brand": {
+                "@type": "Brand",
+                "name": "INKBYHAND"
+            },
+            "offers": {
+                "@type": "Offer",
+                "url": productUrl,
+                "priceCurrency": "USD",
+                "price": productPrice,
+                "availability": "https://schema.org/InStock"
+            }
+        };
+
+        jsonLd.textContent = JSON.stringify(payload);
     }
 
     // ----------------------------------------------------
