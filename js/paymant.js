@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Success Message
                     alert(`Order Placed Successfully! Redirecting to details...`);
-                    // window.location.href = 'order.html';
+                    window.location.href = 'order.html';
                 } else {
                     throw new Error(data.message || "Order submission failed on server.");
                 }
